@@ -1,0 +1,36 @@
+{
+  "personas": {
+    "displayName": "Personas",
+    "searches": [
+      { "field": "recid", "caption": "ID ", "type": "int" },
+      { "field": "apellido", "caption": "Apellido", "type": "text" },
+      { "field": "nombre", "caption": "Nombre", "type": "text" },
+      { "field": "email", "caption": "Email", "type": "text"},
+      { "field": "telefono", "caption": "Teléfono", "type": "int" }
+    ],
+    "columns": [
+      { "field": "apellido", "caption": "Apellido", "size": "30%", "sortable": true},
+      { "field": "nombre", "caption": "Nombre", "size": "30%", "sortable": true},
+      { "field": "email", "caption": "Email", "size": "40%", "sortable": true},
+      { "field": "telefono", "caption": "Teléfono", "size": "40%", "sortable": true},
+      { "field": "primerConsulta", "caption": "Primer consulta", "size": "10%", "sortable": true},
+      { "field": "primerConsulta", "caption": "Hace", "size": "10%", "render": "age", "sortable": true}
+    ]
+  },
+  "users": {
+    "displayName": "Usuarios",
+    "searches": [
+      { "field": "recid", "caption": "ID ", "type": "int" },
+      { "field": "username", "caption": "Nombre", "type": "text" },
+      { "field": "email", "caption": "Correo electrónico", "type": "text" },
+      { "field": "confirmed", "caption": "Confirmado", "type": "enum", "options": {"items": ["true", "false"]}},
+      { "field": "blocked", "caption": "Desactivado", "type": "enum", "options": {"items": ["true", "false"]}}
+    ],
+    "columns": [
+      { "field": "username", "caption": "Nombre", "size": "30%", "sortable": true},
+      { "field": "email", "caption": "Correo electrónico", "size": "30%", "sortable": true},
+      { "field": "confirmed", "caption": "Confirmado", "size": "40%", "render": "toggle", "sortable": true},
+      { "field": "blocked", "caption": "Desactivado", "size": "40%", "render": "toggle", "sortable": true}
+    ]
+  }
+}
