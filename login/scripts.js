@@ -1,5 +1,6 @@
 const BASE_URI = 'https://hcdigital.herokuapp.com';
-
+const varjwt = document.cookie
+alert (varjwt)
 $(document).ready(function(){
     $('#iniciar').click(iniciarSesion)
 });
@@ -20,7 +21,7 @@ const iniciarSesion = () => {
         }
     })
         .then(data => data.json())
-        .then(data => console.log('data', data))
+        .then(data => document.cookie = data.jwt)
         .catch(error => console.log('error', error))
          
 };
