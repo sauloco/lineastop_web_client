@@ -1,7 +1,36 @@
-
 $(document).ready(function(){
+  M.Modal.init(document.querySelectorAll('.modal'), {});
+  validarToken();
   onLoad();
 });
+
+
+const validarToken = (token) => {
+  const preloader = M.Modal.getInstance(document.querySelector('#preloader_modal'));
+  preloader.open();
+  goToAPI({
+    location: 'users/me'
+  })
+  .then(data => data.json())
+  .then(data => {
+      console.log('data json', data);
+      if(data.error){
+        if (typeof data.message === 'object') {
+          M.toast({html: '<span>Inicie sesión nuevamente.</span><a class="btn-flat toast-action" href = "/login/?url='+encodeURIComponent(location.href)+'">Abrir</a>', displayLength: 8*1000});
+          setTimeout(() => {
+            // window.document.location.href = "/login";
+            alert('ok... me voy');
+          },8*1000);
+        } else {
+          M.toast({html: data.message});
+        }
+      } else {
+        preloader.close();
+      }
+      
+  })
+  .catch(error => location.href = "/login")
+}
 
 
 const onLoad = () => {
@@ -46,13 +75,7 @@ const initializeGrid = async () => {
 }
 
 const loadObject = async (location, w2uiDataGrid) => {
-  const rawData = await fetch('https://hcdigital.herokuapp.com/'+location, {
-    method:'GET',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YzEzOThkNDQ0NjQ1NzEyNTgzNjBmNmYiLCJpYXQiOjE1NDUyNTA1NDIsImV4cCI6MTU0Nzg0MjU0Mn0.-eDSnZW15smd75g1TCuuNf9drVevm5m8KlRHIDSoeYQ"
-    }
-  });
+  const rawData = await goToAPI({location});
   const data = await rawData.json();
   console.log('data', data);
   let i = 0;

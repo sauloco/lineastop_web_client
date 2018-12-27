@@ -11,18 +11,27 @@ $(document).ready(function(){
 });
 
 const validarToken = (token) => {
+    api.users.me()
+    .then(data => {
+        if(!data.error){
+            location.href = "/";
+        }
+    })
+    .catch(error => console.log('error', error))
+}
+
+const validarToken_unused = (token) => {
 
     fetch(BASE_URI + '/users/me', {
         method:'GET',
         headers: {
             'Authorization': "Bearer " + token,
-
             'Content-Type': 'application/json'
         }
     })
         .then(data => {
             if(!data.error){
-//                location.href = "/";
+                location.href = "/";
             }
         })
         .catch(error => console.log('error', error))
@@ -36,58 +45,18 @@ const iniciarSesion = () => {
     
     // TODO: Validar Correo y Contraseña.
 
-    fetch(BASE_URI + '/auth/local', {
-        method:'POST',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
+    api.auth.local.login(body)
         .then(data => data.json())
         .then(data => {
             setCookie('jwt', data.jwt, 2)
         })
-        .catch(error => console.log('error', error))
-         
+        .catch(error => console.log('error', error));
 };
 
 const registrarUsuario = () => {
     
-    //location.href = "/";
+    location.href = "/usuario/nuevo";
          
 };
 
 
-function setCookie(cname, cvalue, exdays) {
-    let d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    const expires = "expires="+d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-  }
-  
-  function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i = 0; i < ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
-  }
-  
-  function checkCookie() {
-    var user = getCookie("username");
-    if (user != "") {
-      alert("Welcome again " + user);
-    } else {
-      user = prompt("Please enter your name:", "");
-      if (user != "" && user != null) {
-        setCookie("username", user, 365);
-      }
-    }
-  }
