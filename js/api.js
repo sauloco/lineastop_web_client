@@ -2,8 +2,8 @@
  * 
  * @param {object | string} error - objeto con atributo message o string.
  */
-const apiDefaultErrorController = ({error}) => {
-  let showMessage = 'Ocurrió un error inesperado.';
+const apiDefaultErrorController = ({endpoint, error}) => {
+  let showMessage = endpoint.errors[error.statusCode] || api.common.errors[error.statusCode] || api.common.errors.default;
   if (typeof error === 'object') {
     if (error.message && typeof error.message === 'string')
       showMessage = error.message;
@@ -27,18 +27,21 @@ const apiDefaultErrorController = ({error}) => {
  * @returns una nueva Promise con el resultado del fetch
  */
 
-const goToAPI = ({location, method, params, token}) => {
+const getPromise = ({endpoint, params, token}) => {
+  
   const BASE_URI = 'https://hcdigital.herokuapp.com';
+  const {location, method} = endpoint;
+  
   if (location.split('')[0] !== '/'){
     location = `/${location}`;
   }
   location = `${BASE_URI}${location}`;
+  
   if (!method) {
     method = 'GET';
   }
-  if (!token) {
-    token = getCookie('jwt');
-  }
+  
+  
   let requestInit = {
     method: method,
     headers: {
@@ -46,80 +49,69 @@ const goToAPI = ({location, method, params, token}) => {
       'Accept-Language': 'es_AR'
     }
   };
-  if (params) {
+  
+  if (params && validateParams({endpoint, params})) {
     if (method === 'POST') {
       requestInit.headers.body = params;
     } else {
       requestInit.data = params;
     }
   }
+  
+  token = token || getCookie('jwt');
+  requestInit.headers['Authorization'] = `Bearer ${token}`;
 
-  if (!token) {
-    token =  getCookie('jwt');
-  };
-  if (token) {
-    requestInit.headers['Authorization'] = `Bearer ${token}`;
-  }
   return fetch(location, requestInit);
 }
 
-const getDataFromAPI = async ({descriptor, params, noControlError}) => {
-  const rawData = await descriptor(params);
-  if ((rawData.status >= 200 && rawData.status < 300) || noControlError)  {
-    return await rawData.json();
+const fetchData = async ({endpoint, params, token, controlError}) => {
+  const rawData = await getPromise({endpoint, params, token});
+  const data = await rawData.json();
+  
+  if ((rawData.status >= 200 && rawData.status < 300) || !controlError)  {
+    return data;
   }
-  switch(rawData.status) {
-    case 404: 
-      break;
-    default: 
-  }
+  return api.common.errorHandler({endpoint, data});
 }
 
-
+const validateParams = ({endpoint, params}) => {
+  for (const param of Object.keys(endpoint.params)){
+    const validType = endpoint.params[param].type && validateType(params[param], endpoint.params[param].type)
+  }
+}
 
 const api = {
   common: {
     errors: {
-      400: 'Petición de información inválida.',
+      400: 'Ocurrió un errror. Inicia sesión nuevamente y reintenta la acción.',
       401: 'Las credenciales no parecen válidas, por favor, inicia sesión nuevamente.',
-      402: 'Se requiere un pago para continuar.',
       403: 'Su usuario no tiene permiso suficiente para acceder al recurso solicitado.',
       404: 'No se encontró el recurso solicitado.',
       405: 'El tipo de solicitud es inválida.',
       410: 'El recurso solicitado ya no está disponible.',
       500: 'Ocurrió un error inesperado en nuestros servidores, ya se le ha notificado a nuestros desarrolladores del inconveniente.',
       default: 'Ocurrió un error inesperado, ya se le ha notificado a los desarrolladores del inconveniente.',
-    }
+    },
+    errorHandler: apiDefaultErrorController,
   },
   users: {
     me: {
-      location: 'users/me',
-      errors: {
-        400: 'Ocurrió un error. Inicia sesión nuevamente y reintenta la acción.',
-      }
+      location: 'users/me'
     },
     all: {
       location: 'users/',
-      errors: {
-
-      },
-      getPromise: () => goToAPI({location: api.users.all.location}),
-      getData: async (noControlError) => await getDataFromAPI({rawData: await users.all.getPromise, noControlError}),
     }
-  };
+  },
   auth: {
     local: {
       login: {
         location: 'auth/local',
         method: 'POST',
-        label: {
-          singular: 'Inicio de sesión',
-          isFemenine: false
-        },
-        getPromise: ({identifier, password}) => goToAPI({location: api.auth.local.login, method: api.auth.local.login.method, body: {identifier, password}}),
-        getData: async ({identifier, password}) => getDataFromAPI({rawData: await auth.local.login.getPromise(), body: {identifier, password}})
       },
-      register: ({username, identifier, password}) => goToAPI({location: 'auth/local/register', method: 'POST', body: {username, identifier, password}}),
+      register: {
+        location: 'auth/local/register',
+        method: 'POST'
+      }
     }
   }
 }

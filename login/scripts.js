@@ -11,7 +11,7 @@ $(document).ready(function(){
 });
 
 const validarToken = (token) => {
-    api.users.me()
+    goToApi(api.users.me)
     .then(data => {
         if(!data.error){
             location.href = "/";
@@ -21,6 +21,8 @@ const validarToken = (token) => {
 }
 
 const validarToken_unused = (token) => {
+
+
 
     fetch(BASE_URI + '/users/me', {
         method:'GET',
@@ -49,14 +51,19 @@ const iniciarSesion = () => {
         .then(data => data.json())
         .then(data => {
             setCookie('jwt', data.jwt, 2)
+            if(error !== ""){
+                if(error.message ==='object'){
+                    fetch.applycatch(error => M.toast({html: 'Se han producido varios errores!'}))
+                }
+            }
         })
-        .catch(error => console.log('error', error));
-};
-
-const registrarUsuario = () => {
-    
-    location.href = "/usuario/nuevo";
+        .catch(error => M.toast({html: 'Se ha producido un error!'+ error}))
          
 };
 
+const registrarUsuario = () => {
 
+    // TODO: Cambiar a usuario/nuevo/index.html
+    location.href = "/registro/registro.html"; 
+         
+};
