@@ -1,14 +1,16 @@
 const BASE_URI = 'https://hcdigital.herokuapp.com';
 
 $(document).ready(function(){
-   
+    M.updateTextFields();
     $('#iniciar').click(iniciarSesion)
-    $('#registrar').click(registrarUsuario)
+    $('#terminos').prop('checked', false)
+    $('#registrar').click(aceptarTerminos)
    
 });
 
 const iniciarSesion = () => {
     const params = {
+        user: $('#name').val(),
         identifier: $('#email').val(),
         password: $('#password').val() 
     }
@@ -27,9 +29,19 @@ const iniciarSesion = () => {
         .catch(error => api.common.errorHandler({endpoint: api.auth.local.login, error}));
 };
 
-const registrarUsuario = () => {
+const aceptarTerminos = () => {
+    if (document.getElementById('terminos').checked){
+        // TODO validar datos y dar alta
+    }
+    else {
+        M.toast({html:'Debe aceptar los Terminos y Condiciones'})
+    }
+}
+const guardarNuevo = () => {
 
     // TODO: Cambiar a usuario/nuevo/index.html
-    location.href = "/usuario/nuevo/index.html"; 
+    //location.href = "/"; 
+    var toastHTML = '<span> Modulo en construcción</span><button class="btn-flat toast-action">aceptar</button>';
+    M.toast({html:toastHTML})
          
 };
