@@ -132,6 +132,9 @@ const api = {
     },
     all: {
       location: 'users/',
+    },
+    findBy: {
+      location: 'users',
     }
   },
   auth: {
