@@ -162,6 +162,21 @@ const api = {
         location: 'auth/local/register',
         method: 'POST'
       }
+    },
+    forgotPassword: {
+      location: 'auth/forgot-password',
+      method: 'POST',
+      errors: {
+        default: 'Ocurrió un error durante el envío del correo electrónico, por favor, reintenta.',
+        400: (error) => {
+          switch (error.message) {
+            case 'This email does not exist.':
+              return 'El correo ingresado no existe';
+            default: 
+              return api.auth.forgotPassword.errors.default;
+          }
+        }
+      }
     }
   }
 }
