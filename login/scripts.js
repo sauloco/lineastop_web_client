@@ -2,19 +2,22 @@ const BASE_URI = 'https://hcdigital.herokuapp.com';
 
 $(document).ready(function(){
    
+    $('#password').focus(activaIniciar)
     $('#iniciar').click(iniciarSesion)
     $('#registrar').click(registrarUsuario)
-    $('#olvidar').click(olvideContraseña)
-   
+    $('#olvidar').click(olvideContrasena)
+    
 });
+const activaIniciar = () => {
+    $('#iniciar').attr('disabled', false);
+}
 
 const iniciarSesion = () => {
+
     const params = {
         identifier: $('#email').val(),
         password: $('#password').val() 
     }
-    
-    // TODO: Validar Correo y Contraseña.
 
     getPromise({endpoint: api.auth.local.login, params})
         .then(response => response.json())
@@ -34,9 +37,9 @@ const registrarUsuario = () => {
     location.href = "/usuario/nuevo/index.html"; 
          
 };
-const olvideContraseña = () => {
+const olvideContrasena = () => {
     const params = {
-        identifier: $('#email').val(),
+        email: $('#email').val(),
     }    
     if (!params) { 
         M.toast({html:"El correo electrónico es obligatorio."});
@@ -52,5 +55,24 @@ const olvideContraseña = () => {
             validarToken()
         })
         .catch(error => api.common.errorHandler({endpoint: api.auth.forgotPassword, error}));
+
+}
+const validarParametros = () => {
+    // TODO: 
+    // validar campos obligatorios
+    
+    const email = $('#email').val();
+    if (!email) {
+        M.toast({html:"El correo electrónico es obligatorio."});
+        return false;
+    }
+
+    const password = $('#password').val();
+    if (!password){
+        M.toast({html:"La contraseña es obligatoria"});
+        return false;
+    }
+
+    return true;
 
 }
