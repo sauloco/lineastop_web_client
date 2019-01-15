@@ -8,7 +8,7 @@ $(document).ready(function(){
 });
 
 const aceptarTerminos = () => {
-    if (document.getElementById('terminos').checked){
+    if ($('#terminos').prop('checked')){
         // TODO validar mail y datos completos.
         $('#registrar').attr('disabled', false);
         $('#registrar').click(guardarNuevo);
@@ -19,18 +19,11 @@ const aceptarTerminos = () => {
     }
 }
 const guardarNuevo = () => {
-    if (!validarParametros()) {
-        return;
-    }
-
-    
-    // TODO: Validar usuario, correo y contraseña.
-    
-
+  
     const params = {
-        username,
-        email,
-        password,
+        username: $('#name').val(),
+        email: $('#email').val(),
+        password: $('#password').val(),
     };
 
     getPromise({endpoint: api.auth.local.register, params})
@@ -42,13 +35,20 @@ const guardarNuevo = () => {
             M.toast({html:"Revise su correo electrónico. ..sad.asd.ad as.dsa.asd"});
         })
         .catch(error => api.common.errorHandler({endpoint: api.auth.local.register, error}));
-
+        alert("Llega aca?")
 };
+    
+
+    
+    // TODO: Validar usuario, correo y contraseña.
+    
+
+    
  
 
 const validarParametros = () => {
     // TODO: 
-    // validar campos obligatorios
+    // validar campos obligatorios 
     // validar que mail sea valido
     // validar que contraseña sea mayor o igual a 8 caracteres
     // validar que checkbox este tildado
@@ -73,6 +73,11 @@ const validarParametros = () => {
         return false;
     }
 
+    const password = $('#password').val();
+    if (!password){
+        M.toast({html:"La contraseña es oblligatoria."});
+        return false;
+    }
     // $('#password').val();
 
     return true;
