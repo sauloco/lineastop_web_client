@@ -54,11 +54,9 @@ const validarParametros = () => {
     // validar que checkbox este tildado
     // validar que usuario no exista ya en la base de datos https://hcdigital.herokuapp.com/users?username={{username}}
     // validar que correo electrónico no exista ya en la base de datos https://hcdigital.herokuapp.com/users?email={{email}}
-
-    let username;
-    if ($('#name').val()){
-        username = $('#name').val();
-    } else {
+   
+    const username = $('#name').val();
+    if (!username){
         M.toast({html:"Escriba un Nombre de usuario"});
         return false;
     }
