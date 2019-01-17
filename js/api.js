@@ -69,15 +69,18 @@ const getPromise = ({endpoint, params, token}) => {
     method: method,
     headers: {
       'Content-Type': 'application/json',
-      'Accept-Language': 'es_AR',
     }
   };
   
   if (params) {
-    if (method === 'POST') {
-      requestInit.body = JSON.stringify(params);
+    if (method === 'GET') {
+      location += '?';
+      for (const key of Object.keys(params)) {
+        location += `${key}=${encodeURIComponent(params[key])}&`;
+      }
+      location = location.substr(0, location.length-1);
     } else {
-      requestInit.data = params;
+      requestInit.body = JSON.stringify(params);
     }
   }
   
