@@ -1,14 +1,19 @@
-const BASE_URI = 'https://hcdigital.herokuapp.com';
-
 $(document).ready(function(){
    
-    $('#password').focus(activaIniciar)
+    $('#password').blur(activaIniciar)
     $('#iniciar').click(iniciarSesion)
     $('#registrar').click(registrarUsuario)
     $('#olvidar').click(olvideContrasena)
     
 });
+
 const activaIniciar = () => {
+    const password = $('#password').val();
+    
+    if (!password){
+        return M.toast({html:"La contraseña es obligatoria."});
+
+    }
     $('#iniciar').attr('disabled', false);
 }
 

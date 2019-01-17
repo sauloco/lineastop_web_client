@@ -1,5 +1,3 @@
-const BASE_URI = 'https://hcdigital.herokuapp.com';
-
 $(document).ready(function(){
    
     $('#terminos').prop("checked", false);
@@ -9,10 +7,8 @@ $(document).ready(function(){
 
 const aceptarTerminos = () => {
     if ($('#terminos').prop('checked')){
-        // TODO validar mail y datos completos.
         $('#registrar').attr('disabled', false);
         $('#registrar').click(guardarNuevo);
-
     }
     else {
         $('#registrar').attr('disabled', true);
@@ -35,17 +31,8 @@ const guardarNuevo = () => {
             M.toast({html:"Revise su correo electrónico. ..sad.asd.ad as.dsa.asd"});
         })
         .catch(error => api.common.errorHandler({endpoint: api.auth.local.register, error}));
-        alert("Llega aca?")
 };
     
-
-    
-    // TODO: Validar usuario, correo y contraseña.
-    
-
-    
- 
-
 const validarParametros = () => {
     // TODO: 
     // validar campos obligatorios 
@@ -78,7 +65,5 @@ const validarParametros = () => {
         M.toast({html:"La contraseña es oblligatoria."});
         return false;
     }
-    // $('#password').val();
-
     return true;
 }
