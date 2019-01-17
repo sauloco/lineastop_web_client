@@ -8,7 +8,7 @@ $(document).ready(function(){
 });
 
 const activaIniciar = () => {
-    const password = $('#password').val();
+    let password = $('#password').val();
     
     if (!password){
         return M.toast({html:"La contraseña es obligatoria."});
@@ -72,12 +72,12 @@ const validarParametros = () => {
         return false;
     }
 
-    const password = $('#password').val();
+    /*const password = $('#password').val();
     if (!password){
         M.toast({html:"La contraseña es obligatoria"});
         return false;
     }
 
     return true;
-
+*/
 }
