@@ -57,7 +57,8 @@ const guardarNuevo = async() => {
     
     const exinom = {username: $('#name').val()}
     
-    const data = await fetchData({endpoint: api.users.findBy, exinom});
+    const data = await fetchData({endpoint: api.users.findBy, exinom}); //en esta linea me parece que trae siempre un array con "algo"
+
     console.log(data);
         if (data.length) { M.toast({html: 'Ya existe un usuario registrado con ese nombre de usuario'})
         return;
