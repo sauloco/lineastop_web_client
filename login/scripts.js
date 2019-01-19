@@ -42,7 +42,7 @@ const registrarUsuario = () => {
     location.href = "/usuario/nuevo/index.html"; 
          
 };
-const olvideContrasena = () => {
+const olvideContrasena = async () => {
     const params = {
         email: $('#email').val(),
     }    
@@ -50,17 +50,12 @@ const olvideContrasena = () => {
         M.toast({html:"El correo electrónico es obligatorio."});
         return false;
     }
-    getPromise({endpoint: api.auth.forgotPassword, params})
-        .then(response => response.json())
-        .then(data => {
-            if(data.error){
-                return api.common.errorHandler({endpoint: api.auth.forgotPassword, error: data});
-            }
-            setCookie({name: 'jwt', value: data.jwt, day: 2, force: true});
-            validarToken()
-        })
-        .catch(error => api.common.errorHandler({endpoint: api.auth.forgotPassword, error}));
 
+    const data = await fetchData({endpoint: api.auth.forgotPassword, params});
+
+    if (data) {
+        M.toast({html: 'Si el correo electrónico es válido recibirá un mensaje con las instrucciones para continuar.'});
+    }
 }
 const validarParametros = () => {
     // TODO: 
