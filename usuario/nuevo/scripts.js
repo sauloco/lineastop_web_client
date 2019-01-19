@@ -47,25 +47,36 @@ const validarParametros = () => {
     if ($('#terminos').prop('checked')){
         $('#registrar').attr('disabled', false);
         $('#registrar').click(guardarNuevo);
+        
     }
-    return;
-    //else {
-      //  $('#registrar').attr('disabled', true);
-    //}
+    
+    else {
+        $('#registrar').attr('disabled', true);
+    }
 }
-const guardarNuevo = async() => {
+const guardarNuevo = async () => {
     
-    const exinom = {username: $('#name').val()}
+    let params = {username: $('#name').val()}
     
-    const data = await fetchData({endpoint: api.users.findBy, exinom}); //en esta linea me parece que trae siempre un array con "algo"
+    let data = await fetchData({endpoint: api.users.findBy, params}); //en esta linea me parece que trae siempre un array con "algo"
 
     console.log(data);
-        if (data.length) { M.toast({html: 'Ya existe un usuario registrado con ese nombre de usuario'})
+    if (data.length) { 
+        M.toast({html: 'Ya existe un usuario registrado con ese nombre de usuario'})
         return;
     }   
     
+    params = {email: $('#email').val()}
+    
+    data = await fetchData({endpoint: api.users.findBy, params}); //en esta linea me parece que trae siempre un array con "algo"
 
-    const params = {
+    console.log(data);
+    if (data.length) { 
+        M.toast({html: 'Ya existe un usuario registrado con esa direccion de correo electrónico'})
+        return;
+    }   
+
+    params = {
         username: $('#name').val(),
         email: $('#email').val(),
         password: $('#password').val()
@@ -81,7 +92,7 @@ const guardarNuevo = async() => {
             M.toast({html:"Revise su correo electrónico. ..sad.asd.ad as.dsa.asd"});
         })
         .catch(error => api.common.errorHandler({endpoint: api.auth.local.register, error}));
-};
+}
     
 
     
