@@ -8,11 +8,11 @@ $(document).ready(function(){
 });
 
 const activaIniciar = () => {
+    
     let password = $('#password').val();
     
     if (!password){
         return M.toast({html:"La contraseña es obligatoria."});
-
     }
     $('#iniciar').attr('disabled', false);
 }
@@ -38,7 +38,6 @@ const iniciarSesion = () => {
 
 const registrarUsuario = () => {
 
-    // TODO: Cambiar a usuario/nuevo/index.html
     location.href = "/usuario/nuevo/index.html"; 
          
 };
@@ -46,7 +45,8 @@ const olvideContrasena = async () => {
     const params = {
         email: $('#email').val(),
     }    
-    if (!params) { 
+    if (!(params.email).length) { 
+        
         M.toast({html:"El correo electrónico es obligatorio."});
         return false;
     }
@@ -58,8 +58,6 @@ const olvideContrasena = async () => {
     }
 }
 const validarParametros = () => {
-    // TODO: 
-    // validar campos obligatorios
     
     const email = $('#email').val();
     if (!email) {
@@ -67,12 +65,4 @@ const validarParametros = () => {
         return false;
     }
 
-    /*const password = $('#password').val();
-    if (!password){
-        M.toast({html:"La contraseña es obligatoria"});
-        return false;
-    }
-
-    return true;
-*/
 }

@@ -7,14 +7,6 @@ $(document).ready(function(){
 
 const validarParametros = () => {
 
-    // TODO: 
-    // **validar campos obligatorios**
-    // **validar que mail sea valido**
-    // **validar que contraseña sea mayor o igual a 8 caracteres**
-    // **validar que checkbox este tildado**
-    // validar que usuario no exista ya en la base de datos https://hcdigital.herokuapp.com/users?username={{username}}
-    // validar que correo electrónico no exista ya en la base de datos https://hcdigital.herokuapp.com/users?email={{email}}
-    
     const username = $('#name').val();
     if (!username){
         M.toast({html:"Escriba un Nombre de usuario"});
@@ -39,8 +31,8 @@ const validarParametros = () => {
         return false;
     }
     const passtam = password.length;
-    if (passtam!== 8){
-        M.toast({html:"La contraseña debe tener 8 caracteres."});
+    if (passtam < 8){
+        M.toast({html:"La contraseña debe tener como mínimo 8 caracteres."});
         return false;
     } 
     
@@ -57,10 +49,9 @@ const validarParametros = () => {
 const guardarNuevo = async () => {
     
     let params = {username: $('#name').val()}
-    
-    let data = await fetchData({endpoint: api.users.findBy, params}); //en esta linea me parece que trae siempre un array con "algo"
 
-    console.log(data);
+    let data = await fetchData({endpoint: api.users.findBy, params});
+
     if (data.length) { 
         M.toast({html: 'Ya existe un usuario registrado con ese nombre de usuario'})
         return;
@@ -68,9 +59,8 @@ const guardarNuevo = async () => {
     
     params = {email: $('#email').val()}
     
-    data = await fetchData({endpoint: api.users.findBy, params}); //en esta linea me parece que trae siempre un array con "algo"
+    data = await fetchData({endpoint: api.users.findBy, params});
 
-    console.log(data);
     if (data.length) { 
         M.toast({html: 'Ya existe un usuario registrado con esa direccion de correo electrónico'})
         return;
@@ -89,7 +79,7 @@ const guardarNuevo = async () => {
             if(data.error){
                 return api.common.errorHandler({endpoint: api.auth.local.register, error: data});
             }
-            M.toast({html:"Revise su correo electrónico. ..sad.asd.ad as.dsa.asd"});
+            M.toast({html:'Revise su correo electrónico y siga las instrucciones recibidas'});
         })
         .catch(error => api.common.errorHandler({endpoint: api.auth.local.register, error}));
 }
