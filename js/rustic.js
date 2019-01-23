@@ -1,11 +1,13 @@
-const Rustic = {
-  clone: (object) => {
+const Rustic = (() => {
+
+  const clone = (object) => {
     return JSON.parse(JSON.stringify(object));
-  },
-  mutationCallback: () => {},
-  init: (modelName) => {
+  };
+
+  const init = (modelName) => {
+    
     const model = eval(modelName);
-    Rh.clear();
+    history.clear();
     if (!model) return;
   
     const keys = Object.keys(model);
@@ -15,131 +17,165 @@ const Rustic = {
       
       $(interactDomObject).data('model', modelName);
       $(interactDomObject).change(function () {
-        if (R.mutating) return false;  
+        if (mutating) return false;  
         let data = {};
         if ($(this).attr('type') === 'checkbox') {
           data[$(this).attr('id')] = $(this).prop('checked');  
         } else {
           data[$(this).attr('id')] = $(this).val();
         }
-        R.mutate($(this).data('model'), data);
+        mutate($(this).data('model'), data);
       });
       let mutateData = {};
       mutateData[key] = model[key];
-      R.mutate(modelName, mutateData, true);
+      mutate(modelName, mutateData, true);
     }
 
     if ($(`#${modelName}`)) {
-      R.modelInspectors.push(modelName);
-      R.inspectModel(modelName);
+      modelInspectors.push(modelName);
+      inspectModel(modelName);
     }
-  },
-  mutating: false,
-  mutate: (name, data, force) => {
-    R.mutating = true;
+  };
+
+  let mutationCallback = () => {};
+
+  let mutating = false;
+
+  const mutate = (name, data, force) => {
+    mutating = true;
     const model = eval(name);
+    const prevModel = clone(model);
     if (!model || !data || JSON.stringify(model) === JSON.stringify(data)) {
-      R.mutating = false;
+      mutating = false;
       return false;
     } 
-  
+    if (!force) {
+      if (!history.isPerforming()) {
+        history.add({name, data: clone(model)});
+      }
+    }
     const keys = Object.keys(data);
     let changes = 0;
     for (const key of keys) {
       if (force || !model[key] || model[key] !== data[key]) {
-        if (!Rh.performing) {
-          Rh.add({name, data: R.clone(model)});
-        }
+        
         model[key] = data[key];
         const interactDomObject = $(`#${key}`);
         
-        R.setValue(interactDomObject, model, key);
+        setDomValue(interactDomObject, model, key);
         
         eval(`${name} = model`);
-        R.mutationCallback && R.mutationCallback(model, key, interactDomObject);
+        
         changes++;
       }
-    }
+    };
     
-    R.inspectModel(name);
-
-    
-
-    R.mutating = false;
+    inspectModel(name);
+    mutationCallback(prevModel, model);
+    mutating = false;
     return changes !== 0;
-  },
-  setValue: (domObject, model, key) => {
-    if ($(domObject).prop('tagName') === 'SELECT') {
-      $(domObject).val(model[key]);
-      $(`${key} option[value=${model[key]}]`).prop('selected', true);
-      $(domObject).change();
-      return true;
-    }
+  };
+
+  const setDomValue = (domObject, model, key) => {
     
-    if ($(domObject).attr('type') === 'checkbox') {
+    $(domObject).val(model[key]);
+
+  if ($(domObject).attr('type') === 'checkbox') {
       $(domObject).prop('checked', model[key]);
-      $(domObject).change();
       return true;
     }
-    $(domObject).val(model[key]);
+
     return true;
-  },
-  inspectModel: (name, model) => {
+  };
+
+  const inspectModel = (name, model) => {
     model = model || eval(name);
-    if (R.modelInspectors.indexOf(name) >= 0) {
+    if (modelInspectors.indexOf(name) >= 0) {
       $(`#${name}`).html(`${name} = ${JSON.stringify(model, null, 2)}`);
     }
-  },
-  modelInspectors: [],
-  history: {
-    anteriorData: [],
-    posteriorData: [],
-    add: (model) => {
+  };
+
+  const modelInspectors = [];
+
+  const history = (() => {
+    let anteriorData = [];
+    let posteriorData = [];
+
+    const add = (model) => {
       if (!model) return false;
-      Rh.anteriorData.push(R.clone(model));
-      if (!Rh.performing) {
-        Rh.posteriorData = [];
+      anteriorData.push(clone(model));
+      if (!performing) {
+        posteriorData = [];
       }
       return true;
-    },
-    performing: false,
-    undo: () => {
-      Rh.performing = true;
-      if (!Rh.anteriorData.length) {
-        Rh.performing = false;
+    };
+
+    let performing = false;
+
+    const isPerforming = () => {
+      return performing;
+    };
+
+    const undo = () => {
+      performing = true;
+      if (!anteriorData.length) {
+        performing = false;
         return false;
       }
       
-      const {name, data} = Rh.anteriorData[Rh.anteriorData.length - 1];
-      Rh.posteriorData.push({name, data: R.clone(eval(name))});
-      R.mutate(name, data);
-      Rh.anteriorData.pop();
-      Rh.performing = false;
+      const {name, data} = anteriorData[anteriorData.length - 1];
+      posteriorData.push({name, data: clone(eval(name))});
+      mutate(name, data);
+      anteriorData.pop();
+      performing = false;
       return true;
-    },
-    redo: () => {
-      Rh.performing = true;
-      if (!Rh.posteriorData.length) {
-        Rh.performing = false;
+    };
+
+    const redo = () => {
+      performing = true;
+      if (!posteriorData.length) {
+        performing = false;
         return false;
       }
-      const {name, data} = Rh.posteriorData[Rh.posteriorData.length - 1];
-      Rh.add({name, data: R.clone(eval(name))});
+      const {name, data} = posteriorData[posteriorData.length - 1];
+      add({name, data: clone(eval(name))});
       R.mutate(name, data);
-      Rh.posteriorData.pop();
-      Rh.performing = false;
+      posteriorData.pop();
+      performing = false;
       return true;
-    },
-    clear: () => {
-      Rh.performing = true;
-      Rh.anteriorData = [];
-      Rh.posteriorData = [];
-      Rh.performing = false;
-    }
-  }
-}
+    };
 
+    const clear = () => {
+      performing = true;
+      anteriorData = [];
+      posteriorData = [];
+      performing = false;
+    };
+
+    return {
+      clear,
+      add,
+      undo,
+      redo,
+      isPerforming,
+    };
+
+  })();
+
+  const setMutationCallback = callback => {
+    mutationCallback = callback;
+  }
+
+  return {
+    h: history,
+    init,
+    history,
+    mutate,
+    setMutationCallback,
+  }
+})();
 
 // Aliases
-const R = Rustic;
-const Rh = Rustic.history;
+const R = Rustic,
+  undo = R.h.undo,
+  redo = R.h.redo;

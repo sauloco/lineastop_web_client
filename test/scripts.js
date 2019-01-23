@@ -1,18 +1,30 @@
+var GLOBAL_MUTATION_CALLBACK;
+
 let Persona = {
   name: 'Saulo',
   last: 'Vargas',
-  tipoDoc: '1',
+  tipoDoc: '3',
   vivo: true
 };
 
 $(document).ready(() =>{
+  $('select').formSelect();  
+  
+  // por usar Materialize
+  const mutationCallback = (previousModel, currentModel) => {
+      M.updateTextFields();
+      $('select').formSelect();
+  };
+  
+  R.setMutationCallback(mutationCallback);
+
+  // Inicialización
   R.init('Persona');
 
-  // por usar Materialize
-  R.mutationCallback = (m, k, domO) => {
-      M.updateTextFields();
-  }
+  $('#mutate').click(testMutation)
 })
 
+const testMutation = () => {
+  R.mutate('Persona', {name: 'Nicolás', last: 'Verón', tipoDoc: 2, vivo: false});
+}
 
-// R.mutate('Persona', {name: 'Nicolás', last: 'Verón'});
