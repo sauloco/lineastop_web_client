@@ -1,5 +1,5 @@
 let Persona = {
-  name: 'Saulo',
+  name: $('#name').val(),
   last: 'Vargas',
   tipoDoc: '1',
   vivo: true
