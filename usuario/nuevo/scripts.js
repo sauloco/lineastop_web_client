@@ -9,7 +9,7 @@ const validarParametros = () => {
 
     const username = $('#name').val();
     if (!username){
-        M.toast({html:"Escriba un Nombre de usuario"});
+        M.toast({html:"El nombre de usuario es obligatorio"});
         return false;
     }
     
@@ -30,8 +30,8 @@ const validarParametros = () => {
         M.toast({html:"La contraseña es obligatoria."});
         return false;
     }
-    const passtam = password.length;
-    if (passtam < 8){
+    
+    if (password.length < 8){
         M.toast({html:"La contraseña debe tener como mínimo 8 caracteres."});
         return false;
     } 

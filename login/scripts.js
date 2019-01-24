@@ -12,7 +12,8 @@ const activaIniciar = () => {
     let password = $('#password').val();
     
     if (!password){
-        return M.toast({html:"La contraseña es obligatoria."});
+         M.toast({html:"La contraseña es obligatoria."});
+         return
     }
     $('#iniciar').attr('disabled', false);
 }
@@ -42,27 +43,16 @@ const registrarUsuario = () => {
          
 };
 const olvideContrasena = async () => {
-    const params = {
-        email: $('#email').val(),
-    }    
-    if (!(params.email).length) { 
-        
-        M.toast({html:"El correo electrónico es obligatorio."});
-        return false;
+    
+    const email = $('#email').val();
+        if (!email){ 
+            M.toast({html:"El correo electrónico es obligatorio."});
+           return false;
     }
-
+    const params = {email}
     const data = await fetchData({endpoint: api.auth.forgotPassword, params});
 
     if (data) {
         M.toast({html: 'Si el correo electrónico es válido recibirá un mensaje con las instrucciones para continuar.'});
     }
-}
-const validarParametros = () => {
-    
-    const email = $('#email').val();
-    if (!email) {
-        M.toast({html:"El correo electrónico es obligatorio."});
-        return false;
-    }
-
 }
