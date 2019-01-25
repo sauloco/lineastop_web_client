@@ -1,37 +1,43 @@
-var GLOBAL_MUTATION_CALLBACK;
-
 let Persona = {
-  name: $('#name').val(),
-  last: $('#last').val(),
-  tipoDoc: $('#tipodoc').val(),
-  vivo: $('#vivo').val(),
-  fechanacimiento: $('#fechanacimiento').val(),
-  altura: $('#altura').val(),
-  peso: $('#peso').val(),
-  calle: $('#calle').val(),
-  numero: $('#numero').val(),
-  Telefono: $('#telefono').val(),
-  etc:
+  apellido: 'Gallo',
+  nombre: 'Norma',
+  telefono: '',
+  email: '',
+  primerConsulta: '',
+  nacimiento: '',
+  nombreCalleBarrio: '',
+  numeroCalleBarrio: '',
+  numeroPisoDepto: '',
+  ciudad: '',
+  provincia: '',
+  pesoKg: '',
+  alturaCm: '',
+  antecedentesPatologicos: false,
+  descripcionAntecedentesPatologicos: '',
+  recibeMedicamentos: false,
+  descripcionRecibeMedicamentos: '',
 };
+
+let HistoriaTabaquismo = {
+  cigarrillosDiarios: '0 a 10'
+}
 
 $(document).ready(() =>{
   $('select').formSelect();  
+  $('.datepicker').datepicker();
   
   // por usar Materialize
-  const mutationCallback = (previousModel, currentModel) => {
+  const modelCallback = () => {
       M.updateTextFields();
       $('select').formSelect();
+      M.textareaAutoResize($('textarea'));
   };
   
-  R.setMutationCallback(mutationCallback);
+  R.s.add({model: 'Persona', callback: modelCallback})
+  R.s.add({model: 'HistoriaTabaquismo', callback: modelCallback})
 
   // Inicialización
   R.init('Persona');
-
-  $('#mutate').click(testMutation)
+  R.init('HistoriaTabaquismo');
 })
-
-const testMutation = () => {
-  R.mutate('Persona', {name: 'Nicolás', last: 'Verón', tipoDoc: 2, vivo: false});
-}
 

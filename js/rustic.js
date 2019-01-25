@@ -7,7 +7,7 @@ const Rustic = (() => {
   const init = (modelName) => {
     
     const model = eval(modelName);
-    history.clear();
+    
     if (!model) return;
   
     const keys = Object.keys(model);
@@ -56,6 +56,7 @@ const Rustic = (() => {
     }
     const keys = Object.keys(data);
     let changes = 0;
+    let keySubscriptions = [];
     for (const key of keys) {
       if (force || !model[key] || model[key] !== data[key]) {
         
@@ -65,13 +66,27 @@ const Rustic = (() => {
         setDomValue(interactDomObject, model, key);
         
         eval(`${name} = model`);
-        
+
+        const tempSubscriptions = subscriptions.search(name, key);
+        for (const tempSubscription of tempSubscriptions) {
+          keySubscriptions.push(tempSubscription);
+        };
+
         changes++;
       }
     };
     
     inspectModel(name);
-    mutationCallback(prevModel, model);
+
+    for (const keySubscription of keySubscriptions) {
+      keySubscription.callback({prevModel, model});
+    }
+
+    const modelSubscriptions = subscriptions.search(name);
+    for (const modelSubscription of modelSubscriptions) {
+      modelSubscription.callback({prevModel, model});
+    }
+
     mutating = false;
     return changes !== 0;
   };
@@ -80,13 +95,20 @@ const Rustic = (() => {
     
     $(domObject).val(model[key]);
 
-  if ($(domObject).attr('type') === 'checkbox') {
+    if ($(domObject).attr('type') === 'checkbox') {
       $(domObject).prop('checked', model[key]);
+      return true;
+    }
+
+    if ($(domObject).attr('type') === 'radio') {
+      $(`input:radio[name=${key}]`).filter(`[value="${model[key]}"]`).prop('checked', true);
       return true;
     }
 
     return true;
   };
+
+  
 
   const inspectModel = (name, model) => {
     model = model || eval(name);
@@ -94,8 +116,39 @@ const Rustic = (() => {
       $(`#${name}`).html(`${name} = ${JSON.stringify(model, null, 2)}`);
     }
   };
-
+  
   const modelInspectors = [];
+  subscriptions = (() => {
+    let modelSubscriptions = [];
+
+    const addSubscription = ({model, key, callback}) => {
+      if (!model) return false;
+      if (!callback) return false;
+
+      return modelSubscriptions.push({id: modelSubscriptions.length, model, key, callback});
+    }
+
+    const stopSusbscription = id => {
+      const previousLength = modelSubscriptions.length;
+      modelSubscriptions = modelSubscriptions.filter(v => v.id !== id);
+      return previousLength !== modelSubscriptions.length;
+    }
+
+    const searchSubscription = (model, key) => {
+      if (key) {
+        return modelSubscriptions.filter(v => v.model === model && v.key === key);
+      }
+      return modelSubscriptions.filter(v => v.model === model && !v.key);
+      
+    }
+    return {
+      add: addSubscription,
+      stop: stopSusbscription,
+      search: searchSubscription,
+      subs: modelSubscriptions,
+    }
+  })();
+  
 
   const history = (() => {
     let anteriorData = [];
@@ -172,6 +225,8 @@ const Rustic = (() => {
     history,
     mutate,
     setMutationCallback,
+    s: subscriptions,
+    subscriptions
   }
 })();
 

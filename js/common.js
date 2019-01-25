@@ -18,15 +18,17 @@ const validarToken = (token) => {
   })
   .then(response => response.json())
   .then(data => {
-      if(!data.error){
-          if(URL_BASE.indexOf(location.href) < 0)
-            location.href = "/";
-      } else {
         if(location.href.indexOf('login') < 0) {
-            location.href = '/login/';
+            if(data.error){
+                location.href = `/login/?redirectTo=${encodeURIComponent(location.href)}`;
+            }
+        } else {
+            if (!data.error) {
+                const url = new URL(location.href);
+                const redirectTo = url.searchParams.get('redirectTo');
+                location.href = redirectTo ? decodeURIComponent(redirectTo) : '/';
+            }
         }
-        
-      }
       
   })
   .catch(error => console.log('error', error))
