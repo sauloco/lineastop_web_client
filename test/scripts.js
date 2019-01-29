@@ -15,6 +15,7 @@ $(document).ready(() =>{
   R.s.add({model: 'Persona', callback: ({previousModel, currentModel}) => {
     M.updateTextFields();
     $('select').formSelect();
+    savePersona();
   }});
 
   R.s.add({model: 'Persona', key: 'vivo', callback: ({prevModel, model}) => {
@@ -37,4 +38,5 @@ const testMutation = () => {
 
 const savePersona = () => {
   // TODO: send data to backend
+  M.toast({html: 'Supongamos que acá se mandó a guardar la data.'});
 }
