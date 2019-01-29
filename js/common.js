@@ -9,7 +9,7 @@ const validarToken = (token) => {
   token = token || getCookie('jwt') || '';
   if (!token) {
     if(location.href.indexOf('login') < 0) {
-        location.href = '/login/';
+        location.href = `/login/?redirectTo=${encodeURIComponent(location.href)}`;
     }
   };
   getPromise({
@@ -31,5 +31,7 @@ const validarToken = (token) => {
         }
       
   })
-  .catch(error => console.log('error', error))
+  .catch(error => {
+    location.href = `/login/?redirectTo=${encodeURIComponent(location.href)}`;
+    })
 }
