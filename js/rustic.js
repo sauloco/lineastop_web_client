@@ -10,6 +10,10 @@ const Rustic = (() => {
     
     if (!model) return;
   
+    R.s.add({model: modelName, callback: ({prevModel, model}) => {
+      $(`#${modelName}_inspector`).html(`${modelName} = ${JSON.stringify(model, null, 2)}`);
+    }});
+
     const keys = Object.keys(model);
   
     for (const key of keys) {
@@ -30,14 +34,7 @@ const Rustic = (() => {
       mutateData[key] = model[key];
       mutate(modelName, mutateData, true);
     }
-
-    if ($(`#${modelName}`)) {
-      modelInspectors.push(modelName);
-      inspectModel(modelName);
-    }
   };
-
-  let mutationCallback = () => {};
 
   let mutating = false;
 
@@ -75,8 +72,6 @@ const Rustic = (() => {
         changes++;
       }
     };
-    
-    inspectModel(name);
 
     for (const keySubscription of keySubscriptions) {
       keySubscription.callback({prevModel, model});
@@ -107,17 +102,6 @@ const Rustic = (() => {
 
     return true;
   };
-
-  
-
-  const inspectModel = (name, model) => {
-    model = model || eval(name);
-    if (modelInspectors.indexOf(name) >= 0) {
-      $(`#${name}`).html(`${name} = ${JSON.stringify(model, null, 2)}`);
-    }
-  };
-  
-  const modelInspectors = [];
   subscriptions = (() => {
     let modelSubscriptions = [];
 
