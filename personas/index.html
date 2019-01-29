@@ -14,11 +14,11 @@
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
             crossorigin="anonymous"></script>
         
-        <script src="/js/lodash.js"></script>
+        <!-- <script src="/js/lodash.js"></script>
 
         <script src="/js/api.js"></script>
         <script src="/js/cookies.js"></script>
-        <script src="/js/common.js"></script>
+        <script src="/js/common.js"></script> -->
         <script src="/js/rustic.js"></script>
         <script src="scripts.js"></script>
         <link
@@ -177,7 +177,7 @@
                     </div>
                     <div class = "col s3">
                         <label>
-                            <input name="cigarrillosDiarios" id="cigarrillosDiarios" type="radio" val = "más de 20"/>
+                            <input name="cigarrillosDiarios" id="cigarrillosDiarios" type="radio" val = "mas de 20"/>
                             <span>más de 20</span>
                         </label>
                     </div>
@@ -188,20 +188,20 @@
                     </div>
                     <div class = "col s3">
                         <label>
-                            <input name="edadini" id="hastaquince" type="radio"/>
+                            <input name="edadInicio" id="edadInicio" type="radio" val = "15 o menos"/>
                             <span>15 o menos</span>
                         </label>
                     </div>
                     <div class = "col s3">
                         <label>
-                            <input name="edadini" id="hastaveintiuno" type="radio"/>
+                            <input name="edadInicio" id="edadInicio" type="radio" val = "16 a 20"/>
                             <span>16 a 20</span>
                         </label>
                     </div>
                     <div class = "col s3">
                         <label>
-                            <input name="edadini" id="masdeveintiuno" type="radio"/>
-                            <span>mas de 21</span>
+                            <input name="edadInicio" id="edadInicio" type="radio" val= "mas de 21"/>
+                            <span>más de 21</span>
                         </label>
                     </div>
                 </div>
@@ -216,7 +216,7 @@
                         <div class="switch">
                             <label>
                                 No
-                                <input type="checkbox">
+                                <input type="checkbox" id="finDeSemana">
                                 <span class="lever"></span>
                                 Fin de semana
                             </label>
@@ -228,7 +228,7 @@
                         <div class="switch">
                             <label>
                                 No
-                                <input type="checkbox">
+                                <input type="checkbox" ID="alimentacionSaludable">
                                 <span class="lever"></span>
                                 Alimentación saludable
                             </label>
@@ -240,7 +240,7 @@
                         <div class="switch">
                             <label>
                                 No
-                                <input type="checkbox">
+                                <input type="checkbox" ID="actividadFisica">
                                 <span class="lever"></span>
                                 Actividad física
                             </label>
@@ -252,7 +252,7 @@
                         <div class="switch">
                             <label>
                                 No
-                                <input type="checkbox">
+                                <input type="checkbox" id="abandonoPrevio">
                                 <span class="lever"></span>
                                 Abandono previo
                             </label>
@@ -267,19 +267,19 @@
                             </div>
                             <div class = "col s4 m3">
                                 <label>
-                                    <input name="duraband" id="menosseis" type="radio"/>
+                                    <input name="duracionDelAbandono" id="duracionDelAbandono" type="radio" val= "menos de 6"/>
                                     <span>Menos de 6 meses</span>
                                 </label>
                             </div>
                             <div class = "col s4 m3">
                                 <label>
-                                    <input name="duraband" id="sieteadoce" type="radio"/>
+                                    <input name="duracionDelAbandono" id="duracionDelAbandono" type="radio" val= "7 a 12"/>
                                     <span>7 a 12 meses</span>
                                 </label>
                             </div>
                             <div class = "col s4 m3">
                                 <label>
-                                    <input name="duraband" id="masdeaño" type="radio"/>
+                                    <input name="duracionDelAbandono" id="duracionDelAbandono" type="radio" val= "mas de un año"/>
                                     <span>mas de un año</span>
                                 </label>
                             </div>
@@ -290,13 +290,13 @@
                             </div>
                             <div class = "col s4 m3">
                                 <label>
-                                    <input name="tratrec" id="medicamento" type="radio"/>
+                                    <input name="tratamientoRecibido" id="tratamientoRecibido" type="radio" val = "Medicamento"/>
                                     <span>Medicamento</span>
                                 </label>
                             </div>
                             <div class = "col s4 m3">
                                 <label>
-                                    <input name="tratrec" id="ninguno" type="radio"/>
+                                    <input name="tratamientoRecibido" id="tratamientoRecibido" type="radio" val = "Ninguno"/>
                                     <span>Ninguno</span>
                                 </label>
                             </div>
@@ -314,51 +314,9 @@
                         <div class="switch">
                             <label>
                                 No
-                                <input type="checkbox">
+                                <input type="checkbox" id="enHogarSeFuma">
                                 <span class="lever"></span>
                                 En hogar se fuma
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class = "row hide">
-                    <div class="input-field col s11 offset-s1 m8 offset-m1">
-                        <input id="quien" type="text">
-                        <label for="quien">Quien</label>
-                    </div>
-                </div>
-                <div class = "row">
-                    <div class = "input-field col s6 m12">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox">
-                                <span class="lever"></span>
-                                En trabajo se fuma
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class = "row">
-                    <div class = "input-field col s6 m12">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox">
-                                <span class="lever"></span>
-                                Padre o madre fuman
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class = "row">
-                    <div class = "input-field col s6 m12">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox">
-                                <span class="lever"></span>
-                                Conviviente fuma
                             </label>
                         </div>
                     </div>
@@ -370,24 +328,66 @@
                     </div>
                 </div>
                 <div class = "row">
+                    <div class = "input-field col s6 m12">
+                        <div class="switch">
+                            <label>
+                                No
+                                <input type="checkbox" id="enTrabajoSeFuma">
+                                <span class="lever"></span>
+                                En trabajo se fuma
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class = "row">
+                    <div class = "input-field col s6 m12">
+                        <div class="switch">
+                            <label>
+                                No
+                                <input type="checkbox" id="padreOMadreFuman">
+                                <span class="lever"></span>
+                                Padre o madre fuman
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class = "row">
+                    <div class = "input-field col s6 m12">
+                        <div class="switch">
+                            <label>
+                                No
+                                <input type="checkbox" id="convivienteFuma">
+                                <span class="lever"></span>
+                                Conviviente fuma
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class = "row hide">
+                    <div class="input-field col s11 offset-s1 m8 offset-m1">
+                        <input id="quien" type="text">
+                        <label for="quien">quien</label>
+                    </div>
+                </div>
+                <div class = "row">
                     <div class = "col s12 m3">
                         <span>Dependencia (Fagestrom)</span>
                     </div>
                     <div class = "col s4 m3">
                         <label>
-                            <input name="dependen" id="mediano" type="radio"/>
+                            <input name="dependencia" id="dependencia" type="radio" val= "bajo"/>
                             <span>Mediano</span>
                         </label>
                     </div>
                     <div class = "col s4 m3">
                         <label>
-                            <input name="dependen" id="moderado" type="radio"/>
+                            <input name="dependencia" id="dependencia" type="radio" val= "moderado"/>
                             <span>Moderado</span>
                         </label>
                     </div>
                     <div class = "col s4 m3">
                         <label>
-                            <input name="dependen" id="alto" type="radio"/>
+                            <input name="dependencia" id="dependencia" type="radio" val= "alto"/>
                             <span>Alto</span>
                         </label>
                     </div>  
@@ -398,37 +398,37 @@
                     </div>
                     <div class = "col s4 m3">
                         <label>
-                            <input name="motiv" id="mediano" type="radio"/>
+                            <input name="motivacion" id="motivacion" type="radio" val = "bajo"/>
                             <span>Mediano</span>
                         </label>
                     </div>
                     <div class = "col s4 m3">
                         <label>
-                            <input name="motiv" id="moderado" type="radio"/>
+                            <input name="motivacion" id="motivacion" type="radio" val = "moderado"/>
                             <span>Moderado</span>
                         </label>
                     </div>
                     <div class = "col s4 m3">
                         <label>
-                            <input name="motiv" id="alto" type="radio"/>
+                            <input name="motivacion" id="motivacion" type="radio" val = "alto"/>
                             <span>Alto</span>
                         </label>
                     </div>        
                 </div>
                 <div class = "row">
                     <div class = "input-field col s12 m6">
-                        <textarea id="obantpat" class="materialize-textarea"></textarea>
-                        <label for="obanpat">Cuando fumas mas</label>
+                        <textarea id="cuandoFumaMas" class="materialize-textarea"></textarea>
+                        <label for="cuandoFumaMas">Cuando fumas mas</label>
                     </div>
                     <div class = "input-field col s12 m6">
-                        <textarea id="obantpat" class="materialize-textarea"></textarea>
-                        <label for="obanpat">Lo asocia con</label>
+                        <textarea id="loAsociaCon" class="materialize-textarea"></textarea>
+                        <label for="loAsociaCon">Lo asocia con</label>
                     </div>
                 </div>
                 <div class = "row">
                     <div class = "input-field col s12 m6">
-                        <textarea id="obantpat" class="materialize-textarea"></textarea>
-                        <label for="obanpat">Observaciones</label>
+                        <textarea id="observacionesHistoriaTabaquismo" class="materialize-textarea"></textarea>
+                        <label for="observacionesHistoriaTabaquismo">Observaciones</label>
                     </div>
                 </div>
             </div>
