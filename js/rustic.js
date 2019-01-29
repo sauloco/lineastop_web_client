@@ -17,22 +17,18 @@ const Rustic = (() => {
     const keys = Object.keys(model);
   
     for (const key of keys) {
-      const interactDomObject = $(`#${key}`);
-      
-      $(interactDomObject).data('model', modelName);
-      $(interactDomObject).change(function () {
-        if (mutating) return false;  
-        let data = {};
-        if ($(this).attr('type') === 'checkbox') {
-          data[$(this).attr('id')] = $(this).prop('checked');  
-        } else {
-          data[$(this).attr('id')] = $(this).val();
+      let interactDomObject = $(`[name=${key}]`);
+      if (!interactDomObject.length) {
+        interactDomObject = $(`#${key}`);
+      }
+      if (interactDomObject.length === 1) {
+        initDomObject(interactDomObject, modelName, key);
+      } else {
+        for (const child of interactDomObject) {
+          initDomObject(child, modelName, key);
         }
-        mutate($(this).data('model'), data);
-      });
-      let mutateData = {};
-      mutateData[key] = model[key];
-      mutate(modelName, mutateData, true);
+      }
+      
     }
   };
 
@@ -86,19 +82,52 @@ const Rustic = (() => {
     return changes !== 0;
   };
 
+  const initDomObject = (domObject, modelName, key) => {
+    const model = eval(modelName);
+    $(domObject).data('model', modelName);
+    $(domObject).change(function () {
+      if (mutating) return false;  
+      let data = {};
+      let domId = $(this).attr('id');
+      if (Object.keys(model).indexOf(domId) < 0) {
+        domId = $(this).attr('name');
+      }
+      if ($(this).attr('type') === 'checkbox') {
+        data[domId] = $(this).prop('checked');  
+      } else {
+        data[domId] = $(this).val();
+      }
+      mutate($(this).data('model'), data);
+    });
+    let mutateData = {};
+    mutateData[key] = model[key];
+    mutate(modelName, mutateData, true);  
+  };
+
   const setDomValue = (domObject, model, key) => {
     
-    $(domObject).val(model[key]);
+    if (domObject) {
 
-    if ($(domObject).attr('type') === 'checkbox') {
-      $(domObject).prop('checked', model[key]);
-      return true;
-    }
+      $(domObject).val(model[key]);
+      if ($(domObject).attr('type') === 'checkbox') {
+        $(domObject).prop('checked', model[key]);
+        return true;
+      }
 
-    if ($(domObject).attr('type') === 'radio') {
-      $(`input:radio[name=${key}]`).filter(`[value="${model[key]}"]`).prop('checked', true);
-      return true;
+    } else {
+      
+      const domObjects = $(`[name=${key}]`);
+      if (domObjects.length) {
+        for (domObject of domObjects) {
+          if ($(domObject).attr('type') === 'radio') {
+            $(`input:radio[name=${key}]`).filter(`[value="${model[key]}"]`).prop('checked', true);
+            return true;
+          }
+        }
+      }
+      
     }
+    
 
     return true;
   };
