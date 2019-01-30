@@ -20,7 +20,7 @@ $(document).ready(() =>{
 
   R.s.add({model: 'Persona', key: 'vivo', callback: ({prevModel, model}) => {
     if (model.vivo) {
-      $("#isAlive").html(`${model.name} is alive!!`);
+      $("#isAlive").html(`${model.name} is alive???!!`);
     } else {
       $("#isAlive").html(`${model.name} is dead :(`)
     }
