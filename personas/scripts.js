@@ -19,7 +19,7 @@ let Persona = {
 };
 
 let HistoriaTabaquismo = {
-  cigarrillosDiarios: '10 a 20',
+  cigarrillosDiarios: '0 a 10',
   edadInicio: '16 a 20',
   marca: '',
   finDeSemana: false,
@@ -53,8 +53,16 @@ $(document).ready(() =>{
       M.textareaAutoResize($('textarea'));
   };
   
-  R.s.add({model: 'Persona', callback: modelCallback})
-  R.s.add({model: 'HistoriaTabaquismo', callback: modelCallback})
+  R.s.add({model: 'Persona', callback: modelCallback});
+  R.s.add({model: 'HistoriaTabaquismo', callback: modelCallback});
+
+  R.s.add({model: 'HistoriaTabaquismo', key: 'abandonoPrevio', callback: ({prevModel, model}) => {
+    if (model.abandonoPrevio) {
+      $('#abandonoPrevioDetails').removeClass('hide');
+    } else {
+      $('#abandonoPrevioDetails').addClass('hide');
+    }
+  }});
 
   // Inicialización
   R.init('Persona');

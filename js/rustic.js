@@ -34,9 +34,9 @@ const Rustic = (() => {
 
   let mutating = false;
 
-  const mutate = (name, data, force) => {
+  const mutate = (modelName, data, force) => {
     mutating = true;
-    const model = eval(name);
+    const model = eval(modelName);
     const prevModel = clone(model);
     if (!model || !data || JSON.stringify(model) === JSON.stringify(data)) {
       mutating = false;
@@ -44,7 +44,7 @@ const Rustic = (() => {
     } 
     if (!force) {
       if (!history.isPerforming()) {
-        history.add({name, data: clone(model)});
+        history.add({name: modelName, data: clone(model)});
       }
     }
     const keys = Object.keys(data);
@@ -58,9 +58,9 @@ const Rustic = (() => {
         
         setDomValue(interactDomObject, model, key);
         
-        eval(`${name} = model`);
+        eval(`${modelName} = model`);
 
-        const tempSubscriptions = subscriptions.search(name, key);
+        const tempSubscriptions = subscriptions.search(modelName, key);
         for (const tempSubscription of tempSubscriptions) {
           keySubscriptions.push(tempSubscription);
         };
@@ -73,7 +73,7 @@ const Rustic = (() => {
       keySubscription.callback({prevModel, model});
     }
 
-    const modelSubscriptions = subscriptions.search(name);
+    const modelSubscriptions = subscriptions.search(modelName);
     for (const modelSubscription of modelSubscriptions) {
       modelSubscription.callback({prevModel, model});
     }
@@ -106,7 +106,7 @@ const Rustic = (() => {
 
   const setDomValue = (domObject, model, key) => {
     
-    if (domObject) {
+    if (domObject.length) {
 
       $(domObject).val(model[key]);
       if ($(domObject).attr('type') === 'checkbox') {
@@ -120,10 +120,13 @@ const Rustic = (() => {
       if (domObjects.length) {
         for (domObject of domObjects) {
           if ($(domObject).attr('type') === 'radio') {
-            $(`input:radio[name=${key}]`).filter(`[value="${model[key]}"]`).prop('checked', true);
-            return true;
+            $(domObject).attr('checked', false);
           }
         }
+        if (model[key]) {
+          $(`input:radio[name=${key}]`).filter(`[value="${model[key]}"]`).prop('checked', true);
+        }
+        return true;
       }
       
     }
