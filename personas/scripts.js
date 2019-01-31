@@ -64,9 +64,10 @@ $(document).ready(() =>{
     const hoy = moment();
     let unit = 'years';
     let difference = moment(model.nacimiento).isValid() && moment(hoy).isValid() ?
-      moment(model.nacimiento).diff(hoy, unit) : '';
-      model.edad = difference;
+      moment(hoy).diff(model.nacimiento, unit) : '';
+      R.mutate('Persona', {edad: `${difference} año${difference === 1 ? '' : 's'}`});
   }});
+
   R.s.add({model: 'Persona', key: 'primeraConsulta', callback: ({prevModel, model}) => {
     const hoy = new date();
     let unit = 'years';
@@ -82,6 +83,7 @@ $(document).ready(() =>{
       $('#antecedentesPatologicosDetails').addClass('hide');
     }
   }});
+
   R.s.add({model: 'Persona', key: 'recibeMedicamentos', callback: ({prevModel, model}) => {
     if (model.recibeMedicamentos) {
       $('#recibeMedicamentosDetails').removeClass('hide');
@@ -89,6 +91,7 @@ $(document).ready(() =>{
       $('#recibeMedicamentosDetails').addClass('hide');
     }
   }});
+
   R.s.add({model: 'HistoriaTabaquismo', key: 'abandonoPrevio', callback: ({prevModel, model}) => {
     if (model.abandonoPrevio) {
       $('#abandonoPrevioDetails').removeClass('hide');
