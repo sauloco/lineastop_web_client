@@ -5,6 +5,7 @@ let Persona = {
   email: '',
   primerConsulta: '',
   nacimiento: '',
+  edad:'',
   nombreCalleBarrio: '',
   numeroCalleBarrio: '',
   numeroPisoDepto: '',
@@ -51,11 +52,43 @@ $(document).ready(() =>{
       M.updateTextFields();
       $('select').formSelect();
       M.textareaAutoResize($('textarea'));
+      
+      
   };
+
   
   R.s.add({model: 'Persona', callback: modelCallback});
   R.s.add({model: 'HistoriaTabaquismo', callback: modelCallback});
 
+  R.s.add({model: 'Persona', key: 'nacimiento', callback: ({prevModel, model}) => {
+    const hoy = moment();
+    let unit = 'years';
+    let difference = moment(model.nacimiento).isValid() && moment(hoy).isValid() ?
+      moment(model.nacimiento).diff(hoy, unit) : '';
+      model.edad = difference;
+  }});
+  R.s.add({model: 'Persona', key: 'primeraConsulta', callback: ({prevModel, model}) => {
+    const hoy = new date();
+    let unit = 'years';
+    let difference = moment(model.primerConsulta).isValid() && moment(hoy).isValid() ?
+      moment(model.primerConsulta).diff(hoy, unit) : '';
+      model.hace = difference;
+  }});
+
+  R.s.add({model: 'Persona', key: 'antecedentesPatologicos', callback: ({prevModel, model}) => {
+    if (model.antecedentesPatologicos) {
+      $('#antecedentesPatologicosDetails').removeClass('hide');
+    } else {
+      $('#antecedentesPatologicosDetails').addClass('hide');
+    }
+  }});
+  R.s.add({model: 'Persona', key: 'recibeMedicamentos', callback: ({prevModel, model}) => {
+    if (model.recibeMedicamentos) {
+      $('#recibeMedicamentosDetails').removeClass('hide');
+    } else {
+      $('#recibeMedicamentosDetails').addClass('hide');
+    }
+  }});
   R.s.add({model: 'HistoriaTabaquismo', key: 'abandonoPrevio', callback: ({prevModel, model}) => {
     if (model.abandonoPrevio) {
       $('#abandonoPrevioDetails').removeClass('hide');

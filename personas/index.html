@@ -14,13 +14,13 @@
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
             crossorigin="anonymous"></script>
         
-        <!-- <script src="/js/lodash.js"></script> -->
-
+        <script src="/js/lodash.js"></script> 
         <script src="/js/api.js"></script>
         <script src="/js/cookies.js"></script>
         <script src="/js/common.js"></script>
         <script src="/js/rustic.js"></script>
         <script src="scripts.js"></script>
+        <script src="/js/moment-with-locales.js"></script>
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -145,13 +145,21 @@
                     </div>
                 </div>            
                 <div class = "row">
-                    <div class="input-field col s6">
-                        <textarea id="descripcionAntecedentesPatologicos" class="materialize-textarea hide"></textarea>
-                        <label for="descripcionAntecedentesPatologicos" class = "hide">Observaciones de antecedentes patológicos</label>
+                    <div class = "col s6">
+                        <div id ="antecedentesPatologicosDetails" class = "row hide">
+                            <div class="input-field col s6 m10">
+                                <textarea id="descripcionAntecedentesPatologicos" class="materialize-textarea"></textarea>
+                                <label for="descripcionAntecedentesPatologicos" >Observaciones de antecedentes patológicos</label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="input-field col s6">
-                        <textarea id="descripcionRecibeMedicamentos" class="materialize-textarea hide"></textarea>
-                        <label for="descripcionRecibeMedicamentos" class = "hide">Observaciones de medicamentos que recibe</label>
+                    <div class = "col s6">
+                        <div id="recibeMedicamentosDetails" class = "row hide">
+                            <div class="input-field col s6 m10">
+                                <textarea id="descripcionRecibeMedicamentos" class="materialize-textarea"></textarea>
+                                <label for="descripcionRecibeMedicamentos" >Observaciones de medicamentos que recibe</label>
+                            </div>
+                        </div>
                     </div>
                 </div>    
             </div> 
