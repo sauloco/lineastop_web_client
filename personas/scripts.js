@@ -30,7 +30,7 @@ let HistoriaTabaquismo = {
   duracionDelAbandono: '7 a 12',
   tratamientoRecibido: 'ninguno',
   recaida:'',
-  enhogarsefuma: false,
+  enHogarSeFuma: false,
   quien:'',
   enTrabajoSeFuma: false,
   padreOMadreFuman: false,
@@ -97,6 +97,22 @@ $(document).ready(() =>{
       $('#abandonoPrevioDetails').removeClass('hide');
     } else {
       $('#abandonoPrevioDetails').addClass('hide');
+    }
+  }});
+
+  R.s.add({model: 'HistoriaTabaquismo', key: 'enHogarSeFuma', callback: ({prevModel, model}) => {
+    if (model.enHogarSeFuma) {
+      $('#enHogarSeFumaDonde').removeClass('hide');
+    } else {
+      $('#enHogarSeFumaDonde').addClass('hide');
+    }
+  }});
+  
+  R.s.add({model: 'HistoriaTabaquismo', key: 'convivienteFuma', callback: ({prevModel, model}) => {
+    if (model.convivienteFuma) {
+      $('#convivienteFumaQuien').removeClass('hide');
+    } else {
+      $('#convivienteFumaQuien').addClass('hide');
     }
   }});
 
