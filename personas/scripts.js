@@ -4,6 +4,7 @@ let Persona = {
   telefono: '',
   email: '',
   primerConsulta: '',
+  hace:'',
   nacimiento: '',
   edad:'',
   nombreCalleBarrio: '',
@@ -68,14 +69,14 @@ $(document).ready(() =>{
       R.mutate('Persona', {edad: `${difference} año${difference === 1 ? '' : 's'}`});
   }});
 
-  R.s.add({model: 'Persona', key: 'primeraConsulta', callback: ({prevModel, model}) => {
-    const hoy = new date();
+  R.s.add({model: 'Persona', key: 'primerConsulta', callback: ({prevModel, model}) => {
+    const hoy = moment();
     let unit = 'years';
     let difference = moment(model.primerConsulta).isValid() && moment(hoy).isValid() ?
-      moment(model.primerConsulta).diff(hoy, unit) : '';
-      model.hace = difference;
+      moment(hoy).diff(model.primerConsulta, unit) : '';
+      R.mutate('Persona', {hace: `${difference} año${difference === 1 ? '' : 's'}`});
   }});
-
+  
   R.s.add({model: 'Persona', key: 'antecedentesPatologicos', callback: ({prevModel, model}) => {
     if (model.antecedentesPatologicos) {
       $('#antecedentesPatologicosDetails').removeClass('hide');
