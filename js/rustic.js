@@ -59,11 +59,11 @@ const Rustic = (() => {
         setDomValue(interactDomObject, model, key);
         
         eval(`${modelName} = model`);
-
+        
         const tempSubscriptions = subscriptions.search(modelName, key);
         for (const tempSubscription of tempSubscriptions) {
           keySubscriptions.push(tempSubscription);
-        };
+        }
 
         changes++;
       }
