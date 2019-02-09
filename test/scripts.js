@@ -33,7 +33,8 @@ $(document).ready(() =>{
 })
 
 const testMutation = () => {
-  R.mutate('Persona', {name: 'Nicolás', last: 'Verón', tipoDoc: 2, vivo: false, cigarrillos: "0 a 3"});
+  M.toast({html: 'Supongamos que acá se mandó a guardar la data.'});
+  
 }
 
 const savePersona = () => {

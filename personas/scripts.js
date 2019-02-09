@@ -58,22 +58,39 @@ $(document).ready(() =>{
   };
 
   
+
+
   R.s.add({model: 'Persona', callback: modelCallback});
   R.s.add({model: 'HistoriaTabaquismo', callback: modelCallback});
 
   R.s.add({model: 'Persona', key: 'nacimiento', callback: ({prevModel, model}) => {
-    const hoy = moment();
+    let hoy = moment();
     let unit = 'years';
-    let difference = moment(model.nacimiento).isValid() && moment(hoy).isValid() ?
+    
+    let difference = moment(model.nacimiento).isValid() && moment(hoy).isValid()?
       moment(hoy).diff(model.nacimiento, unit) : '';
-      R.mutate('Persona', {edad: `${difference} año${difference === 1 ? '' : 's'}`});
+      if (moment(model.nacimiento) .isAfter (moment(hoy))) {
+        M.toast({html: 'La fecha de nacimiento deber ser anterior a la fecha actual.'})
+        return;
+      }
+      if (moment(model.nacimiento) .isBefore (moment(hoy))&& difference<=18){
+        M.toast({html: 'El paciente debe ser mayor de edad, verifique la fecha de nacimiento.'})
+        return;
+      
+      };
+      R.mutate('Persona', {edad: `${difference} año${difference === 1 ? '' : 's'}`})
+    
   }});
-
+  
   R.s.add({model: 'Persona', key: 'primerConsulta', callback: ({prevModel, model}) => {
     const hoy = moment();
     let unit = 'years';
     let difference = moment(model.primerConsulta).isValid() && moment(hoy).isValid() ?
       moment(hoy).diff(model.primerConsulta, unit) : '';
+      if (moment(model.primerConsulta) .isAfter (moment(hoy)) || difference<0){
+        M.toast({html: 'La fecha de Primera consulta no puede ser posterior a la fecha actual.'})
+        return;
+      }
       R.mutate('Persona', {hace: `${difference} año${difference === 1 ? '' : 's'}`});
   }});
   
