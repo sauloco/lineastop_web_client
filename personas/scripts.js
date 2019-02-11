@@ -4,6 +4,7 @@ let Persona = {
   telefono: '',
   email: '',
   primerConsulta: '',
+  hace:'',
   nacimiento: '',
   edad:'',
   nombreCalleBarrio: '',
@@ -30,7 +31,7 @@ let HistoriaTabaquismo = {
   duracionDelAbandono: '7 a 12',
   tratamientoRecibido: 'ninguno',
   recaida:'',
-  enhogarsefuma: false,
+  enHogarSeFuma: false,
   quien:'',
   enTrabajoSeFuma: false,
   padreOMadreFuman: false,
@@ -57,25 +58,42 @@ $(document).ready(() =>{
   };
 
   
+
+
   R.s.add({model: 'Persona', callback: modelCallback});
   R.s.add({model: 'HistoriaTabaquismo', callback: modelCallback});
 
   R.s.add({model: 'Persona', key: 'nacimiento', callback: ({prevModel, model}) => {
+    let hoy = moment();
+    let unit = 'years';
+    
+    let difference = moment(model.nacimiento).isValid() && moment(hoy).isValid()?
+      moment(hoy).diff(model.nacimiento, unit) : '';
+      if (moment(model.nacimiento) .isAfter (moment(hoy))) {
+        M.toast({html: 'La fecha de nacimiento deber ser anterior a la fecha actual.'})
+        return;
+      }
+      if (moment(model.nacimiento) .isBefore (moment(hoy))&& difference<=18){
+        M.toast({html: 'El paciente debe ser mayor de edad, verifique la fecha de nacimiento.'})
+        return;
+      
+      };
+      R.mutate('Persona', {edad: `${difference} año${difference === 1 ? '' : 's'}`})
+    
+  }});
+  
+  R.s.add({model: 'Persona', key: 'primerConsulta', callback: ({prevModel, model}) => {
     const hoy = moment();
     let unit = 'years';
-    let difference = moment(model.nacimiento).isValid() && moment(hoy).isValid() ?
-      moment(hoy).diff(model.nacimiento, unit) : '';
-      R.mutate('Persona', {edad: `${difference} año${difference === 1 ? '' : 's'}`});
-  }});
-
-  R.s.add({model: 'Persona', key: 'primeraConsulta', callback: ({prevModel, model}) => {
-    const hoy = new date();
-    let unit = 'years';
     let difference = moment(model.primerConsulta).isValid() && moment(hoy).isValid() ?
-      moment(model.primerConsulta).diff(hoy, unit) : '';
-      model.hace = difference;
+      moment(hoy).diff(model.primerConsulta, unit) : '';
+      if (moment(model.primerConsulta) .isAfter (moment(hoy)) || difference<0){
+        M.toast({html: 'La fecha de Primera consulta no puede ser posterior a la fecha actual.'})
+        return;
+      }
+      R.mutate('Persona', {hace: `${difference} año${difference === 1 ? '' : 's'}`});
   }});
-
+  
   R.s.add({model: 'Persona', key: 'antecedentesPatologicos', callback: ({prevModel, model}) => {
     if (model.antecedentesPatologicos) {
       $('#antecedentesPatologicosDetails').removeClass('hide');
@@ -97,6 +115,22 @@ $(document).ready(() =>{
       $('#abandonoPrevioDetails').removeClass('hide');
     } else {
       $('#abandonoPrevioDetails').addClass('hide');
+    }
+  }});
+
+  R.s.add({model: 'HistoriaTabaquismo', key: 'enHogarSeFuma', callback: ({prevModel, model}) => {
+    if (model.enHogarSeFuma) {
+      $('#enHogarSeFumaDonde').removeClass('hide');
+    } else {
+      $('#enHogarSeFumaDonde').addClass('hide');
+    }
+  }});
+  
+  R.s.add({model: 'HistoriaTabaquismo', key: 'convivienteFuma', callback: ({prevModel, model}) => {
+    if (model.convivienteFuma) {
+      $('#convivienteFumaQuien').removeClass('hide');
+    } else {
+      $('#convivienteFumaQuien').addClass('hide');
     }
   }});
 
