@@ -16,11 +16,16 @@
     <script src="/js/cookies.js"></script>
     <script src="/js/common.js"></script>
     <script src="/js/rustic.js"></script>
+    <script src="/js/date_helpers/date_utils.js"></script>
     <script src="scripts.js"></script>
     <script src="/js/moment-with-locales.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/global.css">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
@@ -48,26 +53,24 @@
     <div class="container">
         <label>Datos principales de consulta</label>
         <div class="card">
-            <div class="row">
-                <div class="row">
-                    <div class="input-field col s12 m8">
-                        <i class="material-icons prefix">search</i>
-                        <input type="text" id="ingreseParaBuscar" class="autocomplete">
-                        <label for="ingreseParaBuscar">Ingrese apellido, nombre, teléfono o correo eléctronico para
-                            buscar a la persona</label>
-                    </div>
-                    <div class="col s12 m1">
-                        <a class="btn tooltipped btn-floating btn-large waves-effect waves-light grey lighten-2"
-                            data-position="top" data-tooltip="Abrir el buscador avanzado">
-                            <i class="material-icons">zoom_in</i>
-                        </a>
-                    </div>
-                    <div class="input-field col s12 m3">
-                        <input id="fechaConsulta" class="datepicker" type="text">
-                        <label for="fechaConsulta" class="active">Fecha de consulta</label>
-                    </div>
+            <div class="row valign-wrapper">
+                <div class="col s2 m1">
+                    <a class="btn-small waves-effect waves-light blue darken-1 tooltipped" data-position="top"
+                        data-tooltip="Abrir el buscador avanzado">
+                        <i class="material-icons left">search</i>
+                    </a>
+                </div>
+                <div class="input-field col s7 m8">
+                    <input type="text" id="ingreseParaBuscar" class="autocomplete">
+                    <label for="ingreseParaBuscar">Comienze a escribir apellido, nombre, teléfono o correo eléctronico
+                        para búsqueda rápida</label>
+                </div>
+                <div class="input-field col s3 m3">
+                    <input id="fechaConsulta" class="datepicker" type="text">
+                    <label for="fechaConsulta" class="active">Fecha de consulta</label>
                 </div>
             </div>
+
         </div>
         <label>Síntomas clínicos</label>
         <div class="card">
@@ -76,7 +79,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='tos'>
+                            <input type="checkbox" id="tos">
                             <span class="lever"></span>
                             Tos
                         </label>
@@ -105,7 +108,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='dolorPrecordial'>
+                            <input type="checkbox" id="dolorPrecordial">
                             <span class="lever"></span>
                             Dolor precordial
                         </label>
@@ -134,7 +137,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='piel'>
+                            <input type="checkbox" id="piel">
                             <span class="lever"></span>
                             Piel
                         </label>
@@ -163,7 +166,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='gusto'>
+                            <input type="checkbox" id="gusto">
                             <span class="lever"></span>
                             Gusto
                         </label>
@@ -197,7 +200,7 @@
                 <div class="col s12 m6">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='tabaquismoEsEnfermedad'>
+                            <input type="checkbox" id="tabaquismoEsEnfermedad">
                             <span class="lever"></span>
                             Tabaquismo es una enfermedad
                         </label>
@@ -217,7 +220,7 @@
                 <div class="col s12 m6">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='cadaAbandonoEsExperiencia'>
+                            <input type="checkbox" id="cadaAbandonoEsExperiencia">
                             <span class="lever"></span>
                             Cada abandono es una experiencia
                         </label>
@@ -237,7 +240,7 @@
                 <div class="col s12 m6">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='dejarDeFumarCambiarVida'>
+                            <input type="checkbox" id="dejarDeFumarCambiarVida">
                             <span class="lever"></span>
                             Dejar de fumar es cambiar de vida
                         </label>
@@ -263,7 +266,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='actividaManual'>
+                            <input type="checkbox" id="actividaManual">
                             <span class="lever"></span>
                             Actividad manual
                         </label>
@@ -292,7 +295,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='comprometerse'>
+                            <input type="checkbox" id="comprometerse">
                             <span class="lever"></span>
                             Comprometerse
                         </label>
@@ -321,7 +324,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='actividadFisica'>
+                            <input type="checkbox" id="actividadFisica">
                             <span class="lever"></span>
                             Actividad física
                         </label>
@@ -350,7 +353,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='zanahoriaManzana'>
+                            <input type="checkbox" id="zanahoriaManzana">
                             <span class="lever"></span>
                             Zanahoria/Manzana
                         </label>
@@ -379,7 +382,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='alimentacion'>
+                            <input type="checkbox" id="alimentacion">
                             <span class="lever"></span>
                             Alimentación
                         </label>
@@ -408,7 +411,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='reunionesFumadores'>
+                            <input type="checkbox" id="reunionesFumadores">
                             <span class="lever"></span>
                             Reuniones con fumadores
                         </label>
@@ -433,26 +436,27 @@
         <div class="card">
             <div class="row"></div>
             <div class="row">
-                <div class="col s12 m4">
+                <div class="col s12 m2">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='derivado'>
+                            <input type="checkbox" id="derivado">
                             <span class="lever"></span>
                             Derivado
                         </label>
                     </div>
                 </div>
-                <div id="medicoDerivadoDetails" class="input-field col s12 m5 offset-s12 m5 offset-m6 row hide">
+                <div id="medicoDerivadoDetails" class="input-field col s12 m10 hide">
                     <input id="medicoDerivado" type="text">
                     <label for="medicoDerivado">Nombre del médico derivado</label>
                 </div>
-                <div class="row">
-                    <div id="notificacionAlMedicoDetails" class="input-field col s12 m5 offset-s12 m5 offset-m6 row hide">
-                        <textarea id="notificacionAlMedico" class="materialize-textarea"></textarea>
-                        <label for="notificacionAlMedico">Notificación al médico</label>
-                    </div>
+            </div>
+            <div class="row hide" id="notificacionAlMedicoDetails">
+                <div class="input-field col s12 m10 offset-m2">
+                    <textarea id="notificacionAlMedico" class="materialize-textarea"></textarea>
+                    <label for="notificacionAlMedico">Notificación al médico</label>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col s12 m4">
                     <div class="input-field">
@@ -480,25 +484,24 @@
                 </div>
             </div>
         </div>
-        <div class=row>
-            <div class='col s2 m2'>
-                <a id="primeraPagina" class="waves-effect waves-light btn grey lighten-2"><i class="material-icons left">chevron_left</i>Primera</a>
+        <label>Navegador de consultas</label>
+        <div class="row">
+            <div class="col s6 m3 left-align">
+                <a id="primeraPagina" class="waves-effect waves-green btn-flat tooltipped" data-tooltip="Ir a la primera consulta"><i
+                        class="material-icons left">first_page</i></a>
+                <a id="anteriorPagina" class="waves-effect waves-green btn-flat"><i class="material-icons left">chevron_left</i>Ant</a>
             </div>
-            <div class='col s2 m2'>
-                <a id="anteriorPagina" class="waves-effect waves-light btn grey lighten-2"><i class="material-icons left">chevron_left</i>Anterior</a>
+            <div class="col s12 m3 center">
+                <a id="consultaXY" class="btn-flat">Consulta <span id="current">X</span> de <span id="total">Y</span></a>
+
             </div>
-            <div class='col s2 m2'>
-                <a id="consultaXY" class="waves-effect waves-grey btn-flat">Consulta X de Y</a>
+            <div class="col s12 m3 center">
+                <a id="vistaComparativa" class="waves-effect waves-green btn-flat"><i class="material-icons left">grid_on</i>Comparar</a>
             </div>
-            <div class='col s2 m'>
-                <a id="vistaComparativa" class="waves-effect waves-grey btn-flat"><i class="material-icons left">grid_on</i>Abrir
-                    vista comparativa</a>
-            </div>
-            <div class='col s2 m2'>
-                <a id="siguientePagina" class="waves-effect waves-light btn grey lighten-2"><i class="material-icons right">chevron_right</i>Siguiente</a>
-            </div>
-            <div class='col s2 m2'>
-                <a id="ultimaPagina" class="waves-effect waves-light btn grey lighten-2"><i class="material-icons right">chevron_right</i>Ultima</a>
+            <div class="col s6 m3 right-align">
+                <a id="siguientePagina" class="waves-effect waves-green btn-flat"><i class="material-icons right">chevron_right</i>Sig</a>
+                <a id="ultimaPagina" class="waves-effect waves-green btn-flat tooltipped" data-tooltip="Ir a última consulta"><i
+                        class="material-icons right">last_page</i></a>
             </div>
         </div>
         <label>Comunicación</label>
@@ -520,13 +523,13 @@
                     <label class="col s6 m6">Redactar mensaje para enviar por</label>
                     <div class="col s3 m3">
                         <label>
-                            <input id="whatsapp" type="radio"/>
+                            <input id="whatsapp" type="radio" name="sendBy" value="Whatsapp" />
                             <span>Whatsapp</span>
                         </label>
                     </div>
                     <div class="col s2 m2">
                         <label>
-                            <input id="email" type="radio"/>
+                            <input id="email" type="radio" name="sendBy" value="Email" />
                             <span>Email</span>
                         </label>
                     </div>
@@ -554,7 +557,7 @@
         </div>
 
         <div class="fixed-action-btn">
-            <a id="guardar" class="btn-floating btn-large waves-effect waves-light blue lighten-2">
+            <a id="guardar" class="btn-floating btn-large waves-effect waves-light blue darken-4">
                 <i class="material-icons">save</i></a>
         </div>
     </div>

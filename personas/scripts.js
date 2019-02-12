@@ -56,11 +56,7 @@ $(document).ready(() =>{
       
       
   };
-
-  arreglo.keys(persona);
-  for arreglo.key
-  $('#apellido').val(persona[key])  
-  $('#nombre').val(persona[key])  
+ 
 
 
   R.s.add({model: 'Persona', callback: modelCallback});

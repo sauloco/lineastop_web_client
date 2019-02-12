@@ -129,6 +129,18 @@ const api = {
     },
     errorHandler: apiDefaultErrorController,
   },
+  personas: {
+    all: {
+      location: 'personas/'
+    },
+    findBy: {
+      location: 'personas'
+    },
+    create: {
+      method: 'POST',
+      location: 'personas/'
+    }
+  },
   users: {
     me: {
       location: 'users/me'

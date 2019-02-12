@@ -1,12 +1,12 @@
 let DatosPrincipalesConsulta = {
-  ingreseParaBuscar: 'Gallo',
+  ingreseParaBuscar: '',
   fechaConsulta: '',
 };
 let SintomasClinicos = {
   tos: false,
   expectoracion: false,
-  doloresCalambres:false,
-  dolorPrecordial:false,
+  doloresCalambres: false,
+  dolorPrecordial: false,
   dificultadRespiratoria: false,
   sueño: false,
   piel: false,
@@ -14,7 +14,7 @@ let SintomasClinicos = {
   dientes: false,
   gusto: false,
   clausicacion: false,
-problemasPeso: false,
+  problemasPeso: false,
 };
 
 let TratamientoCognitivo = {
@@ -58,83 +58,147 @@ let ConductaTerapeutica = {
 
 }
 
-$(document).ready(() =>{
-  $('select').formSelect();  
-  $('.datepicker').datepicker();
+$(document).ready(() => {
+  $('select').formSelect();
   $('#guardar').click(savePersona);
+  initializeDatepicker();
+  getAllPersonas();
 
-  
   // por usar Materialize
   const modelCallback = () => {
-      M.updateTextFields();
-      $('select').formSelect();
-      M.textareaAutoResize($('textarea'));
-      $('.sidenav').sidenav();
-      $('.tooltipped').tooltip();
-  $('input.autocomplete').autocomplete({
-    data: {
-        "Apple": null,
-        "Microsoft": null,
-        "Google": 'https://placehold.it/250x250'
-      },
-    });
-  $('.fixed-action-btn').floatingActionButton();
-    };
-  
-
-
-
-  R.s.add({model: 'DatosPrincipalesConsulta', callback: modelCallback});
-  R.s.add({model: 'SintomasClinicos', callback: modelCallback});
-  R.s.add({model: 'TratamientoCognitivo', callback: modelCallback});
-  R.s.add({model: 'TratamientoConductual', callback: modelCallback});
-  R.s.add({model: 'ConductaTerapeutica', callback: modelCallback});
-
+    M.updateTextFields();
+    $('select').formSelect();
+    M.textareaAutoResize($('textarea'));
+    $('.sidenav').sidenav();
+    $('.tooltipped').tooltip();
     
-  R.s.add({model: 'DatosPrincipalesConsulta', key: 'fechaConsulta', callback: ({prevModel, model}) => {
-    const hoy = moment();    
-      if (moment(model.fechaConsulta) .isAfter (moment(hoy))) {
-        M.toast({html: 'Esta fecha deber ser anterior a la fecha actual.'})
-        return;
-      }
-    
-  }});
-  
-  R.s.add({model: 'ConductaTerapeutica', key: 'compromisoAbandono', callback: ({prevModel, model}) => {
-    const hoy = moment();
-      if (moment(model.compromisoAbandono) .isBefore (moment(hoy))){
-        M.toast({html: 'La fecha de compromiso no puede ser anterior a la fecha actual.'})
-        return;
-      }
-  }});
-  
-  R.s.add({model: 'ConductaTerapeutica', key: 'abandonoEfectivo', callback: ({prevModel, model}) => {
-    const hoy = moment();
-      if (moment(model.abandonoEfectivo) .isAfter (moment(hoy))){
-        M.toast({html: 'La fecha de Abandono no puede ser anterior a la fecha actual.'})
-        return;
-      }
-  }});
-  
-  R.s.add({model: 'ConductaTerapeutica', key: 'proximaConsulta', callback: ({prevModel, model}) => {
-    const hoy = moment();
-      if (moment(model.proximaConsulta) .isBefore (moment(hoy))){
-        M.toast({html: 'La fecha de Proxima Consulta no puede ser anterior a la fecha actual.'})
-        return;
-      }
-  }});
+    $('.fixed-action-btn').floatingActionButton();
+  };
 
-  R.s.add({model: 'ConductaTerapeutica', key: 'derivado', callback: ({prevModel, model}) => {
-    if (model.derivado) {
-      $('#medicoDerivadoDetails').removeClass('hide');
-      $('#notificacionAlMedicoDetails').removeClass('hide');
 
-    } else {
-      $('#medicoDerivadoDetails').addClass('hide');
-      $('#notificacionAlMedicoDetails').addClass('hide');
+
+
+  R.s.add({
+    model: 'DatosPrincipalesConsulta',
+    callback: modelCallback
+  });
+  R.s.add({
+    model: 'SintomasClinicos',
+    callback: modelCallback
+  });
+  R.s.add({
+    model: 'TratamientoCognitivo',
+    callback: modelCallback
+  });
+  R.s.add({
+    model: 'TratamientoConductual',
+    callback: modelCallback
+  });
+  R.s.add({
+    model: 'ConductaTerapeutica',
+    callback: modelCallback
+  });
+
+
+  R.s.add({
+    model: 'DatosPrincipalesConsulta',
+    key: 'fechaConsulta',
+    callback: ({
+      prevModel,
+      model
+    }) => {
+      const hoy = moment();
+      if (moment(model.fechaConsulta, DATE_FORMAT_ES).isAfter(moment(hoy))) {
+        M.toast({
+          html: 'La fecha de la consulta no puede ser futura.'
+        });
+        R.mutate('DatosPrincipalesConsulta', {
+          'fechaConsulta': prevModel.fechaConsulta
+        });
+        return;
+      }
 
     }
-  }});
+  });
+
+  R.s.add({
+    model: 'ConductaTerapeutica',
+    key: 'compromisoAbandono',
+    callback: ({
+      prevModel,
+      model
+    }) => {
+      const hoy = moment();
+      if (moment(model.compromisoAbandono, DATE_FORMAT_ES).isBefore(moment(hoy))) {
+        M.toast({
+          html: 'La fecha de compromiso no puede ser anterior a hoy.'
+        });
+        R.mutate('ConductaTerapeutica', {
+          'compromisoAbandono': prevModel.compromisoAbandono
+        });
+        return;
+      }
+    }
+  });
+
+  R.s.add({
+    model: 'ConductaTerapeutica',
+    key: 'abandonoEfectivo',
+    callback: ({
+      prevModel,
+      model
+    }) => {
+      const hoy = moment();
+      if (moment(model.abandonoEfectivo, DATE_FORMAT_ES).isAfter(moment(hoy))) {
+        M.toast({
+          html: 'La fecha de abandono efectivo no puede ser futura.'
+        });
+        R.mutate('ConductaTerapeutica', {
+          'abandonoEfectivo': prevModel.abandonoEfectivo
+        });
+        return;
+      }
+    }
+  });
+
+  R.s.add({
+    model: 'ConductaTerapeutica',
+    key: 'proximaConsulta',
+    callback: ({
+      prevModel,
+      model
+    }) => {
+      const hoy = moment();
+      if (moment(model.proximaConsulta, DATE_FORMAT_ES).isBefore(moment(hoy))) {
+        M.toast({
+          html: 'La fecha de próxima consulta no puede ser anterior a hoy.'
+        })
+        R.mutate('ConductaTerapeutica', {
+          'proximaConsulta': prevModel.proximaConsulta
+        });
+        return;
+      }
+    }
+  });
+
+  R.s.add({
+    model: 'ConductaTerapeutica',
+    key: 'derivado',
+    callback: ({
+      prevModel,
+      model
+    }) => {
+      if (model.derivado) {
+        $('#medicoDerivadoDetails').removeClass('hide');
+        $('#notificacionAlMedicoDetails').removeClass('hide');
+
+      } else {
+        $('#medicoDerivadoDetails').addClass('hide');
+        $('#notificacionAlMedicoDetails').addClass('hide');
+
+      }
+    }
+  });
 
 
   // Inicialización
@@ -148,6 +212,18 @@ $(document).ready(() =>{
 
 
 const savePersona = () => {
-    // TODO: send data to backend
-    M.toast({html: 'Supongamos que acá se mandó a guardar la data.'});
+  // TODO: send data to backend
+  M.toast({
+    html: 'Supongamos que acá se mandó a guardar la data.'
+  });
+}
+
+const getAllPersonas = async () => {
+  const personas = await fetchData({endpoint: api.personas.all});
+  data = [];
+  for (persona of personas) {
+    data[`${persona.apellido} ${persona.nombre} (${persona.telefono}. ${persona.email})`] = null;
   }
+  
+  $('input.autocomplete').autocomplete({data});
+}
