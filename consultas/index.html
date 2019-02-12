@@ -16,6 +16,7 @@
     <script src="/js/cookies.js"></script>
     <script src="/js/common.js"></script>
     <script src="/js/rustic.js"></script>
+    <script src="/js/date_helpers/date_utils.js"></script>
     <script src="scripts.js"></script>
     <script src="/js/moment-with-locales.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -76,7 +77,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='tos'>
+                            <input type="checkbox" id="tos">
                             <span class="lever"></span>
                             Tos
                         </label>
@@ -105,7 +106,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='dolorPrecordial'>
+                            <input type="checkbox" id="dolorPrecordial">
                             <span class="lever"></span>
                             Dolor precordial
                         </label>
@@ -134,7 +135,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='piel'>
+                            <input type="checkbox" id="piel">
                             <span class="lever"></span>
                             Piel
                         </label>
@@ -163,7 +164,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='gusto'>
+                            <input type="checkbox" id="gusto">
                             <span class="lever"></span>
                             Gusto
                         </label>
@@ -197,7 +198,7 @@
                 <div class="col s12 m6">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='tabaquismoEsEnfermedad'>
+                            <input type="checkbox" id="tabaquismoEsEnfermedad">
                             <span class="lever"></span>
                             Tabaquismo es una enfermedad
                         </label>
@@ -217,7 +218,7 @@
                 <div class="col s12 m6">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='cadaAbandonoEsExperiencia'>
+                            <input type="checkbox" id="cadaAbandonoEsExperiencia">
                             <span class="lever"></span>
                             Cada abandono es una experiencia
                         </label>
@@ -237,7 +238,7 @@
                 <div class="col s12 m6">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='dejarDeFumarCambiarVida'>
+                            <input type="checkbox" id="dejarDeFumarCambiarVida">
                             <span class="lever"></span>
                             Dejar de fumar es cambiar de vida
                         </label>
@@ -263,7 +264,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='actividaManual'>
+                            <input type="checkbox" id="actividaManual">
                             <span class="lever"></span>
                             Actividad manual
                         </label>
@@ -292,7 +293,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='comprometerse'>
+                            <input type="checkbox" id="comprometerse">
                             <span class="lever"></span>
                             Comprometerse
                         </label>
@@ -321,7 +322,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='actividadFisica'>
+                            <input type="checkbox" id="actividadFisica">
                             <span class="lever"></span>
                             Actividad física
                         </label>
@@ -350,7 +351,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='zanahoriaManzana'>
+                            <input type="checkbox" id="zanahoriaManzana">
                             <span class="lever"></span>
                             Zanahoria/Manzana
                         </label>
@@ -379,7 +380,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='alimentacion'>
+                            <input type="checkbox" id="alimentacion">
                             <span class="lever"></span>
                             Alimentación
                         </label>
@@ -408,7 +409,7 @@
                 <div class="col s12 m4">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='reunionesFumadores'>
+                            <input type="checkbox" id="reunionesFumadores">
                             <span class="lever"></span>
                             Reuniones con fumadores
                         </label>
@@ -433,26 +434,27 @@
         <div class="card">
             <div class="row"></div>
             <div class="row">
-                <div class="col s12 m4">
+                <div class="col s12 m2">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='derivado'>
+                            <input type="checkbox" id="derivado">
                             <span class="lever"></span>
                             Derivado
                         </label>
                     </div>
                 </div>
-                <div id="medicoDerivadoDetails" class="input-field col s12 m5 offset-s12 m5 offset-m6 row hide">
+                <div id="medicoDerivadoDetails" class="input-field col s12 m10 hide">
                     <input id="medicoDerivado" type="text">
                     <label for="medicoDerivado">Nombre del médico derivado</label>
                 </div>
-                <div class="row">
-                    <div id="notificacionAlMedicoDetails" class="input-field col s12 m5 offset-s12 m5 offset-m6 row hide">
-                        <textarea id="notificacionAlMedico" class="materialize-textarea"></textarea>
-                        <label for="notificacionAlMedico">Notificación al médico</label>
-                    </div>
+            </div>
+            <div class="row">
+                <div id="notificacionAlMedicoDetails" class="input-field col s12 m10 offset-m2 hide">
+                    <textarea id="notificacionAlMedico" class="materialize-textarea"></textarea>
+                    <label for="notificacionAlMedico">Notificación al médico</label>
                 </div>
             </div>
+            
             <div class="row">
                 <div class="col s12 m4">
                     <div class="input-field">
@@ -481,23 +483,23 @@
             </div>
         </div>
         <div class=row>
-            <div class='col s2 m'>
+            <div class="col s2 m">
                 <a id="primeraPagina" class="waves-effect waves-light btn grey lighten-2"><i class="material-icons left">chevron_left</i>Primera</a>
             </div>
-            <div class='col s2 m2'>
+            <div class="col s2 m2">
                 <a id="anteriorPagina" class="waves-effect waves-light btn grey lighten-2"><i class="material-icons">chevron_left</i>Anterior</a>
             </div>
-            <div class='col s2 m2'>
+            <div class="col s2 m2">
                 <a id="consultaXY" class="waves-effect waves-grey btn-flat">Consulta X de Y</a>
             </div>
-            <div class='col s2 m'>
+            <div class="col s2 m">
                 <a id="vistaComparativa" class="waves-effect waves-grey btn-flat"><i class="material-icons">grid_on</i>Abrir
                     vista comparativa</a>
             </div>
-            <div class='col s2 m2'>
+            <div class="col s2 m2">
                 <a id="siguientePagina" class="waves-effect waves-light btn grey lighten-2">Siguiente<i class="material-icons">chevron_right</i></a>
             </div>
-            <div class='col s2 m2'>
+            <div class="col s2 m2">
                 <a id="ultimaPagina" class="waves-effect waves-light btn grey lighten-2">Ultima<i class="material-icons">chevron_right</i></a>
             </div>
         </div>
