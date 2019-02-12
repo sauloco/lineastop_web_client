@@ -62,6 +62,7 @@ $(document).ready(() => {
   $('select').formSelect();
   $('#guardar').click(savePersona);
   initializeDatepicker();
+  getAllPersonas();
 
   // por usar Materialize
   const modelCallback = () => {
@@ -70,7 +71,7 @@ $(document).ready(() => {
     M.textareaAutoResize($('textarea'));
     $('.sidenav').sidenav();
     $('.tooltipped').tooltip();
-    $('input.autocomplete').autocomplete({});
+    
     $('.fixed-action-btn').floatingActionButton();
   };
 
@@ -215,4 +216,14 @@ const savePersona = () => {
   M.toast({
     html: 'Supongamos que acá se mandó a guardar la data.'
   });
+}
+
+const getAllPersonas = async () => {
+  const personas = await fetchData({endpoint: api.personas.all});
+  data = [];
+  for (persona of personas) {
+    data[`${persona.apellido} ${persona.nombre} (${persona.telefono}. ${persona.email})`] = null;
+  }
+  
+  $('input.autocomplete').autocomplete({data});
 }
