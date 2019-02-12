@@ -11,10 +11,10 @@ const initializeDatepicker = async (options, selector) => {
   options = options || {};
 
   if (!options.format) {
-    options.format =  DATE_FORMAT_ES.toLowerCase()
+    options.format = DATE_FORMAT_ES.toLowerCase()
   }
   const response = await fetch('/js/date_helpers/datepicker_i18n_ES.json');
   options.i18n = await response.json();
-  
+
   $(selector).datepicker(options);
 }

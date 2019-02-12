@@ -111,7 +111,9 @@ $(document).ready(() => {
         M.toast({
           html: 'La fecha de la consulta no puede ser futura.'
         });
-        R.mutate('DatosPrincipalesConsulta', {'fechaConsulta': prevModel.fechaConsulta});
+        R.mutate('DatosPrincipalesConsulta', {
+          'fechaConsulta': prevModel.fechaConsulta
+        });
         return;
       }
 
@@ -130,7 +132,9 @@ $(document).ready(() => {
         M.toast({
           html: 'La fecha de compromiso no puede ser anterior a hoy.'
         });
-        R.mutate('ConductaTerapeutica', {'compromisoAbandono': prevModel.compromisoAbandono});
+        R.mutate('ConductaTerapeutica', {
+          'compromisoAbandono': prevModel.compromisoAbandono
+        });
         return;
       }
     }
@@ -148,7 +152,9 @@ $(document).ready(() => {
         M.toast({
           html: 'La fecha de abandono efectivo no puede ser futura.'
         });
-        R.mutate('ConductaTerapeutica', {'abandonoEfectivo': prevModel.abandonoEfectivo});
+        R.mutate('ConductaTerapeutica', {
+          'abandonoEfectivo': prevModel.abandonoEfectivo
+        });
         return;
       }
     }
@@ -166,6 +172,9 @@ $(document).ready(() => {
         M.toast({
           html: 'La fecha de próxima consulta no puede ser anterior a hoy.'
         })
+        R.mutate('ConductaTerapeutica', {
+          'proximaConsulta': prevModel.proximaConsulta
+        });
         return;
       }
     }
@@ -207,4 +216,3 @@ const savePersona = () => {
     html: 'Supongamos que acá se mandó a guardar la data.'
   });
 }
-
