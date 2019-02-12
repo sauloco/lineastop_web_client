@@ -1,483 +1,445 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <meta name="description" content="Línea Stop, historia clínica digital">
-        <meta
-            name="keywords"
-            content="Línea Stop, historia clínica, historia clinica, historia digital">
-        <meta name="author" content="RusticIT https://rusticit.com">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Línea Stop | Personas</title>
-        <script
-            src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous"></script>
 
-        <script src="/js/lodash.js"></script>
-        <script src="/js/api.js"></script>
-        <script src="/js/cookies.js"></script>
-        <script src="/js/common.js"></script>
-        <script src="/js/rustic.js"></script>
-        <script src="scripts.js"></script>
-        <script src="/js/moment-with-locales.js"></script>
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-        <link
-            href="https://fonts.googleapis.com/icon?family=Material+Icons"
-            rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body>
-        <nav>
-            <div class="nav-wrapper blue darken-4">
-                <a href="#!" class="left brand-logo">
-                    <i class="material-icons">menu</i>Línea Stop | Personas
-                </a>
-                <ul class="right">
-                    <li>
-                        <a href="">
-                            <i class="material-icons">person</i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="">
-                            <i class="material-icons">exit_to_app</i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <div class="container">
-            <label>Datos personales y afiliatorios</label>
-            <div class="card">
-                <div class="row">
-                    <div class="input-field col s12 m6">
-                        <input id="apellido" type="text">
-                        <label for="apellido">Apellido</label>
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <input id="nombre" type="text">
-                        <label for="nombre">Nombre</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12 m6">
-                        <input id="telefono" type="number">
-                        <label for="telefono">Teléfono</label>
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <input id="email" type="email">
-                        <label for="email">Correo electrónico</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s10 m3">
-                        <input id="nacimiento" class="datepicker" type="text">
-                        <label for="nacimiento" class="active">Fecha de nacimiento</label>
-                    </div>
-                    <div class="input-field col s2 m1">
-                        <input id="edad" type="text" disabled="disabled">
-                        <label for="edad">Edad</label>
-                    </div>
-                    <div class="input-field col s6 m1">
-                        <input id="pesoKg" type="text">
-                        <label for="pesoKg">Peso</label>
-                    </div>
-                    <div class="input-field col s6 m1">
-                        <input id="alturaCm" type="text">
-                        <label for="alturaCm">Altura</label>
-                    </div>
-                    <div class="input-field col s10 m3">
-                        <input id="primerConsulta" class="datepicker" type="text">
-                        <label for="primerConsulta" class="active">Primera consulta</label>
-                    </div>
-                    <div class="input-field col s2">
-                        <input id="hace" type="text" disabled="disabled">
-                        <label for="hace">Hace</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12 m3">
-                        <input id="nombreCalleBarrio" type="text">
-                        <label for="nombreCalleBarrio">Calle o Barrio</label>
-                    </div>
-                    <div class="input-field col s4 m2">
-                        <input id="numeroCalleBarrio" type="text">
-                        <label for="numeroCalleBarrio">Num</label>
-                    </div>
-                    <div class="input-field col s4 m1">
-                        <input id="numeroPisoDepto" type="text">
-                        <label for="numeroPisoDepto" class="active" title="Piso o departamento">P/D</label>
-                    </div>
-                    <div class="input-field col s6 m3">
-                        <input id="ciudad" type="text">
-                        <label for="ciudad">Ciudad</label>
-                    </div>
-                    <div class="input-field col s6 m3">
-                        <input id="provincia" type="text">
-                        <label for="provincia">Provincia</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s6">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox" id='antecedentesPatologicos'>
-                                <span class="lever"></span>
-                                Antecedentes patológicos
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s6">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox" id="recibeMedicamentos">
-                                <span class="lever"></span>
-                                Recibe medicamentos
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s6">
-                        <div id="antecedentesPatologicosDetails" class="row hide">
-                            <div class="input-field col s6 m10">
-                                <textarea id="descripcionAntecedentesPatologicos" class="materialize-textarea"></textarea>
-                                <label for="descripcionAntecedentesPatologicos">Observaciones de antecedentes patológicos</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col s6">
-                        <div id="recibeMedicamentosDetails" class="row hide">
-                            <div class="input-field col s6 m10">
-                                <textarea id="descripcionRecibeMedicamentos" class="materialize-textarea"></textarea>
-                                <label for="descripcionRecibeMedicamentos">Observaciones de medicamentos que recibe</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <label>Historia del tabaquismo</label>
-            <div class="card">
-                <div class="row"></div>
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Línea Stop, historia clínica digital">
+    <meta name="keywords" content="Línea Stop, historia clínica, historia clinica, historia digital">
+    <meta name="author" content="RusticIT https://rusticit.com">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Línea Stop | Personas</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
 
-                <div class="row">
-                    <div class="col s3">
-                        <span>Cigarrillos diarios</span>
-                    </div>
-                    <div class="col s3">
-                        <label>
-                            <input
-                                name="cigarrillosDiarios"
-                                id="cigarrillosDiarios010"
-                                type="radio"
-                                value="0 a 10"/>
-                            <span>0 a 10</span>
-                        </label>
-                    </div>
-                    <div class="col s3">
-                        <label>
-                            <input
-                                name="cigarrillosDiarios"
-                                id="cigarrillosDiarios1020"
-                                type="radio"
-                                value="10 a 20"/>
-                            <span>10 a 20</span>
-                        </label>
-                    </div>
-                    <div class="col s3">
-                        <label>
-                            <input
-                                name="cigarrillosDiarios"
-                                id="cigarrillosDiarios20"
-                                type="radio"
-                                value="mas de 20"/>
-                            <span>más de 20</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s3">
-                        <span>Edad de inicio</span>
-                    </div>
-                    <div class="col s3">
-                        <label>
-                            <input name="edadInicio" id="edadInicio15" type="radio" value="15 o menos"/>
-                            <span>15 o menos</span>
-                        </label>
-                    </div>
-                    <div class="col s3">
-                        <label>
-                            <input name="edadInicio" id="edadInicio1620" type="radio" value="16 a 20"/>
-                            <span>16 a 20</span>
-                        </label>
-                    </div>
-                    <div class="col s3">
-                        <label>
-                            <input name="edadInicio" id="edadInicio21" type="radio" value="mas de 21"/>
-                            <span>más de 21</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12 m6 l4">
-                        <input id="marca" type="text">
-                        <label for="marca">Marca</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox" id="finDeSemana">
-                                <span class="lever"></span>
-                                Fin de semana
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox" id="alimentacionSaludable">
-                                <span class="lever"></span>
-                                Alimentación saludable
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox" id="actividadFisica">
-                                <span class="lever"></span>
-                                Actividad física
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox" id="abandonoPrevio">
-                                <span class="lever"></span>
-                                Abandono previo
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div id="abandonoPrevioDetails" class="row hide">
-                    <div class="col s11 offset-s1">
-                        <div class="row">
-                            <div class="col s12 m3">
-                                <span>Duración del abandono</span>
-                            </div>
-                            <div class="col s4 m3">
-                                <label>
-                                    <input
-                                        name="duracionDelAbandono"
-                                        id="duracionDelAbandono6"
-                                        type="radio"
-                                        value="menos de 6"/>
-                                    <span>Menos de 6 meses</span>
-                                </label>
-                            </div>
-                            <div class="col s4 m3">
-                                <label>
-                                    <input
-                                        name="duracionDelAbandono"
-                                        id="duracionDelAbandono712"
-                                        type="radio"
-                                        value="7 a 12"/>
-                                    <span>7 a 12 meses</span>
-                                </label>
-                            </div>
-                            <div class="col s4 m3">
-                                <label>
-                                    <input
-                                        name="duracionDelAbandono"
-                                        id="duracionDelAbandono1"
-                                        type="radio"
-                                        value="mas de un año"/>
-                                    <span>mas de un año</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s12 m3">
-                                <span>Tratamiento recibido</span>
-                            </div>
-                            <div class="col s4 m3">
-                                <label>
-                                    <input
-                                        name="tratamientoRecibido"
-                                        id="tratamientoRecibidoMed"
-                                        type="radio"
-                                        value="Medicamento"/>
-                                    <span>Medicamento</span>
-                                </label>
-                            </div>
-                            <div class="col s4 m3">
-                                <label>
-                                    <input
-                                        name="tratamientoRecibido"
-                                        id="tratamientoRecibidoNone"
-                                        type="radio"
-                                        value="Ninguno"/>
-                                    <span>Ninguno</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <textarea id="recaida" class="materialize-textarea"></textarea>
-                                <label for="recaida">Motivo de la recaida</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s6">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox" id="enHogarSeFuma">
-                                <span class="lever"></span>
-                                En hogar se fuma
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div id="enHogarSeFumaDonde" class="row hide">
-                    <div class="input-field col s11 offset-s1 m8 offset-m1">
-                        <input id="donde" type="text">
-                        <label for="donde">Donde</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s6 m12">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox" id="enTrabajoSeFuma">
-                                <span class="lever"></span>
-                                En trabajo se fuma
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s6 m12">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox" id="padreOMadreFuman">
-                                <span class="lever"></span>
-                                Padre o madre fuman
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s6 m12">
-                        <div class="switch">
-                            <label>
-                                No
-                                <input type="checkbox" id="convivienteFuma">
-                                <span class="lever"></span>
-                                Conviviente fuma
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div id="convivienteFumaQuien" class="row hide">
-                    <div class="input-field col s11 offset-s1 m8 offset-m1">
-                        <input id="quien" type="text">
-                        <label for="quien">Quien</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m3">
-                        <span>Dependencia (Fagestrom)</span>
-                    </div>
-                    <div class="col s4 m3">
-                        <label>
-                            <input name="dependencia" id="dependenciaBajo" type="radio" value="bajo"/>
-                            <span>Mediano</span>
-                        </label>
-                    </div>
-                    <div class="col s4 m3">
-                        <label>
-                            <input name="dependencia" id="dependenciaMod" type="radio" value="moderado"/>
-                            <span>Moderado</span>
-                        </label>
-                    </div>
-                    <div class="col s4 m3">
-                        <label>
-                            <input name="dependencia" id="dependenciaAlto" type="radio" value="alto"/>
-                            <span>Alto</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m3">
-                        <span>Motivación (Richmond)</span>
-                    </div>
-                    <div class="col s4 m3">
-                        <label>
-                            <input name="motivacion" id="motivacionBajo" type="radio" value="bajo"/>
-                            <span>Mediano</span>
-                        </label>
-                    </div>
-                    <div class="col s4 m3">
-                        <label>
-                            <input name="motivacion" id="motivacionMod" type="radio" value="moderado"/>
-                            <span>Moderado</span>
-                        </label>
-                    </div>
-                    <div class="col s4 m3">
-                        <label>
-                            <input name="motivacion" id="motivacionAlto" type="radio" value="alto"/>
-                            <span>Alto</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12 m6">
-                        <textarea id="cuandoFumaMas" class="materialize-textarea"></textarea>
-                        <label for="cuandoFumaMas">Cuando fumas mas</label>
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <textarea id="loAsociaCon" class="materialize-textarea"></textarea>
-                        <label for="loAsociaCon">Lo asocia con</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12 m6">
-                        <textarea id="observacionesHistoriaTabaquismo" class="materialize-textarea"></textarea>
-                        <label for="observacionesHistoriaTabaquismo">Observaciones</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="fixed-action-btn">
-            <a class="btn-floating btn-large blue darken-4">
-            <i class="large material-icons">save</i>
+    <script src="/js/lodash.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/cookies.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/rustic.js"></script>
+    <script src="scripts.js"></script>
+    <script src="/js/moment-with-locales.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper blue darken-4">
+            <a href="#!" class="left brand-logo">
+                <i class="material-icons">menu</i>Línea Stop | Personas
             </a>
+            <ul class="right">
+                <li>
+                    <a href="">
+                        <i class="material-icons">person</i>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <i class="material-icons">exit_to_app</i>
+                    </a>
+                </li>
+            </ul>
         </div>
-</div>
+    </nav>
+    <div class="container">
+        <label>Datos personales y afiliatorios</label>
+        <div class="card">
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <input id="apellido" type="text">
+                    <label for="apellido">Apellido</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    <input id="nombre" type="text">
+                    <label for="nombre">Nombre</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <input id="telefono" type="number">
+                    <label for="telefono">Teléfono</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    <input id="email" type="email">
+                    <label for="email">Correo electrónico</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s10 m3">
+                    <input id="nacimiento" class="datepicker" type="text">
+                    <label for="nacimiento" class="active">Fecha de nacimiento</label>
+                </div>
+                <div class="input-field col s2 m1">
+                    <input id="edad" type="text" disabled="disabled">
+                    <label for="edad">Edad</label>
+                </div>
+                <div class="input-field col s6 m1">
+                    <input id="pesoKg" type="text">
+                    <label for="pesoKg">Peso</label>
+                </div>
+                <div class="input-field col s6 m1">
+                    <input id="alturaCm" type="text">
+                    <label for="alturaCm">Altura</label>
+                </div>
+                <div class="input-field col s10 m3">
+                    <input id="primerConsulta" class="datepicker" type="text">
+                    <label for="primerConsulta" class="active">Primera consulta</label>
+                </div>
+                <div class="input-field col s2">
+                    <input id="hace" type="text" disabled="disabled">
+                    <label for="hace">Hace</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m3">
+                    <input id="nombreCalleBarrio" type="text">
+                    <label for="nombreCalleBarrio">Calle o Barrio</label>
+                </div>
+                <div class="input-field col s4 m2">
+                    <input id="numeroCalleBarrio" type="text">
+                    <label for="numeroCalleBarrio">Num</label>
+                </div>
+                <div class="input-field col s4 m1">
+                    <input id="numeroPisoDepto" type="text">
+                    <label for="numeroPisoDepto" class="active" title="Piso o departamento">P/D</label>
+                </div>
+                <div class="input-field col s6 m3">
+                    <input id="ciudad" type="text">
+                    <label for="ciudad">Ciudad</label>
+                </div>
+                <div class="input-field col s6 m3">
+                    <input id="provincia" type="text">
+                    <label for="provincia">Provincia</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s6">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id='antecedentesPatologicos'>
+                            <span class="lever"></span>
+                            Antecedentes patológicos
+                        </label>
+                    </div>
+                </div>
+                <div class="col s6">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="recibeMedicamentos">
+                            <span class="lever"></span>
+                            Recibe medicamentos
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s6">
+                    <div id="antecedentesPatologicosDetails" class="row hide">
+                        <div class="input-field col s6 m10">
+                            <textarea id="descripcionAntecedentesPatologicos" class="materialize-textarea"></textarea>
+                            <label for="descripcionAntecedentesPatologicos">Observaciones de antecedentes patológicos</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s6">
+                    <div id="recibeMedicamentosDetails" class="row hide">
+                        <div class="input-field col s6 m10">
+                            <textarea id="descripcionRecibeMedicamentos" class="materialize-textarea"></textarea>
+                            <label for="descripcionRecibeMedicamentos">Observaciones de medicamentos que recibe</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <label>Historia del tabaquismo</label>
+        <div class="card">
+            <div class="row"></div>
+
+            <div class="row">
+                <div class="col s3">
+                    <span>Cigarrillos diarios</span>
+                </div>
+                <div class="col s3">
+                    <label>
+                        <input name="cigarrillosDiarios" id="cigarrillosDiarios010" type="radio" value="0 a 10" />
+                        <span>0 a 10</span>
+                    </label>
+                </div>
+                <div class="col s3">
+                    <label>
+                        <input name="cigarrillosDiarios" id="cigarrillosDiarios1020" type="radio" value="10 a 20" />
+                        <span>10 a 20</span>
+                    </label>
+                </div>
+                <div class="col s3">
+                    <label>
+                        <input name="cigarrillosDiarios" id="cigarrillosDiarios20" type="radio" value="mas de 20" />
+                        <span>más de 20</span>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s3">
+                    <span>Edad de inicio</span>
+                </div>
+                <div class="col s3">
+                    <label>
+                        <input name="edadInicio" id="edadInicio15" type="radio" value="15 o menos" />
+                        <span>15 o menos</span>
+                    </label>
+                </div>
+                <div class="col s3">
+                    <label>
+                        <input name="edadInicio" id="edadInicio1620" type="radio" value="16 a 20" />
+                        <span>16 a 20</span>
+                    </label>
+                </div>
+                <div class="col s3">
+                    <label>
+                        <input name="edadInicio" id="edadInicio21" type="radio" value="mas de 21" />
+                        <span>más de 21</span>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6 l4">
+                    <input id="marca" type="text">
+                    <label for="marca">Marca</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="finDeSemana">
+                            <span class="lever"></span>
+                            Fin de semana
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="alimentacionSaludable">
+                            <span class="lever"></span>
+                            Alimentación saludable
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="actividadFisica">
+                            <span class="lever"></span>
+                            Actividad física
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="abandonoPrevio">
+                            <span class="lever"></span>
+                            Abandono previo
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div id="abandonoPrevioDetails" class="row hide">
+                <div class="col s11 offset-s1">
+                    <div class="row">
+                        <div class="col s12 m3">
+                            <span>Duración del abandono</span>
+                        </div>
+                        <div class="col s4 m3">
+                            <label>
+                                <input name="duracionDelAbandono" id="duracionDelAbandono6" type="radio" value="menos de 6" />
+                                <span>Menos de 6 meses</span>
+                            </label>
+                        </div>
+                        <div class="col s4 m3">
+                            <label>
+                                <input name="duracionDelAbandono" id="duracionDelAbandono712" type="radio" value="7 a 12" />
+                                <span>7 a 12 meses</span>
+                            </label>
+                        </div>
+                        <div class="col s4 m3">
+                            <label>
+                                <input name="duracionDelAbandono" id="duracionDelAbandono1" type="radio" value="mas de un año" />
+                                <span>mas de un año</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m3">
+                            <span>Tratamiento recibido</span>
+                        </div>
+                        <div class="col s4 m3">
+                            <label>
+                                <input name="tratamientoRecibido" id="tratamientoRecibidoMed" type="radio" value="Medicamento" />
+                                <span>Medicamento</span>
+                            </label>
+                        </div>
+                        <div class="col s4 m3">
+                            <label>
+                                <input name="tratamientoRecibido" id="tratamientoRecibidoNone" type="radio" value="Ninguno" />
+                                <span>Ninguno</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <textarea id="recaida" class="materialize-textarea"></textarea>
+                            <label for="recaida">Motivo de la recaida</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="enHogarSeFuma">
+                            <span class="lever"></span>
+                            En hogar se fuma
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div id="enHogarSeFumaDonde" class="row hide">
+                <div class="input-field col s11 offset-s1 m8 offset-m1">
+                    <input id="donde" type="text">
+                    <label for="donde">Donde</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6 m12">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="enTrabajoSeFuma">
+                            <span class="lever"></span>
+                            En trabajo se fuma
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6 m12">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="padreOMadreFuman">
+                            <span class="lever"></span>
+                            Padre o madre fuman
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6 m12">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="convivienteFuma">
+                            <span class="lever"></span>
+                            Conviviente fuma
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div id="convivienteFumaQuien" class="row hide">
+                <div class="input-field col s11 offset-s1 m8 offset-m1">
+                    <input id="quien" type="text">
+                    <label for="quien">Quien</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m3">
+                    <span>Dependencia (Fagestrom)</span>
+                </div>
+                <div class="col s4 m3">
+                    <label>
+                        <input name="dependencia" id="dependenciaBajo" type="radio" value="bajo" />
+                        <span>Mediano</span>
+                    </label>
+                </div>
+                <div class="col s4 m3">
+                    <label>
+                        <input name="dependencia" id="dependenciaMod" type="radio" value="moderado" />
+                        <span>Moderado</span>
+                    </label>
+                </div>
+                <div class="col s4 m3">
+                    <label>
+                        <input name="dependencia" id="dependenciaAlto" type="radio" value="alto" />
+                        <span>Alto</span>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m3">
+                    <span>Motivación (Richmond)</span>
+                </div>
+                <div class="col s4 m3">
+                    <label>
+                        <input name="motivacion" id="motivacionBajo" type="radio" value="bajo" />
+                        <span>Mediano</span>
+                    </label>
+                </div>
+                <div class="col s4 m3">
+                    <label>
+                        <input name="motivacion" id="motivacionMod" type="radio" value="moderado" />
+                        <span>Moderado</span>
+                    </label>
+                </div>
+                <div class="col s4 m3">
+                    <label>
+                        <input name="motivacion" id="motivacionAlto" type="radio" value="alto" />
+                        <span>Alto</span>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <textarea id="cuandoFumaMas" class="materialize-textarea"></textarea>
+                    <label for="cuandoFumaMas">Cuando fumas mas</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    <textarea id="loAsociaCon" class="materialize-textarea"></textarea>
+                    <label for="loAsociaCon">Lo asocia con</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <textarea id="observacionesHistoriaTabaquismo" class="materialize-textarea"></textarea>
+                    <label for="observacionesHistoriaTabaquismo">Observaciones</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large blue darken-4">
+            <i class="large material-icons">save</i>
+        </a>
+    </div>
+    </div>
 </body>
+
 </html>
