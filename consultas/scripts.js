@@ -71,7 +71,6 @@ $(document).ready(() => {
     M.textareaAutoResize($('textarea'));
     $('.sidenav').sidenav();
     $('.tooltipped').tooltip();
-    
     $('.fixed-action-btn').floatingActionButton();
   };
 

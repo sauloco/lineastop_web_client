@@ -47,14 +47,15 @@ let HistoriaTabaquismo = {
 $(document).ready(() =>{
   $('select').formSelect();  
   $('.datepicker').datepicker();
-  
+  $('#guardar').click(savePersona);
+
   // por usar Materialize
   const modelCallback = () => {
       M.updateTextFields();
       $('select').formSelect();
       M.textareaAutoResize($('textarea'));
-      
-      
+      $('.fixed-action-btn').floatingActionButton();
+
   };
  
 
@@ -136,5 +137,25 @@ $(document).ready(() =>{
   // Inicialización
   R.init('Persona');
   R.init('HistoriaTabaquismo');
+
 })
 
+const savePersona = async () => {
+
+  params = Persona;
+      
+
+getPromise({endpoint: api.personas.create, params})
+    .then(response => response.json())
+    .then(data => {
+        if(data.error){
+            return api.common.errorHandler({endpoint: api.personas.create, error: data});
+        }
+        M.toast({html:'Se ha producido un error'});
+    })
+    .catch(error => api.common.errorHandler({endpoint: api.personas.create, error}));
+  // TODO: send data to backend
+  M.toast({
+    html: 'Supongamos que acá se mandó a guardar la data.'
+  });
+}
