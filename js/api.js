@@ -53,7 +53,7 @@ const apiDefaultErrorController = ({endpoint, error}) => {
 const getPromise = ({endpoint, params, token}) => {
   
   const BASE_URI = 'https://hcdigital.herokuapp.com';
-  let {location, method} = endpoint;
+  let {location, method, url_params} = endpoint;
   
   if (location.split('')[0] !== '/'){
     location = `/${location}`;
@@ -73,14 +73,37 @@ const getPromise = ({endpoint, params, token}) => {
   };
   
   if (params) {
-    if (method === 'GET') {
-      location += '?';
-      for (const key of Object.keys(params)) {
-        location += `${key}=${encodeURIComponent(params[key])}&`;
-      }
-      location = location.substr(0, location.length-1);
-    } else {
-      requestInit.body = JSON.stringify(params);
+    
+    switch (method) {
+      case 'GET': 
+        if (url_params.length) {
+          const param_names = url_params.map(v => v.split(':').join(''));
+          for (name of param_names) {
+            const param_value = params[name];
+            location += `/${param_value}`;
+          }
+        } else {
+          location += '?';
+          for (const key of Object.keys(params)) {
+            location += `${key}=${encodeURIComponent(params[key])}&`;
+          }
+          location = location.substr(0, location.length-1);
+        }
+        
+        break;
+      case 'POST':
+        requestInit.body = JSON.stringify(params);
+        break;
+      case 'PUT':
+      case 'DELETE':
+        const param_names = url_params.map(v => v.split(':').join(''));
+        for (name of param_names) {
+          const param_value = params[name];
+          location += `/${param_value}`;
+          delete params[name];
+        }
+        requestInit.body = JSON.stringify(params);
+      break;
     }
   }
   
@@ -133,12 +156,18 @@ const api = {
     all: {
       location: 'personas/'
     },
-    findBy: {
-      location: 'personas'
+    get: {
+      location: 'personas',
+      url_params: [':_id'],
     },
     create: {
       method: 'POST',
       location: 'personas/'
+    },
+    update: {
+      method: 'PUT',
+      location: 'personas',
+      url_params: [':_id'],
     }
   },
   users: {

@@ -270,7 +270,6 @@ const Rustic = (() => {
   const setMutationCallback = callback => {
     mutationCallback = callback;
   }
-
   return {
     h: history,
     init,
@@ -278,7 +277,8 @@ const Rustic = (() => {
     mutate,
     setMutationCallback,
     s: subscriptions,
-    subscriptions
+    subscriptions,
+    clone // utilidad para clonar objetos sin quedar referenciado a su contenido.
   }
 })();
 

@@ -1,6 +1,7 @@
 let Persona = {
-  apellido: 'Gallo',
-  nombre: 'Norma',
+  _id: '',
+  apellido: '',
+  nombre: '',
   telefono: '',
   email: '',
   primerConsulta: '',
@@ -45,9 +46,11 @@ let HistoriaTabaquismo = {
 };
 
 $(document).ready(() =>{
+
   $('select').formSelect();  
   $('.datepicker').datepicker();
-  $('#guardar').click(savePersona);
+  $('#guardar').click(savePersonaWithToast);
+  initializeDatepicker();
 
   // por usar Materialize
   const modelCallback = () => {
@@ -55,6 +58,8 @@ $(document).ready(() =>{
       $('select').formSelect();
       M.textareaAutoResize($('textarea'));
       $('.fixed-action-btn').floatingActionButton();
+
+      // savePersonaSilently();
 
   };
  
@@ -70,11 +75,13 @@ $(document).ready(() =>{
     let difference = moment(model.nacimiento).isValid() && moment(hoy).isValid()?
       moment(hoy).diff(model.nacimiento, unit) : '';
       if (moment(model.nacimiento) .isAfter (moment(hoy))) {
-        M.toast({html: 'La fecha de nacimiento deber ser anterior a la fecha actual.'})
+        M.toast({html: 'La fecha de nacimiento deber ser anterior a la fecha actual.'});
+        R.mutate('Persona', {nacimiento: prevModel.nacimiento});
         return;
       }
       if (moment(model.nacimiento) .isBefore (moment(hoy))&& difference<=18){
         M.toast({html: 'El paciente debe ser mayor de edad, verifique la fecha de nacimiento.'})
+        R.mutate('Persona', {nacimiento: prevModel.nacimiento});
         return;
       
       };
@@ -134,28 +141,56 @@ $(document).ready(() =>{
     }
   }});
 
+  R.s.add({model: 'Persona', key: '_id', callback: async ({prevModel, model}) => {
+    const data = await fetchData({endpoint: api.personas.get, params: {_id: model._id}});
+    R.mutate('Persona', data);
+  }});
+
   // Inicialización
   R.init('Persona');
   R.init('HistoriaTabaquismo');
 
+  const url = new URL(location.href);
+  const _id = url.searchParams.get('id');
+
+  if (_id) {
+    R.mutate('Persona', {_id});
+  }
+
 })
 
-const savePersona = async () => {
+const savePersonaSilently = () => {
+  savePersona(true);
+}
 
-  params = Persona;
+const savePersonaWithToast = () => {
+  savePersona(false);
+}
+
+const savePersona = async (silent) => {
+  const params = R.clone(Persona);
+  if (Persona._id) {
+    updatePersona(params);
+  } else {
+    delete params['_id'];
+    createPersona(params);
+  }
+/*   if (!silent) {
+    M.toast({html:'Los datos de la persona se han guardado correctamente'});
+  } */
+}
+
+const createPersona = async (params) => {
+  const data = await fetchData({endpoint: api.personas.create, params});
+  if(data.error){
+      return api.common.errorHandler({endpoint: api.personas.create, error: data});
       
+  }
+}
 
-getPromise({endpoint: api.personas.create, params})
-    .then(response => response.json())
-    .then(data => {
-        if(data.error){
-            return api.common.errorHandler({endpoint: api.personas.create, error: data});
-        }
-        M.toast({html:'Se ha producido un error'});
-    })
-    .catch(error => api.common.errorHandler({endpoint: api.personas.create, error}));
-  // TODO: send data to backend
-  M.toast({
-    html: 'Supongamos que acá se mandó a guardar la data.'
-  });
+const updatePersona = async (params) => {
+  const data = await fetchData({endpoint: api.personas.update, params});
+  if(data.error){
+      return api.common.errorHandler({endpoint: api.personas.update, error: data});
+  }
 }
