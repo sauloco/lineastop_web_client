@@ -55,10 +55,23 @@
         <div class="card">
             <div class="row valign-wrapper">
                 <div class="col s2 m1">
-                    <a class="btn-small waves-effect waves-light blue darken-1 tooltipped" data-position="top"
+                    <a class="btn-small waves-effect waves-light blue darken-1 tooltipped modal-trigger" href="#modal1" data-position="top"
                         data-tooltip="Abrir el buscador avanzado">
                         <i class="material-icons left">search</i>
                     </a>
+                </div>
+                <!-- Modal Structure -->
+                <div id="modal1" class="modal">
+                    <div class="modal-content">
+                        <h4>Busqueda avanzada</h4>
+                        <p>
+                        <div>
+                        <iframe width="560" height="315" src="http://export/?collection=personas" frameborder="0" allowfullscreen></iframe></div>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class=" modal-action modal-close waves-effect waves-light btn blue">Aceptar</a>
+                    </div>
                 </div>
                 <div class="input-field col s7 m8">
                     <input type="text" id="ingreseParaBuscar" class="autocomplete">
@@ -561,6 +574,7 @@
                 <i class="material-icons">save</i></a>
         </div>
     </div>
+    
 </body>
 
 </html>

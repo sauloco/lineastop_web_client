@@ -72,6 +72,8 @@ $(document).ready(() => {
     $('.sidenav').sidenav();
     $('.tooltipped').tooltip();
     $('.fixed-action-btn').floatingActionButton();
+    $('.modal').modal();
+
   };
 
 
@@ -208,7 +210,6 @@ $(document).ready(() => {
   R.init('ConductaTerapeutica');
 
 })
-
 
 const savePersona = () => {
   // TODO: send data to backend
