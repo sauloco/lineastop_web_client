@@ -5,7 +5,12 @@ $(document).ready(function(){
 
 const onLoad = () => {
   initializeGrid();
-  $('#export').click(exportToExcel);
+  if (export) {
+    $('#export').click(exportToExcel);
+  } else {
+    
+  }
+  
 };
 
 const initializeGrid = async () => {
@@ -19,7 +24,7 @@ const initializeGrid = async () => {
   const collection = new URLSearchParams(window.location.search).get('collection');
 
   if (!validExports[collection]) {
-    M.toast({html: "La colección solicitada no es válida.", displayLength: 4000});
+    M.toast({html: "No se puede exportar la información solicitada.", displayLength: 4000});
     return;
   }
   let w2uiDataGrid = {

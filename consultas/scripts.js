@@ -1,8 +1,9 @@
-let DatosPrincipalesConsulta = {
+let PERSONAS = [];
+
+let Consulta = {
+  _id: '',
   ingreseParaBuscar: '',
   fechaConsulta: '',
-};
-let SintomasClinicos = {
   tos: false,
   expectoracion: false,
   doloresCalambres: false,
@@ -15,18 +16,12 @@ let SintomasClinicos = {
   gusto: false,
   clausicacion: false,
   problemasPeso: false,
-};
-
-let TratamientoCognitivo = {
   tabaquismoEsEnfermedad: false,
   queEsTripleAdiccion: false,
   cadaAbandonoEsExperiencia: false,
   controlApoyoTelefonico: false,
   dejarDeFumarCammbiaVida: false,
   tratamientoFarmacologicoSiNecesario: false,
-};
-
-let TratamientoConductual = {
   actividadManual: false,
   tiempoLibre: false,
   carteleria: false,
@@ -45,9 +40,6 @@ let TratamientoConductual = {
   reunionesFumadores: false,
   cambioMarcas: false,
   otros: '',
-}
-
-let ConductaTerapeutica = {
   derivado: false,
   medicoDerivado: '',
   notificacionAlMedico: '',
@@ -55,14 +47,16 @@ let ConductaTerapeutica = {
   abandonoEfectivo: '',
   proximaConsulta: '',
   observacionesGenerales: '',
-
+  persona: ''
 }
 
 $(document).ready(() => {
   $('select').formSelect();
-  $('#guardar').click(savePersona);
+  $('#guardar').click(saveConsulta);
   initializeDatepicker();
   getAllPersonas();
+  $('#finderLauncherPersonas').click(openFinderPersonas);
+  $('.fixed-action-btn').floatingActionButton();
 
   // por usar Materialize
   const modelCallback = () => {
@@ -76,33 +70,23 @@ $(document).ready(() => {
 
   };
 
-
-
-
   R.s.add({
-    model: 'DatosPrincipalesConsulta',
-    callback: modelCallback
-  });
-  R.s.add({
-    model: 'SintomasClinicos',
-    callback: modelCallback
-  });
-  R.s.add({
-    model: 'TratamientoCognitivo',
-    callback: modelCallback
-  });
-  R.s.add({
-    model: 'TratamientoConductual',
-    callback: modelCallback
-  });
-  R.s.add({
-    model: 'ConductaTerapeutica',
+    model: 'Consulta',
     callback: modelCallback
   });
 
+  R.s.add({
+    model: 'Consulta',
+    key: 'ingreseParaBuscar',
+    callback: ({prevModel, model}) => {
+      if (model.ingreseParaBuscar) {
+        R.mutate('Consulta', {'persona': PERSONAS[model.ingreseParaBuscar]});
+      }
+    }
+  })
 
   R.s.add({
-    model: 'DatosPrincipalesConsulta',
+    model: 'Consulta',
     key: 'fechaConsulta',
     callback: ({
       prevModel,
@@ -113,7 +97,7 @@ $(document).ready(() => {
         M.toast({
           html: 'La fecha de la consulta no puede ser futura.'
         });
-        R.mutate('DatosPrincipalesConsulta', {
+        R.mutate('Consulta', {
           'fechaConsulta': prevModel.fechaConsulta
         });
         return;
@@ -123,7 +107,7 @@ $(document).ready(() => {
   });
 
   R.s.add({
-    model: 'ConductaTerapeutica',
+    model: 'Consulta',
     key: 'compromisoAbandono',
     callback: ({
       prevModel,
@@ -134,7 +118,7 @@ $(document).ready(() => {
         M.toast({
           html: 'La fecha de compromiso no puede ser anterior a hoy.'
         });
-        R.mutate('ConductaTerapeutica', {
+        R.mutate('Consulta', {
           'compromisoAbandono': prevModel.compromisoAbandono
         });
         return;
@@ -143,7 +127,7 @@ $(document).ready(() => {
   });
 
   R.s.add({
-    model: 'ConductaTerapeutica',
+    model: 'Consulta',
     key: 'abandonoEfectivo',
     callback: ({
       prevModel,
@@ -154,7 +138,7 @@ $(document).ready(() => {
         M.toast({
           html: 'La fecha de abandono efectivo no puede ser futura.'
         });
-        R.mutate('ConductaTerapeutica', {
+        R.mutate('Consulta', {
           'abandonoEfectivo': prevModel.abandonoEfectivo
         });
         return;
@@ -163,7 +147,7 @@ $(document).ready(() => {
   });
 
   R.s.add({
-    model: 'ConductaTerapeutica',
+    model: 'Consulta',
     key: 'proximaConsulta',
     callback: ({
       prevModel,
@@ -174,7 +158,7 @@ $(document).ready(() => {
         M.toast({
           html: 'La fecha de próxima consulta no puede ser anterior a hoy.'
         })
-        R.mutate('ConductaTerapeutica', {
+        R.mutate('Consulta', {
           'proximaConsulta': prevModel.proximaConsulta
         });
         return;
@@ -183,7 +167,7 @@ $(document).ready(() => {
   });
 
   R.s.add({
-    model: 'ConductaTerapeutica',
+    model: 'Consulta',
     key: 'derivado',
     callback: ({
       prevModel,
@@ -201,17 +185,12 @@ $(document).ready(() => {
     }
   });
 
-
   // Inicialización
-  R.init('DatosPrincipalesConsulta');
-  R.init('SintomasClinicos');
-  R.init('TratamientoCognitivo');
-  R.init('TratamientoConductual');
-  R.init('ConductaTerapeutica');
+  R.init('Consulta');
 
 })
 
-const savePersona = () => {
+const saveConsulta = () => {
   // TODO: send data to backend
   M.toast({
     html: 'Supongamos que acá se mandó a guardar la data.'
@@ -221,9 +200,18 @@ const savePersona = () => {
 const getAllPersonas = async () => {
   const personas = await fetchData({endpoint: api.personas.all});
   data = [];
+  PERSONAS = [];
   for (persona of personas) {
     data[`${persona.apellido} ${persona.nombre} (${persona.telefono}. ${persona.email})`] = null;
+    PERSONAS[`${persona.apellido} ${persona.nombre} (${persona.telefono}. ${persona.email})`] = persona._id;
   }
   
   $('input.autocomplete').autocomplete({data});
+}
+
+const openFinderPersonas = () => {
+  initFinder('personas', '#preloader_modal');
+
+  const modal = M.Modal.getInstance(document.querySelector('#buscadorPersonas'));
+  modal.open();
 }

@@ -17,8 +17,12 @@
     <script src="/js/common.js"></script>
     <script src="/js/rustic.js"></script>
     <script src="/js/date_helpers/date_utils.js"></script>
+    <script src="/export/finderService.js"></script>
     <script src="scripts.js"></script>
     <script src="/js/moment-with-locales.js"></script>
+
+    <script src="../js/w2ui/w2ui-1.5.rc1.min.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="../js/w2ui/w2ui-1.5.rc1.min.css" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -55,15 +59,14 @@
         <div class="card">
             <div class="row valign-wrapper">
                 <div class="col s2 m1">
-                    <a class="btn-small waves-effect waves-light blue darken-1 tooltipped modal-trigger" href="#modal1" data-position="top"
-                        data-tooltip="Abrir el buscador avanzado">
-                        <i class="material-icons left">search</i>
+                    <a id='finderLauncherPersonas' class="btn-small waves-effect waves-light blue darken-1 tooltipped"
+                        data-position="top" data-tooltip="Abrir el buscador avanzado">
+                        <i class="material-icons">search</i>
                     </a>
                 </div>
                 <div class="input-field col s7 m8">
-                    <input type="text" id="ingreseParaBuscar" class="autocomplete">
-                    <label for="ingreseParaBuscar">Comienze a escribir apellido, nombre, teléfono o correo eléctronico
-                        para búsqueda rápida</label>
+                    <input type="text" id="ingreseParaBuscar" class="autocomplete" autocomplete="off" autofill="false">
+                    <label for="ingreseParaBuscar">Busque por apellido, nombre, teléfono o correo eléctronico</label>
                 </div>
                 <div class="input-field col s3 m3">
                     <input id="fechaConsulta" class="datepicker" type="text">
@@ -71,6 +74,20 @@
                 </div>
             </div>
 
+        </div>
+        <label>Navegador de consultas</label>
+        <div class="row">
+            <div class="col s12 center">
+                <ul class="pagination">
+                    <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                    <li class="active"><a href="#!">1</a></li>
+                    <li class="waves-effect"><a href="#!">2</a></li>
+                    <li class="waves-effect"><a href="#!">3</a></li>
+                    <li class="waves-effect"><a href="#!">4</a></li>
+                    <li class="waves-effect"><a href="#!">5</a></li>
+                    <li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                </ul>
+            </div>
         </div>
         <label>Síntomas clínicos</label>
         <div class="card">
@@ -193,7 +210,7 @@
             </div>
             <div class="row"></div>
         </div>
-        <label>Tratamientos Cognitivos</label>
+        <label>Tratamientos cognitivos</label>
         <div class="card">
             <div class="row"></div>
             <div class="row">
@@ -259,7 +276,7 @@
             <div class="row"></div>
         </div>
         <div class="row"></div>
-        <label>Tratamiento Conductual</label>
+        <label>Tratamiento conductual</label>
         <div class="card">
             <div class="row"></div>
             <div class="row">
@@ -484,26 +501,7 @@
                 </div>
             </div>
         </div>
-        <label>Navegador de consultas</label>
-        <div class="row">
-            <div class="col s6 m3 left-align">
-                <a id="primeraPagina" class="waves-effect waves-green btn-flat tooltipped" data-tooltip="Ir a la primera consulta"><i
-                        class="material-icons left">first_page</i></a>
-                <a id="anteriorPagina" class="waves-effect waves-green btn-flat"><i class="material-icons left">chevron_left</i>Ant</a>
-            </div>
-            <div class="col s12 m3 center">
-                <a id="consultaXY" class="btn-flat">Consulta <span id="current">X</span> de <span id="total">Y</span></a>
 
-            </div>
-            <div class="col s12 m3 center">
-                <a id="vistaComparativa" class="waves-effect waves-green btn-flat"><i class="material-icons left">grid_on</i>Comparar</a>
-            </div>
-            <div class="col s6 m3 right-align">
-                <a id="siguientePagina" class="waves-effect waves-green btn-flat"><i class="material-icons right">chevron_right</i>Sig</a>
-                <a id="ultimaPagina" class="waves-effect waves-green btn-flat tooltipped" data-tooltip="Ir a última consulta"><i
-                        class="material-icons right">last_page</i></a>
-            </div>
-        </div>
         <label>Comunicación</label>
         <div class="card">
             <div class="row"></div>
@@ -557,24 +555,32 @@
         </div>
 
         <div class="fixed-action-btn">
-            <a id="guardar" class="btn-floating btn-large waves-effect waves-light blue darken-4">
-                <i class="material-icons">save</i></a>
+            <a class="btn-floating btn-large blue darken-4 tooltipped" data-tooltip="Haga click para ver las acciones" data-position="left">
+                <i class="large material-icons">add</i>
+            </a>
+            <ul>
+                <li><a class="btn-floating blue lighten-1 tooltipped" data-tooltip="Ver vista comparativa" data-position="left"><i class="material-icons">grid_on</i></a></li>
+                <li><a class="btn-floating blue darken-2 tooltipped" data-tooltip="Guardar cambios manualmente" data-position="left"><i class="material-icons">save</i></a></li>
+            </ul>
         </div>
     </div>
-    
-    <!-- Modal Structure -->
-    <div id="modal1" class="modal">
+
+    <!-- Modal Structures -->
+    <div id="buscadorPersonas" class="modal">
         <div class="modal-content">
-            <h4>Busqueda avanzada</h4>
-            <p>
-            <div>
-            <iframe width="800" height="450" src="/export/?collection=personas" frameborder="0" allowfullscreen></iframe></div>
-            </p>
+            <h4>Búsqueda avanzada de personas</h4>
+            <div id="personas_grid" style="width: 100%;"></div>
         </div>
         <div class="modal-footer">
             <a href="#!" class=" modal-action modal-close waves-effect waves-light btn blue">Aceptar</a>
         </div>
     </div>
+    <div id="preloader_modal" class="modal">
+        <div class="progress">
+            <div class="indeterminate"></div>
+        </div>
+    </div>
+    
 </body>
 
 </html>
