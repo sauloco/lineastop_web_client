@@ -19,30 +19,27 @@ let Persona = {
   descripcionAntecedentesPatologicos: '',
   recibeMedicamentos: false,
   descripcionRecibeMedicamentos: '',
-};
-
-let HistoriaTabaquismo = {
   cigarrillosDiarios: '0 a 10',
   edadInicio: '16 a 20',
   marca: '',
-  finDeSemana: false,
+  finSemana: false, //modificar a finSemana
   alimentacionSaludable: false,
   actividadFisica: false,
   abandonoPrevio: false,
-  duracionDelAbandono: '7 a 12',
+  abandonoDuracion: '7 a 12', //modificar a abandonoDuracion
   tratamientoRecibido: 'ninguno',
-  recaida:'',
-  enHogarSeFuma: false,
-  quien:'',
-  enTrabajoSeFuma: false,
-  padreOMadreFuman: false,
+  motivoRecaida:'', // modificar a motivoRecaida
+  hogarFuma: false, // modificar a hogaFuma
+  hogarFumaDonde:'', //hogarFumaDonde
+  trabajoFuma: false, // trabajoFuma
+  padreFuma: false, // padreFuma
   convivienteFuma: false,
-  donde:'',
-  dependencia:'moderado',
-  motivacion:'moderado',
+  convivienteQuienFuma:'', //convivienteQuienFuma
+  dependenciaFagestrom:'moderado', //dependenciaFagestrom
+  motivacionRichmond:'moderado', // motivacionRichmond
   cuandoFumaMas:'',
-  loAsociaCon: '',
-  observacionesHistoriaTabaquismo:'',
+  asociaCon: '', // asociaCon
+  observacion:'', // observacion
 };
 
 $(document).ready(() =>{
@@ -66,7 +63,6 @@ $(document).ready(() =>{
 
 
   R.s.add({model: 'Persona', callback: modelCallback});
-  R.s.add({model: 'HistoriaTabaquismo', callback: modelCallback});
 
   R.s.add({model: 'Persona', key: 'nacimiento', callback: ({prevModel, model}) => {
     let hoy = moment();
@@ -117,7 +113,7 @@ $(document).ready(() =>{
     }
   }});
 
-  R.s.add({model: 'HistoriaTabaquismo', key: 'abandonoPrevio', callback: ({prevModel, model}) => {
+  R.s.add({model: 'Persona', key: 'abandonoPrevio', callback: ({prevModel, model}) => {
     if (model.abandonoPrevio) {
       $('#abandonoPrevioDetails').removeClass('hide');
     } else {
@@ -125,30 +121,31 @@ $(document).ready(() =>{
     }
   }});
 
-  R.s.add({model: 'HistoriaTabaquismo', key: 'enHogarSeFuma', callback: ({prevModel, model}) => {
+  R.s.add({model: 'Persona', key: 'hogarFuma', callback: ({prevModel, model}) => {
     if (model.enHogarSeFuma) {
-      $('#enHogarSeFumaDonde').removeClass('hide');
+      $('#hogarFumaDonde').removeClass('hide');
     } else {
-      $('#enHogarSeFumaDonde').addClass('hide');
+      $('#hogarFumaDonde').addClass('hide');
     }
   }});
   
-  R.s.add({model: 'HistoriaTabaquismo', key: 'convivienteFuma', callback: ({prevModel, model}) => {
+  R.s.add({model: 'Persona', key: 'convivienteFuma', callback: ({prevModel, model}) => {
     if (model.convivienteFuma) {
-      $('#convivienteFumaQuien').removeClass('hide');
+      $('#convivienteQuienFuma').removeClass('hide');
     } else {
-      $('#convivienteFumaQuien').addClass('hide');
+      $('#convivienteQuienFuma').addClass('hide');
     }
   }});
-
+  
   R.s.add({model: 'Persona', key: '_id', callback: async ({prevModel, model}) => {
     const data = await fetchData({endpoint: api.personas.get, params: {_id: model._id}});
+    // agregar id a la url
+    //location.href = addReplaceParamURL(location.href, {id: model._id});
     R.mutate('Persona', data);
   }});
 
   // Inicialización
   R.init('Persona');
-  R.init('HistoriaTabaquismo');
 
   const url = new URL(location.href);
   const _id = url.searchParams.get('id');
@@ -158,6 +155,29 @@ $(document).ready(() =>{
   }
 
 })
+
+
+/* const addReplaceParamURL = (urlString, params) => {
+  const keys = Object.keys(params);
+  const url = new URL(urlString);
+  for (const key of keys) {
+    const param = url.searchParams.get(key);
+    const value = params[key];
+    if (param) {
+      urlString = replaceParamURL(urlString, param, value);
+    } else {
+      urlString = addParamURL(urlString, param, value);
+    }
+  }
+}
+
+const replaceParamURL = (urlString, param, value) => {
+  return `${urlString}`
+}
+
+const addParamURL = (urlString, param, value) => {
+  return `${urlString}?${param}=${value}`;
+} */
 
 const savePersonaSilently = () => {
   savePersona(true);
@@ -184,8 +204,9 @@ const createPersona = async (params) => {
   const data = await fetchData({endpoint: api.personas.create, params});
   if(data.error){
       return api.common.errorHandler({endpoint: api.personas.create, error: data});
-      
   }
+  R.mutate('Persona',{_id: data._id});   
+
 }
 
 const updatePersona = async (params) => {
