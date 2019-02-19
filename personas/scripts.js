@@ -19,27 +19,27 @@ let Persona = {
   descripcionAntecedentesPatologicos: '',
   recibeMedicamentos: false,
   descripcionRecibeMedicamentos: '',
-  cigarrillosDiarios: '0 a 10',
-  edadInicio: '16 a 20',
+  cigarrillosDiarios: '1 a 10',
+  edadInicio: '15 o menos',
   marca: '',
-  finSemana: false, //modificar a finSemana
+  finSemana: false,
   alimentacionSaludable: false,
   actividadFisica: false,
   abandonoPrevio: false,
-  abandonoDuracion: '7 a 12', //modificar a abandonoDuracion
+  abandonoDuracion: 'no',
   tratamientoRecibido: 'ninguno',
-  motivoRecaida:'', // modificar a motivoRecaida
-  hogarFuma: false, // modificar a hogaFuma
-  hogarFumaDonde:'', //hogarFumaDonde
-  trabajoFuma: false, // trabajoFuma
-  padreFuma: false, // padreFuma
+  motivoRecaida:'',
+  hogarFuma: false,
+  hogarFumaDonde:'',
+  trabajoFuma: false,
+  padreFuma: false, 
   convivienteFuma: false,
-  convivienteQuienFuma:'', //convivienteQuienFuma
-  dependenciaFagestrom:'moderado', //dependenciaFagestrom
-  motivacionRichmond:'moderado', // motivacionRichmond
+  convivienteQuienFuma:'', 
+  dependenciaFagestrom:'moderado',
+  motivacionRichmond:'moderado', 
   cuandoFumaMas:'',
-  asociaCon: '', // asociaCon
-  observacion:'', // observacion
+  asociaCon: '', 
+  observacion:'', 
 };
 
 $(document).ready(() =>{
@@ -56,8 +56,11 @@ $(document).ready(() =>{
       M.textareaAutoResize($('textarea'));
       $('.fixed-action-btn').floatingActionButton();
 
-      // savePersonaSilently();
-
+      if (Persona.apellido && Persona.nombre) {
+        savePersonaSilently();
+      }
+      
+      
   };
  
 
@@ -138,10 +141,19 @@ $(document).ready(() =>{
   }});
   
   R.s.add({model: 'Persona', key: '_id', callback: async ({prevModel, model}) => {
-    const data = await fetchData({endpoint: api.personas.get, params: {_id: model._id}});
-    // agregar id a la url
-    //location.href = addReplaceParamURL(location.href, {id: model._id});
-    R.mutate('Persona', data);
+    if (model._id) {
+      const data = await fetchData({endpoint: api.personas.get, params: {_id: model._id}});
+    
+      if (data.statusCode === 404) {
+        M.toast({html:'No se encontró ninguna persona con la información proporcionada.'});
+        R.mutate('Persona', {_id: ''});
+        return;
+      }
+
+      updateURL(model);
+      
+      R.mutate('Persona', data);
+    }
   }});
 
   // Inicialización
@@ -157,47 +169,65 @@ $(document).ready(() =>{
 })
 
 
-/* const addReplaceParamURL = (urlString, params) => {
-  const keys = Object.keys(params);
-  const url = new URL(urlString);
-  for (const key of keys) {
-    const param = url.searchParams.get(key);
-    const value = params[key];
-    if (param) {
-      urlString = replaceParamURL(urlString, param, value);
-    } else {
-      urlString = addParamURL(urlString, param, value);
+const updateURL = (model) => {
+  let currentId, mode;
+  if (location.href.indexOf('?') >= 0) {
+    mode = 'add';
+    const paramsString = location.href.split('?')[1];
+    if (paramsString.indexOf('id=') >= 0) {
+      mode = 'edit';
+      currentId = new URL(location.href).searchParams.get('id');
+    }
+  } else {
+    mode = 'first';
+  }
+  let newURL = '';
+  if (model._id !== currentId) {
+    switch (mode) {
+      case 'first':
+        newURL = "?";
+      case 'add':
+        newURL = `${newURL}id=${model._id}`;
+        window.history.replaceState( {} , 'personas/', newURL);
+        break;
+      case 'edit':
+        newURL =  location.href.split('?')[1].split(currentId).join(model._id);
+        window.history.replaceState( {} , 'personas/', newURL);
+        break;
     }
   }
 }
 
-const replaceParamURL = (urlString, param, value) => {
-  return `${urlString}`
-}
-
-const addParamURL = (urlString, param, value) => {
-  return `${urlString}?${param}=${value}`;
-} */
-
 const savePersonaSilently = () => {
-  savePersona(true);
+  return savePersona(true);
 }
 
 const savePersonaWithToast = () => {
-  savePersona(false);
+  return savePersona(false);
 }
 
 const savePersona = async (silent) => {
+  
   const params = R.clone(Persona);
+  if (params.pesoKg) {
+    params.pesoKg = parseFloat(params.pesoKg);
+  } else {
+    params.pesoKg = 0;
+  }
+  let result = false;
   if (Persona._id) {
-    updatePersona(params);
+    result = updatePersona(params);
   } else {
     delete params['_id'];
-    createPersona(params);
+    result = createPersona(params);
   }
-/*   if (!silent) {
-    M.toast({html:'Los datos de la persona se han guardado correctamente'});
-  } */
+  if (result.toString() === 'true') {
+    if (!silent) {
+      M.toast({html:'Los datos de la persona se han guardado correctamente'});
+      return true;
+    }
+  }
+  
 }
 
 const createPersona = async (params) => {
@@ -206,7 +236,7 @@ const createPersona = async (params) => {
       return api.common.errorHandler({endpoint: api.personas.create, error: data});
   }
   R.mutate('Persona',{_id: data._id});   
-
+  return true;
 }
 
 const updatePersona = async (params) => {
@@ -214,4 +244,5 @@ const updatePersona = async (params) => {
   if(data.error){
       return api.common.errorHandler({endpoint: api.personas.update, error: data});
   }
+  return true;
 }
