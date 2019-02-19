@@ -1,13 +1,13 @@
 .switch label input[type=checkbox]:checked+.lever {
-  background-color: #90caf9;
+    background-color: #90caf9;
 }
 
 .switch label input[type=checkbox]:checked+.lever:after {
-  background-color: #1e88e5;
+background-color: #1e88e5;
 }
 
 [type="radio"]:checked+span:after {
-  background-color: #1e88e5;
+ background-color: #1e88e5;
 }
 
 [type="radio"]:checked+span:before,
@@ -15,4 +15,6 @@
   border: 2px solid #1e88e5;
 }
 
-.modal { width: 80% !important ; height: 90% !important ; }
+.modal { width: 80% !important;
+  height: 90% !important;
+}
