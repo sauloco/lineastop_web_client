@@ -7,7 +7,7 @@
     <meta name="keywords" content="Línea Stop, historia clínica, historia clinica, historia digital">
     <meta name="author" content="RusticIT https://rusticit.com">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Línea Stop | Personas | Consultas</title>
+    <title>Línea Stop | Consultas</title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 
@@ -55,38 +55,43 @@
     </nav>
 
     <div class="container">
-        <label>Datos principales de consulta</label>
+        <label>Información obligatoria de consulta</label>
         <div class="card">
             <div class="row valign-wrapper">
                 <div class="col s2 m1">
                     <a id='finderLauncherPersonas' class="btn-small waves-effect waves-light blue darken-1 tooltipped"
-                        data-position="top" data-tooltip="Abrir el buscador avanzado">
+                        data-position="top" data-tooltip="Abrir el buscador avanzado de personas">
                         <i class="material-icons">search</i>
                     </a>
                 </div>
                 <div class="input-field col s7 m8">
                     <input type="text" id="ingreseParaBuscar" class="autocomplete" autocomplete="off" autofill="false">
-                    <label for="ingreseParaBuscar">Busque por apellido, nombre, teléfono o correo eléctronico</label>
+                    <label for="ingreseParaBuscar" class="hide-on-med-and-down">Busque persona por apellido, nombre,
+                        teléfono o correo eléctronico</label>
+                    <label for="ingreseParaBuscar" class="hide-on-large-only">Buscador simple de personas</label>
                 </div>
                 <div class="input-field col s3 m3">
                     <input id="fechaConsulta" class="datepicker" type="text">
                     <label for="fechaConsulta" class="active">Fecha de consulta</label>
                 </div>
             </div>
-
         </div>
-        <label>Navegador de consultas</label>
-        <div class="row">
-            <div class="col s12 center">
-                <ul class="pagination">
-                    <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-                    <li class="active"><a href="#!">1</a></li>
-                    <li class="waves-effect"><a href="#!">2</a></li>
-                    <li class="waves-effect"><a href="#!">3</a></li>
-                    <li class="waves-effect"><a href="#!">4</a></li>
-                    <li class="waves-effect"><a href="#!">5</a></li>
-                    <li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
-                </ul>
+        <div id="navigator_wrapper" class="card blue lighten-5">
+            <div class="row">
+                <div class="col s12 center">
+                    <label>Navegador de consultas</label>
+                </div>
+                <div class="col s12 center">
+                    <ul class="pagination">
+                        <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                        <li class="active blue"><a href="#!">1</a></li>
+                        <li class="waves-effect"><a href="#!">2</a></li>
+                        <li class="waves-effect"><a href="#!">3</a></li>
+                        <li class="waves-effect"><a href="#!">4</a></li>
+                        <li class="waves-effect"><a href="#!">5</a></li>
+                        <li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                    </ul>
+                </div>
             </div>
         </div>
         <label>Síntomas clínicos</label>
@@ -555,12 +560,15 @@
         </div>
 
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large blue darken-4 tooltipped" data-tooltip="Haga click para ver las acciones" data-position="left">
+            <a class="btn-floating btn-large blue darken-4 tooltipped" data-tooltip="Haga click para ver las acciones"
+                data-position="left">
                 <i class="large material-icons">add</i>
             </a>
             <ul>
-                <li><a class="btn-floating blue lighten-1 tooltipped" data-tooltip="Ver vista comparativa" data-position="left"><i class="material-icons">grid_on</i></a></li>
-                <li><a class="btn-floating blue darken-2 tooltipped" data-tooltip="Guardar cambios manualmente" data-position="left"><i class="material-icons">save</i></a></li>
+                <li><a class="btn-floating blue lighten-1 tooltipped" data-tooltip="Ver vista comparativa"
+                        data-position="left"><i class="material-icons">grid_on</i></a></li>
+                <li><a class="btn-floating blue darken-2 tooltipped" data-tooltip="Guardar cambios manualmente"
+                        data-position="left"><i class="material-icons">save</i></a></li>
             </ul>
         </div>
     </div>
@@ -580,7 +588,7 @@
             <div class="indeterminate"></div>
         </div>
     </div>
-    
+
 </body>
 
 </html>
