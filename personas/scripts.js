@@ -40,6 +40,7 @@ let Persona = {
   cuandoFumaMas:'',
   asociaCon: '', 
   observacion:'', 
+  imc:'',
 };
 
 $(document).ready(() =>{
@@ -55,7 +56,6 @@ $(document).ready(() =>{
       $('select').formSelect();
       M.textareaAutoResize($('textarea'));
       $('.fixed-action-btn').floatingActionButton();
-
       if (Persona.apellido && Persona.nombre) {
         savePersonaSilently();
       }
@@ -70,7 +70,14 @@ $(document).ready(() =>{
   R.s.add({model: 'Persona', key: 'nacimiento', callback: ({prevModel, model}) => {
     let hoy = moment();
     let unit = 'years';
-    
+    //moment(model.nacimiento).format('DD MM YYYY'); permite guardar pero no muestra bien la fecha
+    //model.nacimiento = date.parse(model.nacimiento); no funciona
+    //model.nacimiento = new.date(model.nacimiento); no funciona
+    //model.nacimiento = parseInt(model.nacimiento); no funciona
+    //model.nacimiento = parse(model.nacimiento); no funciona
+    model.nacimiento = parseFloat(model.nacimiento); //permite guardar pero no muestra bien la fecha
+
+
     let difference = moment(model.nacimiento).isValid() && moment(hoy).isValid()?
       moment(hoy).diff(model.nacimiento, unit) : '';
       if (moment(model.nacimiento) .isAfter (moment(hoy))) {
@@ -100,6 +107,18 @@ $(document).ready(() =>{
       R.mutate('Persona', {hace: `${difference} año${difference === 1 ? '' : 's'}`});
   }});
   
+  R.s.add({model: 'Persona', key: 'alturaCm', callback: ({prevModel, model}) => {
+    let cuadrado = 0;
+    let imcv = 0;
+    if ((model.pesoKg) & (model.alturaCm)){
+      cuadrado = Math.pow(model.alturaCm,2);
+      imcv = (model.pesoKg) / (cuadrado/10000);
+      console.log (imcv);
+      return;
+      }
+      R.mutate('Persona', {imc: `${imcv}`});
+  }});
+
   R.s.add({model: 'Persona', key: 'antecedentesPatologicos', callback: ({prevModel, model}) => {
     if (model.antecedentesPatologicos) {
       $('#antecedentesPatologicosDetails').removeClass('hide');
@@ -214,6 +233,8 @@ const savePersona = async (silent) => {
   } else {
     params.pesoKg = 0;
   }
+  
+
   let result = false;
   if (Persona._id) {
     result = updatePersona(params);
