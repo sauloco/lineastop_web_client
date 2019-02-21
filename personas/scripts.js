@@ -112,7 +112,7 @@ $(document).ready(() =>{
     let imcv = 0;
     if ((model.pesoKg) & (model.alturaCm)){
       cuadrado = Math.pow(model.alturaCm,2);
-      imcv = (model.pesoKg) / (cuadrado/10000);
+      imcv = (model.pesoKg) / (cuadrado/10000); 
       console.log (imcv);
       return;
       }
