@@ -102,7 +102,7 @@ $(document).ready(() =>{
       R.mutate('Persona', {hace: `${difference} año${difference === 1 ? '' : 's'}`});
   }});
   
-  const calculaImc = (pesoKg, alturaCm) => {
+  const calculaImc = (pesoKg, alturaCm) => { 
     return pesoKg / Math.pow(alturaCm/100,2);
   }
   
