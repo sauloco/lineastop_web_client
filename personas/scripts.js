@@ -49,6 +49,7 @@ $(document).ready(() =>{
   $('.datepicker').datepicker();
   $('#guardar').click(savePersonaWithToast);
   initializeDatepicker();
+ 
 
   // por usar Materialize
   const modelCallback = () => {
@@ -58,6 +59,7 @@ $(document).ready(() =>{
       $('.fixed-action-btn').floatingActionButton();
       if (Persona.apellido && Persona.nombre) {
         savePersonaSilently();
+
       }
       
       
@@ -65,18 +67,11 @@ $(document).ready(() =>{
  
 
 
-  R.s.add({model: 'Persona', callback: modelCallback});
+  R.s.add({model: 'Persona', callback: modelCallback}); 
 
   R.s.add({model: 'Persona', key: 'nacimiento', callback: ({prevModel, model}) => {
     let hoy = moment();
     let unit = 'years';
-    //moment(model.nacimiento).format('DD MM YYYY'); permite guardar pero no muestra bien la fecha
-    //model.nacimiento = date.parse(model.nacimiento); no funciona
-    //model.nacimiento = new.date(model.nacimiento); no funciona
-    //model.nacimiento = parseInt(model.nacimiento); no funciona
-    //model.nacimiento = parse(model.nacimiento); no funciona
-    model.nacimiento = parseFloat(model.nacimiento); //permite guardar pero no muestra bien la fecha
-
 
     let difference = moment(model.nacimiento).isValid() && moment(hoy).isValid()?
       moment(hoy).diff(model.nacimiento, unit) : '';
@@ -107,18 +102,21 @@ $(document).ready(() =>{
       R.mutate('Persona', {hace: `${difference} año${difference === 1 ? '' : 's'}`});
   }});
   
-  R.s.add({model: 'Persona', key: 'alturaCm', callback: ({prevModel, model}) => {
-    let cuadrado = 0;
-    let imcv = 0;
-    if ((model.pesoKg) & (model.alturaCm)){
-      cuadrado = Math.pow(model.alturaCm,2);
-      imcv = (model.pesoKg) / (cuadrado/10000); 
-      console.log (imcv);
-      return;
-      }
-      R.mutate('Persona', {imc: `${imcv}`});
-  }});
+  const calculaImc = (pesoKg, alturaCm) => { 
+    return pesoKg / Math.pow(alturaCm/100,2);
+  }
+  
+  const validaPesoAltura = ({prevModel, model}) => {
+    if (model.pesoKg && model.alturaCm){
+      const imc = Math.round(calculaImc(model.pesoKg, model.alturaCm)*100)/100; 
+      R.mutate('Persona', {imc}); 
+    }
+  }
 
+  R.s.add({model: 'Persona', key: 'pesoKg', callback: validaPesoAltura});
+
+  R.s.add({model: 'Persona', key: 'alturaCm', callback: validaPesoAltura});
+ 
   R.s.add({model: 'Persona', key: 'antecedentesPatologicos', callback: ({prevModel, model}) => {
     if (model.antecedentesPatologicos) {
       $('#antecedentesPatologicosDetails').removeClass('hide');
@@ -167,10 +165,17 @@ $(document).ready(() =>{
         M.toast({html:'No se encontró ninguna persona con la información proporcionada.'});
         R.mutate('Persona', {_id: ''});
         return;
+        
       }
 
       updateURL(model);
       
+      if(data.nacimiento){
+        data.nacimiento = moment(new Date(data.nacimiento)).format('DD/MM/YYYY');
+      }
+      if(data.primerConsulta){
+        data.primerConsulta = moment(new Date(data.primerConsulta)).format('DD/MM/YYYY');
+      }       
       R.mutate('Persona', data);
     }
   }});
@@ -226,7 +231,7 @@ const savePersonaWithToast = () => {
 }
 
 const savePersona = async (silent) => {
-  
+
   const params = R.clone(Persona);
   if (params.pesoKg) {
     params.pesoKg = parseFloat(params.pesoKg);
@@ -234,6 +239,13 @@ const savePersona = async (silent) => {
     params.pesoKg = 0;
   }
   
+  if(params.nacimiento){
+    params.nacimiento = moment(params.nacimiento, 'DD/MM/YYYY').toString(); 
+  }
+
+  if(params.nacimiento){
+    params.primerConsulta = moment(params.primerConsulta, 'DD/MM/YYYY').toString(); 
+  }
 
   let result = false;
   if (Persona._id) {
