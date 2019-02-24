@@ -28,14 +28,38 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1 id='welcome'>Bienvenido</h1>
-        <button id='logout' class='btn'>Cerrar sesion</button>
-        <ul>
-            <li><a href="/personas">ABM de personas</a></li>
-            <li><a href="/consultas">Consultas</a></li>
-            <li><a href="/export/?collection=personas">Buscador y exportador de personas</a></li>
+    <nav class="blue darken-4">
+        <ul class="left">
+            <li>
+                <a href="#" data-target="slide-out" class="sidenav-trigger show-on-large"><i class="material-icons">menu</i></a>
+            </li>
         </ul>
+        <h5 class="brand-logo center" id='welcome'>Bienvenido</h5>
+        <ul class="right">
+            <li>
+                <a id='logout' href="">
+                    <i class="material-icons">exit_to_app</i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul id="slide-out" class="sidenav">
+        <li>
+            <a href="#"><i class="material-icons">smoke_free</i>Linea Stop</a>
+            <a href="/index.html"><i class="material-icons">Dashboard</i>Tablero</a>
+            <a href="/consultas"><i class="material-icons">assignment</i>Consultas</a>
+            <a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a>
+            <a href="/personas"><i class="material-icons">people</i>Persona nueva</a>
+            <a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a>
+            <a href="#"><i class="material-icons">save_alt</i>Exportar información</a>
+            <a href="/export/?collection=personas&export=true">Persona</a>
+            <a href="//export/?collection=personas&export=true">Consulta</a>
+            <a href="//export/?collection=personas&export=true">Usuario</a>
+            <a href="#"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a>
+    </ul>
+    <div class="container">
+            <h5> ipsum dolor sit amet consectetur adipisicing elit. Distinctio, nulla aliquid excepturi debitis rerum dolores, fuga at necessitatibus, ullam placeat numquam eum deleniti deserunt laborum voluptatem itaque iure! Amet, esse?</h5>
     </div>
 </body>
+
 </html>

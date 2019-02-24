@@ -1,4 +1,5 @@
 $(document).ready(()=>{
+  $('.sidenav').sidenav();
   iniciarNavBar();
   $('#logout').click(logout);
 })
