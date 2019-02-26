@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col s12 m6">
+                <div class="col s12 m3">
                     <div class="switch">
                         <label>
                             <input type="checkbox" id="blocked">
@@ -91,16 +91,31 @@
                         </label>
                     </div>
                 </div>
-                <div class="col s12 m6">
-                    <select id="role">
-                        <option value="" disabled selected>Permisos</option>
-                        <option id="public" value="Public">Publico</option>
-                        <option id="authenticated" value="Authenticated">Authenticated</option>
-                        <option id="administrador" value="Administrador">Administrador</option>
-                        <option id="medico" value="Medico">Médico</option>
-
-                    </select>
+                <div class="col s3">
+                        <span>Permisos</span>
+                    <label>
+                        <input name="role" id="rolePublico" type="radio" value="5c13989b4464571258360e8d" />
+                        <span>Público</span>
+                    </label>
                 </div>
+                <div class="col s2">
+                        <label>
+                            <input name="role" id="roleInvitado" type="radio" value="5c13989b4464571258360e8c" />
+                            <span>Invitado</span>
+                        </label>
+                    </div>
+                    <div class="col s2">
+                            <label>
+                                <input name="role" id="rolemedico" type="radio" value="5c13989b4464571258360e8b" />
+                                <span>Médico</span>
+                            </label>
+                        </div>
+                        <div class="col s2">
+                                <label>
+                                    <input name="role" id="roleadministrador" type="radio" value="5c1542c6936da40424b9e37b" />
+                                    <span>Administrador</span>
+                                </label>
+                            </div>
             </div>
 
         </div>

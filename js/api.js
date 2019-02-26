@@ -183,8 +183,24 @@ const api = {
     get: {
       location: 'users',
       url_params: [':_id'],
+    }
+  },
+  users_permissions: {
+    roles: {
+        all: {
+            location: 'users_permissions/',
+        }
     },
-    
+    get: {
+      location: 'users_permissions',
+      url_params: [':_id'],
+    },
+    update: {
+      method: 'PUT',
+      location: 'users_permissions',
+      url_params: [':_id'],
+    }
+  },
   auth: {
     local: {
       login: {

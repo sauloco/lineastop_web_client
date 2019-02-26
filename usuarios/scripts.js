@@ -5,9 +5,12 @@ let Usuario = {
   password:'',
   confirmed:'',
   blocked:'',
-  role:'',
 };
 
+let Permisos = {
+  _id: '',
+  role:'',
+}
 $(document).ready(() =>{
 
   $('select').formSelect();  
@@ -18,7 +21,6 @@ $(document).ready(() =>{
   const modelCallback = () => {
       M.updateTextFields();
       $('select').formSelect();
-      M.textareaAutoResize($('textarea'));
       $('.fixed-action-btn').floatingActionButton();
       
       
@@ -41,10 +43,29 @@ $(document).ready(() =>{
       R.mutate('Usuario', data);
     }
   }});
+/*    Permisos._id = Usuarios._id;
+ 
+  R.s.add({model: 'Permisos', key: '_id', callback: async ({prevModel, model}) => {
+    if (model._id) {
+      const data = await fetchData({endpoint: api.users_permissions.get, params: {_id: model._id}});
+    
+      if (data.statusCode === 404) {
+        M.toast({html:'No se encontró ningún usuario con la información proporcionada.'});
+        R.mutate('Permisos', {_id: ''});
+        return;
+        
+      }
 
+      updateURL(model);
+             
+      R.mutate('Permisos', data);
+    }
+  }}); 
+  */
   // Inicialización
   R.init('Usuario');
-
+/*   R.init('Permisos');
+ */
   const url = new URL(location.href);
   const _id = url.searchParams.get('id');
 
