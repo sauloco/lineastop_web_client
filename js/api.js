@@ -184,15 +184,7 @@ const api = {
       location: 'users',
       url_params: [':_id'],
     },
-    permissions:{
-      location:'users/roles'
-    },
-    update: {
-      method: 'PUT',
-      location: 'users',
-      url_params: [':_id'],
-    }
-  },
+    
   auth: {
     local: {
       login: {

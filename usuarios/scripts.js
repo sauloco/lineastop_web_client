@@ -1,11 +1,11 @@
 let Usuario = {
   _id: '',
-  name: '',
+  username: '',
   email:'',
   password:'',
-  correoConfirmado:'',
-  bloqueado:'',
-  permisos:'2',
+  confirmed:'',
+  blocked:'',
+  role:'',
 };
 
 $(document).ready(() =>{

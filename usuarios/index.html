@@ -58,8 +58,8 @@
         <div class="card">
             <div class="row">
                 <div class="input-field col s12 m6">
-                    <input id="name" type="text">
-                    <label for="name">Nombre del usuario</label>
+                    <input id="username" type="text">
+                    <label for="username">Nombre del usuario</label>
                 </div>
                 <div class="input-field col s12 m6">
                     <input id="email" type="email">
@@ -74,7 +74,7 @@
                 <div class="col s12 m6">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id='correoConfirmado'>
+                            <input type="checkbox" id='confirmed'>
                             <span class="lever"></span>
                             Correo eléctronico confirmado
                         </label>
@@ -85,18 +85,20 @@
                 <div class="col s12 m6">
                     <div class="switch">
                         <label>
-                            <input type="checkbox" id="bloqueado">
+                            <input type="checkbox" id="blocked">
                             <span class="lever"></span>
                             Bloqueado
                         </label>
                     </div>
                 </div>
                 <div class="col s12 m6">
-                    <select id="permisos">
+                    <select id="role">
                         <option value="" disabled selected>Permisos</option>
-                        <option id="opcion1" value="1">Option 1</option>
-                        <option id="opcion2" value="2">Option 2</option>
-                        <option id="opcion3" value="3">Option 3</option>
+                        <option id="public" value="Public">Publico</option>
+                        <option id="authenticated" value="Authenticated">Authenticated</option>
+                        <option id="administrador" value="Administrador">Administrador</option>
+                        <option id="medico" value="Medico">Médico</option>
+
                     </select>
                 </div>
             </div>
