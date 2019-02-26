@@ -179,6 +179,18 @@ const api = {
     },
     findBy: {
       location: 'users',
+    },
+    get: {
+      location: 'users',
+      url_params: [':_id'],
+    },
+    permissions:{
+      location:'users/roles'
+    },
+    update: {
+      method: 'PUT',
+      location: 'users',
+      url_params: [':_id'],
     }
   },
   auth: {
