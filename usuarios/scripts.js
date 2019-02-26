@@ -5,12 +5,9 @@ let Usuario = {
   password:'',
   confirmed:'',
   blocked:'',
+  role:''
 };
 
-let Permisos = {
-  _id: '',
-  role:'',
-}
 $(document).ready(() =>{
 
   $('select').formSelect();  
@@ -39,7 +36,9 @@ $(document).ready(() =>{
       }
 
       updateURL(model);
-             
+
+      data.role = data.role._id;
+
       R.mutate('Usuario', data);
     }
   }});
