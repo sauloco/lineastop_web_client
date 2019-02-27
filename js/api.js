@@ -198,7 +198,7 @@ const api = {
     update: {
       method: 'PUT',
       location: 'users_permissions',
-      url_params: [':_id'],
+      url_params: ['_id'],
     }
   },
   auth: {

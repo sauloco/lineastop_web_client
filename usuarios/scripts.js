@@ -2,7 +2,6 @@ let Usuario = {
   _id: '',
   username: '',
   email:'',
-  password:'',
   confirmed:'',
   blocked:'',
   role:''
@@ -11,7 +10,8 @@ let Usuario = {
 $(document).ready(() =>{
 
   $('select').formSelect();  
-  
+  $('#guardar').click(saveCambios);
+
  
 
   // por usar Materialize
@@ -42,29 +42,10 @@ $(document).ready(() =>{
       R.mutate('Usuario', data);
     }
   }});
-/*    Permisos._id = Usuarios._id;
- 
-  R.s.add({model: 'Permisos', key: '_id', callback: async ({prevModel, model}) => {
-    if (model._id) {
-      const data = await fetchData({endpoint: api.users_permissions.get, params: {_id: model._id}});
-    
-      if (data.statusCode === 404) {
-        M.toast({html:'No se encontró ningún usuario con la información proporcionada.'});
-        R.mutate('Permisos', {_id: ''});
-        return;
-        
-      }
 
-      updateURL(model);
-             
-      R.mutate('Permisos', data);
-    }
-  }}); 
-  */
   // Inicialización
   R.init('Usuario');
-/*   R.init('Permisos');
- */
+
   const url = new URL(location.href);
   const _id = url.searchParams.get('id');
 
@@ -104,14 +85,7 @@ const updateURL = (model) => {
   }
 }
 
-/* const savePersonaSilently = () => {
-  return savePersona(true);
-}
-
-const savePersonaWithToast = () => {
-  return savePersona(false);
-}
-
+/*
 const savePersona = async (silent) => {
 
   const params = R.clone(Persona);
@@ -153,11 +127,19 @@ const createPersona = async (params) => {
   R.mutate('Persona',{_id: data._id});   
   return true;
 }
+*/
 
-const updatePersona = async (params) => {
-  const data = await fetchData({endpoint: api.personas.update, params});
+const saveCambios = async (silent) => {
+  const params = R.clone(Usuario);
+
+  if (Usuario._id) {
+    updatePermisos(params);
+  }
+}
+const updatePermisos = async (params) => {
+  const data = await fetchData({endpoint: api.users_permissions.update, params});
   if(data.error){
-      return api.common.errorHandler({endpoint: api.personas.update, error: data});
+      return api.common.errorHandler({endpoint: api.users_permissions.update, error: data});
   }
   return true;
-} */
+} 
