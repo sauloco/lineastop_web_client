@@ -10,7 +10,7 @@ let Usuario = {
 $(document).ready(() =>{
 
   $('select').formSelect();  
-  $('#guardar').click(saveCambios);
+  $('#guardar').click(actualizarUsuarios);
 
  
 
@@ -85,61 +85,16 @@ const updateURL = (model) => {
   }
 }
 
-/*
-const savePersona = async (silent) => {
+const actualizarUsuarios = async () => {
 
-  const params = R.clone(Persona);
-  if (params.pesoKg) {
-    params.pesoKg = parseFloat(params.pesoKg);
-  } else {
-    params.pesoKg = 0;
-  }
-  
-  if(params.nacimiento){
-    params.nacimiento = moment(params.nacimiento, 'DD/MM/YYYY').toString(); 
-  }
-
-  if(params.nacimiento){
-    params.primerConsulta = moment(params.primerConsulta, 'DD/MM/YYYY').toString(); 
-  }
-
-  let result = false;
-  if (Persona._id) {
-    result = updatePersona(params);
-  } else {
-    delete params['_id'];
-    result = createPersona(params);
-  }
-  if (result.toString() === 'true') {
-    if (!silent) {
-      M.toast({html:'Los datos de la persona se han guardado correctamente'});
-      return true;
-    }
-  }
-  
-}
-
-const createPersona = async (params) => {
-  const data = await fetchData({endpoint: api.personas.create, params});
-  if(data.error){
-      return api.common.errorHandler({endpoint: api.personas.create, error: data});
-  }
-  R.mutate('Persona',{_id: data._id});   
-  return true;
-}
-*/
-
-const saveCambios = async (silent) => {
   const params = R.clone(Usuario);
-
-  if (Usuario._id) {
-    updatePermisos(params);
-  }
+  updatePermisos(params);
 }
+
 const updatePermisos = async (params) => {
-  const data = await fetchData({endpoint: api.users_permissions.update, params});
+  const data = await fetchData({endpoint: api.users.update, params});
   if(data.error){
-      return api.common.errorHandler({endpoint: api.users_permissions.update, error: data});
+      return api.common.errorHandler({endpoint: api.users.update, error: data});
   }
   return true;
-} 
+}
