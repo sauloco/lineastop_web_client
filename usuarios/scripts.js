@@ -17,9 +17,7 @@ $(document).ready(() =>{
   // por usar Materialize
   const modelCallback = () => {
       M.updateTextFields();
-      $('select').formSelect();
       $('.fixed-action-btn').floatingActionButton();
-      
       
   };
  
