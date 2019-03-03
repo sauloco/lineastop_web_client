@@ -21,6 +21,7 @@ $(document).ready(() =>{
       
   };
  
+  R.s.add({model: 'Usuario', callback: modelCallback});
 
   R.s.add({model: 'Usuario', key: '_id', callback: async ({prevModel, model}) => {
     if (model._id) {
@@ -84,8 +85,8 @@ const updateURL = (model) => {
 }
 
 const actualizarUsuarios = async () => {
-
   const params = R.clone(Usuario);
+  delete params['email'];
   updatePermisos(params);
 }
 
@@ -94,5 +95,6 @@ const updatePermisos = async (params) => {
   if(data.error){
       return api.common.errorHandler({endpoint: api.users.update, error: data});
   }
+  M.toast({html: 'Los datos fueron actualizados correctamente'});
   return true;
 }

@@ -1,4 +1,24 @@
 let PERSONAS = [];
+let CONSULTAS = [
+  {
+    _id: 123456789,
+    ingreseParaBuscar: 'Perez Juan (22458877. jperez@gmail.com)',
+    persona: '5c13c44ea003c6123488e471',
+    fechaConsulta: '01/01/2019'
+  },
+  {
+    _id: 321654987,
+    ingreseParaBuscar: 'Perez Juan (22458877. jperez@gmail.com)',
+    persona: '5c13c44ea003c6123488e471',
+    fechaConsulta: '01/02/2019'
+  },
+  {
+    _id: 987654321,
+    ingreseParaBuscar: 'Perez Juan (22458877. jperez@gmail.com)',
+    persona: '5c13c44ea003c6123488e471',
+    fechaConsulta: '01/03/2019'
+  },
+];
 
 let Consulta = {
   _id: '',
@@ -67,7 +87,6 @@ $(document).ready(() => {
     $('.tooltipped').tooltip();
     $('.fixed-action-btn').floatingActionButton();
     $('.modal').modal();
-
   };
 
   R.s.add({
@@ -82,6 +101,7 @@ $(document).ready(() => {
       if (model.ingreseParaBuscar) {
         R.mutate('Consulta', {'persona': PERSONAS[model.ingreseParaBuscar]});
       }
+      toggleDetails(model);
     }
   })
 
@@ -100,11 +120,12 @@ $(document).ready(() => {
         R.mutate('Consulta', {
           'fechaConsulta': prevModel.fechaConsulta
         });
-        return;
       }
-
+      toggleDetails(model);
     }
   });
+
+
 
   R.s.add({
     model: 'Consulta',
@@ -214,4 +235,92 @@ const openFinderPersonas = () => {
 
   const modal = M.Modal.getInstance(document.querySelector('#buscadorPersonas'));
   modal.open();
+}
+
+const toggleDetails = ({persona, fechaConsulta}) => {
+  if (persona) {
+    navigatorCreator(persona);
+    $('.navigator_wrapper').removeClass('hide');
+    if (fechaConsulta) {
+      $('.wrapper').removeClass('hide');
+    } else {
+      $('.wrapper').addClass('hide');
+    }
+  } else {
+    $('.wrapper').addClass('hide');
+    $('.navigator_wrapper').addClass('hide');
+  }
+}
+
+const navigatorCreator = async (persona) => {
+  // const CONSULTAS = await fetchData({endpoint: api.consulta.findBy, });
+  // pagination is the wrapper
+  const wrapper = $('.pagination');
+  $(wrapper).html('');
+  const goToFirst = `<li id = "goToFirst" class = "tooltipped" data-tooltip="${CONSULTAS[0].fechaConsulta}" data-position="bottom"><a href="" onClick = "goTo(0)"><i class="material-icons">chevron_left</i></a></li>`;
+  $(wrapper).append(goToFirst)
+  for (index in CONSULTAS) {
+    const goTo = `<li class = "tooltipped" data-tooltip="${CONSULTAS[index].fechaConsulta}" data-position="bottom" id = "goTo${index}"><a href="" onClick = "goTo(${index})">${+index+1}</a></li>`;
+    $(wrapper).append(goTo)
+  }
+  const goToLast = `<li class = "tooltipped" data-tooltip="${CONSULTAS[CONSULTAS.length - 1].fechaConsulta}" data-position="bottom" id = "goToLast"><a href="" onClick = "goTo(${CONSULTAS.length - 1})"><i class="material-icons">chevron_right</i></a></li>`;
+  $(wrapper).append(goToLast)
+
+}
+
+const goTo = (index) => {
+  R.mutate('Consulta', CONSULTAS[index]);
+  updateURL(Consulta);
+  if (index === 0) {
+    $('#goToFirst').addClass('disabled');
+  } else {
+    $('#goToFirst').removeClass('disabled');
+  }
+
+  if (index === (CONSULTAS.length - 1)) {
+    $('#goToLast').addClass('disabled');
+  } else {
+    $('#goToLast').removeClass('disabled');
+  }
+
+  for (tempIndex in CONSULTAS) {
+    if (+tempIndex === index) {
+      $(`#goTo${tempIndex}`).removeClass('waves-effect');
+      $(`#goTo${tempIndex}`).addClass('active');
+      $(`#goTo${tempIndex}`).addClass('blue');
+    } else {
+      $(`#goTo${tempIndex}`).removeClass('active');
+      $(`#goTo${tempIndex}`).removeClass('blue');
+      $(`#goTo${tempIndex}`).addClass('waves-effect');
+    }
+  }
+}
+
+const updateURL = (model) => {
+  let currentId, mode;
+  if (location.href.indexOf('?') >= 0) {
+    mode = 'add';
+    const paramsString = location.href.split('?')[1];
+    if (paramsString.indexOf('id=') >= 0) {
+      mode = 'edit';
+      currentId = new URL(location.href).searchParams.get('id');
+    }
+  } else {
+    mode = 'first';
+  }
+  let newURL = '';
+  if (model._id !== currentId) {
+    switch (mode) {
+      case 'first':
+        newURL = "?";
+      case 'add':
+        newURL = `${newURL}id=${model._id}`;
+        window.history.replaceState( {} , 'consultas/', newURL);
+        break;
+      case 'edit':
+        newURL =  location.href.split('?')[1].split(currentId).join(model._id);
+        window.history.replaceState( {} , 'consultas/', `?${newURL}`);
+        break;
+    }
+  }
 }

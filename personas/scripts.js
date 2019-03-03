@@ -216,7 +216,7 @@ const updateURL = (model) => {
         break;
       case 'edit':
         newURL =  location.href.split('?')[1].split(currentId).join(model._id);
-        window.history.replaceState( {} , 'personas/', newURL);
+        window.history.replaceState( {} , 'personas/', `?${newURL}`);
         break;
     }
   }
