@@ -18,3 +18,11 @@ const initializeDatepicker = async (options, selector) => {
 
   $(selector).datepicker(options);
 }
+
+const displayDate = (normalizedDate) => {
+  return moment(new Date(normalizedDate)).format('DD/MM/YYYY');
+};
+
+const normalizeDate = (displayedDate) => {
+  return moment(displayedDate, 'DD/MM/YYYY').toString(); 
+}

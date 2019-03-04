@@ -171,10 +171,10 @@ $(document).ready(() =>{
       updateURL(model);
       
       if(data.nacimiento){
-        data.nacimiento = moment(new Date(data.nacimiento)).format('DD/MM/YYYY');
+        data.nacimiento = displayDate(data.nacimiento); // moment(new Date(data.nacimiento)).format('DD/MM/YYYY');
       }
       if(data.primerConsulta){
-        data.primerConsulta = moment(new Date(data.primerConsulta)).format('DD/MM/YYYY');
+        data.primerConsulta = displayDate(data.primerConsulta); // moment(new Date(data.primerConsulta)).format('DD/MM/YYYY');
       }       
       R.mutate('Persona', data);
     }
@@ -240,11 +240,11 @@ const savePersona = async (silent) => {
   }
   
   if(params.nacimiento){
-    params.nacimiento = moment(params.nacimiento, 'DD/MM/YYYY').toString(); 
+    params.nacimiento = normalizeDate(params.nacimiento); // moment(params.nacimiento, 'DD/MM/YYYY').toString(); 
   }
 
   if(params.nacimiento){
-    params.primerConsulta = moment(params.primerConsulta, 'DD/MM/YYYY').toString(); 
+    params.primerConsulta = normalizeDate(params.primerConsulta); // moment(params.primerConsulta, 'DD/MM/YYYY').toString(); 
   }
 
   let result = false;

@@ -1,74 +1,57 @@
-let PERSONAS = [];
-let CONSULTAS = [
-  {
-    _id: 123456789,
-    ingreseParaBuscar: 'Perez Juan (22458877. jperez@gmail.com)',
-    persona: '5c13c44ea003c6123488e471',
-    fechaConsulta: '01/01/2019'
-  },
-  {
-    _id: 321654987,
-    ingreseParaBuscar: 'Perez Juan (22458877. jperez@gmail.com)',
-    persona: '5c13c44ea003c6123488e471',
-    fechaConsulta: '01/02/2019'
-  },
-  {
-    _id: 987654321,
-    ingreseParaBuscar: 'Perez Juan (22458877. jperez@gmail.com)',
-    persona: '5c13c44ea003c6123488e471',
-    fechaConsulta: '01/03/2019'
-  },
-];
+let PERSONAS = {};
+let CONSULTAS = [];
 
 let Consulta = {
   _id: '',
   ingreseParaBuscar: '',
-  fechaConsulta: '',
+  fecha: '',
   tos: false,
   expectoracion: false,
-  doloresCalambres: false,
+  dolorCalambre: false,
   dolorPrecordial: false,
   dificultadRespiratoria: false,
-  sueño: false,
+  sueno: false,
   piel: false,
   olfato: false,
   dientes: false,
   gusto: false,
-  clausicacion: false,
-  problemasPeso: false,
-  tabaquismoEsEnfermedad: false,
-  queEsTripleAdiccion: false,
-  cadaAbandonoEsExperiencia: false,
-  controlApoyoTelefonico: false,
-  dejarDeFumarCammbiaVida: false,
-  tratamientoFarmacologicoSiNecesario: false,
+  claudicacionMi: false,
+  problemaPeso: false,
+  tabaquismoEnfermedad: false,
+  tripleAdiccion: false,
+  abandonoExperiencia: false,
+  controlApoyo: false,
+  cambiarVida: false,
+  tratamientoFarmacologico: false,
   actividadManual: false,
   tiempoLibre: false,
   carteleria: false,
   comprometerse: false,
-  corteCigarrillos: false,
+  corte: false,
   desayuno: false,
   actividadFisica: false,
   agua: false,
-  chiclesSinAzucar: false,
+  chicles: false,
   zanahoriaManzana: false,
   autoSinTabaco: false,
   casaSinTabaco: false,
   alimentacion: false,
-  cepilladoDientes: false,
-  baños: false,
-  reunionesFumadores: false,
-  cambioMarcas: false,
+  cepilladoDiente: false,
+  banos: false,
+  reuniones: false,
+  cambioMarca: false,
   otros: '',
   derivado: false,
-  medicoDerivado: '',
-  notificacionAlMedico: '',
-  compromisoAbandono: '',
-  abandonoEfectivo: '',
-  proximaConsulta: '',
-  observacionesGenerales: '',
+  derivadoMedico: '',
+  derivadoNotificacion: '',
+  fechaAbandonoCompromiso: '',
+  fechaAbandonoEfectiva: '',
+  fechaProximaConsulta: '',
+  observacion: '',
   persona: ''
-}
+};
+
+let defaultConsulta = JSON.parse(JSON.stringify(Consulta));
 
 $(document).ready(() => {
   $('select').formSelect();
@@ -107,25 +90,23 @@ $(document).ready(() => {
 
   R.s.add({
     model: 'Consulta',
-    key: 'fechaConsulta',
+    key: 'fecha',
     callback: ({
       prevModel,
       model
     }) => {
       const hoy = moment();
-      if (moment(model.fechaConsulta, DATE_FORMAT_ES).isAfter(moment(hoy))) {
+      if (moment(model.fecha, DATE_FORMAT_ES).isAfter(moment(hoy))) {
         M.toast({
           html: 'La fecha de la consulta no puede ser futura.'
         });
         R.mutate('Consulta', {
-          'fechaConsulta': prevModel.fechaConsulta
+          'fecha': prevModel.fecha
         });
       }
       toggleDetails(model);
     }
   });
-
-
 
   R.s.add({
     model: 'Consulta',
@@ -206,21 +187,121 @@ $(document).ready(() => {
     }
   });
 
+  R.s.add({
+    model: 'Consulta',
+    key: '_id',
+    callback: ({
+      prevModel,
+      model
+    }) => {
+      if (model._id) {
+        if (CONSULTAS.length && model._id !== prevModel._id) {
+          const targetConsultaIdx = CONSULTAS.map((v, i) => {
+            if (v._id === model._id){
+              return i;
+            }
+          }).filter(v => v)[0];
+          goTo(targetConsultaIdx);
+          // R.mutate('Consulta', currentConsulta);
+        } else {
+          loadConsultaById(model._id);
+        }
+      }
+    }
+  });
+
   // Inicialización
   R.init('Consulta');
 
+  const url = new URL(location.href);
+  const _id = url.searchParams.get('id');
+
+  if (_id) {
+    R.mutate('Consulta', {_id});
+  }
+
 })
 
-const saveConsulta = () => {
-  // TODO: send data to backend
-  M.toast({
-    html: 'Supongamos que acá se mandó a guardar la data.'
-  });
+const loadConsultaById = async _id => {
+  const data = await fetchData({endpoint: api.consultas.get, params: {_id}});
+  if (data.statusCode === 404) {
+    M.toast({html:'No se encontró ninguna consulta con la información proporcionada.'});
+    R.mutate('Consulta', {_id: ''});
+    return;
+  }
+  const ingreseParaBuscar = Object.keys(PERSONAS);
+  for (const idx of ingreseParaBuscar) {
+    if (PERSONAS[idx] === data.persona._id) {
+      data.persona = data.persona._id;
+      data.ingreseParaBuscar = idx;
+      data.fecha = displayDate(data.fecha);
+      R.mutate('Consulta', data);
+      return;
+    }
+  }
+  
+}
+
+const saveConsulta = async (silent) => {
+  const params = JSON.parse(JSON.stringify(Consulta));
+
+  if(params.fecha){
+    params.fecha = normalizeDate(params.fecha);
+  } else {
+    if (!silent) {
+      M.toast('La fecha de la consulta es obligatoria');
+    }
+    return;
+  }
+
+  if(params.compromisoAbandono){
+    params.compromisoAbandono = normalizeDate(params.compromisoAbandono);
+  }
+  if(params.abandonoEfectivo){
+    params.abandonoEfectivo = normalizeDate(params.abandonoEfectivo);
+  }
+  if(params.proximaConsulta){
+    params.proximaConsulta = normalizeDate(params.proximaConsulta);
+  }
+  let result = false;
+  if (!Consulta._id) {
+    delete params['_id'];
+    result = createConsulta(params);
+  } else {
+    result = updateConsulta(params);
+  }
+  if (result.toString() === 'true') {
+    if (!silent) {
+      M.toast({html:'Los datos de la persona se han guardado correctamente'});
+      return true;
+    }
+  }
+
+}
+
+const createConsulta = async(params) => {
+  const data = await fetchData({endpoint: api.consultas.create, params});
+  if(data.error){
+    return api.common.errorHandler({endpoint: api.personas.create, error: data});
+  }
+  CONSULTAS.push(data);
+  navigatorCreator();
+  goTo(CONSULTAS.length - 1);
+  // R.mutate('Consulta',{_id: data._id});   
+  return true;
+}
+
+const updateConsulta = async (params) => {
+  const data = await fetchData({endpoint: api.consultas.update, params});
+  if(data.error){
+    return api.common.errorHandler({endpoint: api.personas.create, error: data});
+  }
+  return true;
 }
 
 const getAllPersonas = async () => {
   const personas = await fetchData({endpoint: api.personas.all});
-  data = [];
+  const data = [];
   PERSONAS = [];
   for (persona of personas) {
     data[`${persona.apellido} ${persona.nombre} (${persona.telefono}. ${persona.email})`] = null;
@@ -237,11 +318,11 @@ const openFinderPersonas = () => {
   modal.open();
 }
 
-const toggleDetails = ({persona, fechaConsulta}) => {
+const toggleDetails = ({persona, fecha}) => {
   if (persona) {
-    navigatorCreator(persona);
+    navigatorCreator();
     $('.navigator_wrapper').removeClass('hide');
-    if (fechaConsulta) {
+    if (fecha) {
       $('.wrapper').removeClass('hide');
     } else {
       $('.wrapper').addClass('hide');
@@ -252,24 +333,55 @@ const toggleDetails = ({persona, fechaConsulta}) => {
   }
 }
 
-const navigatorCreator = async (persona) => {
-  // const CONSULTAS = await fetchData({endpoint: api.consulta.findBy, });
+const navigatorCreator = async () => {
+  CONSULTAS = await fetchData({endpoint: api.consultas.findBy, params: {persona: PERSONAS[Consulta.ingreseParaBuscar]}});
   // pagination is the wrapper
   const wrapper = $('.pagination');
   $(wrapper).html('');
-  const goToFirst = `<li id = "goToFirst" class = "tooltipped" data-tooltip="${CONSULTAS[0].fechaConsulta}" data-position="bottom"><a href="" onClick = "goTo(0)"><i class="material-icons">chevron_left</i></a></li>`;
+  if (!CONSULTAS.length) {
+    $(wrapper).html('Cargue una nueva consulta para esta persona');  
+  }
+  const goToFirst = `<li id = "goToFirst" title = "Primera: ${displayDate(CONSULTAS[0].fecha)}"><a href="#" onClick = "goTo(0)"><i class="material-icons left">first_page</i></a></li>`;
+  let disableLast = false;
+  
   $(wrapper).append(goToFirst)
-  for (index in CONSULTAS) {
-    const goTo = `<li class = "tooltipped" data-tooltip="${CONSULTAS[index].fechaConsulta}" data-position="bottom" id = "goTo${index}"><a href="" onClick = "goTo(${index})">${+index+1}</a></li>`;
+  for (const index in CONSULTAS) {
+    let disableClick = false;
+    let setClass = "";
+    if (CONSULTAS[index]._id === Consulta._id) {
+      setClass += " active blue";
+      disableClick = true;
+      if (+index === 0) {
+        $("#goToFirst").addClass('disabled');
+      }
+      if (+index === CONSULTAS.length - 1) {
+        disableLast = true;
+      }
+    }
+    const goTo = `<li class = "${setClass}" id = "goTo${index}" title = "${displayDate(CONSULTAS[index].fecha)}"}><a href="#" ${disableClick ? '' : `onClick = "goTo(${index})"`}>${+index + 1}</a></li>`;
     $(wrapper).append(goTo)
   }
-  const goToLast = `<li class = "tooltipped" data-tooltip="${CONSULTAS[CONSULTAS.length - 1].fechaConsulta}" data-position="bottom" id = "goToLast"><a href="" onClick = "goTo(${CONSULTAS.length - 1})"><i class="material-icons">chevron_right</i></a></li>`;
+  const goToLast = `<li class = "${disableLast ? 'disabled' : ''}" id = "goToLast" title = "Última: ${displayDate(CONSULTAS[CONSULTAS.length - 1].fecha)}"><a href="#" onClick = "goTo(${CONSULTAS.length - 1})"><i class="material-icons right">last_page</i></a></li>`;
   $(wrapper).append(goToLast)
+  const goToNew = `<li class = "blue darken-1" id = "goToNew"><a href="#" class = "white-text" onClick = "goToNew()">Nueva</a></li>`;
+  $(wrapper).append(goToNew)
+  $('.tooltipped').tooltip();
+}
 
+const goToNew = () => {
+  defaultConsulta.ingreseParaBuscar = Consulta.ingreseParaBuscar;
+  defaultConsulta.persona = Consulta.persona;
+  R.mutate('Consulta', defaultConsulta);
+  updateURL(Consulta);
 }
 
 const goTo = (index) => {
-  R.mutate('Consulta', CONSULTAS[index]);
+  if (index === undefined) {
+    return;
+  }
+  const data = JSON.parse(JSON.stringify(CONSULTAS[index]));
+  data.fecha = displayDate(data.fecha);
+  R.mutate('Consulta', data);
   updateURL(Consulta);
   if (index === 0) {
     $('#goToFirst').addClass('disabled');
@@ -309,17 +421,24 @@ const updateURL = (model) => {
     mode = 'first';
   }
   let newURL = '';
+  if (model._id === '' && mode === 'edit') {
+    mode = 'empty';
+    newURL = '/consultas/';
+  }
   if (model._id !== currentId) {
     switch (mode) {
+      case 'empty':
+        window.history.replaceState( {} , '', newURL);
+        break;
       case 'first':
         newURL = "?";
       case 'add':
         newURL = `${newURL}id=${model._id}`;
-        window.history.replaceState( {} , 'consultas/', newURL);
+        window.history.replaceState( {} , '', newURL);
         break;
       case 'edit':
         newURL =  location.href.split('?')[1].split(currentId).join(model._id);
-        window.history.replaceState( {} , 'consultas/', `?${newURL}`);
+        window.history.replaceState( {} , '', `?${newURL}`);
         break;
     }
   }

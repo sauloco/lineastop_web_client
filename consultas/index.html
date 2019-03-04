@@ -71,8 +71,8 @@
                     <label for="ingreseParaBuscar" class="hide-on-large-only">Buscador simple de personas</label>
                 </div>
                 <div class="input-field col s3 m3">
-                    <input id="fechaConsulta" class="datepicker" type="text">
-                    <label for="fechaConsulta" class="active">Fecha de consulta</label>
+                    <input id="fecha" class="datepicker" type="text">
+                    <label for="fecha" class="active">Fecha de consulta</label>
                 </div>
             </div>
         </div>
@@ -113,7 +113,7 @@
                     <div class="col s12 m4">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="doloresCalambres">
+                                <input type="checkbox" id="dolorCalambre">
                                 <span class="lever"></span>
                                 Dolores o calambres musculares
                             </label>
@@ -142,7 +142,7 @@
                     <div class="col s12 m4">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="sueño">
+                                <input type="checkbox" id="sueno">
                                 <span class="lever"></span>
                                 Sueño
                             </label>
@@ -191,7 +191,7 @@
                     <div class="col s12 m4">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="claudicacion">
+                                <input type="checkbox" id="claudicacionMi">
                                 <span class="lever"></span>
                                 Claudicación MI
                             </label>
@@ -200,7 +200,7 @@
                     <div class="col s12 m4">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="problemasPeso">
+                                <input type="checkbox" id="problemaPeso">
                                 <span class="lever"></span>
                                 Problemas con el peso
                             </label>
@@ -218,7 +218,7 @@
                     <div class="col s12 m6">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="tabaquismoEsEnfermedad">
+                                <input type="checkbox" id="tabaquismoEnfermedad">
                                 <span class="lever"></span>
                                 Tabaquismo es una enfermedad
                             </label>
@@ -227,7 +227,7 @@
                     <div class="col s12 m6">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="queEsTripleAdiccion">
+                                <input type="checkbox" id="tripleAdiccion">
                                 <span class="lever"></span>
                                 Que es la triple adicción
                             </label>
@@ -238,7 +238,7 @@
                     <div class="col s12 m6">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="cadaAbandonoEsExperiencia">
+                                <input type="checkbox" id="abandonoExperiencia">
                                 <span class="lever"></span>
                                 Cada abandono es una experiencia
                             </label>
@@ -247,7 +247,7 @@
                     <div class="col s12 m6">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="controlApoyoTelefonico">
+                                <input type="checkbox" id="controlApoyo">
                                 <span class="lever"></span>
                                 Control + apoyo telefónico
                             </label>
@@ -258,7 +258,7 @@
                     <div class="col s12 m6">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="dejarDeFumarCambiarVida">
+                                <input type="checkbox" id="cambiarVida">
                                 <span class="lever"></span>
                                 Dejar de fumar es cambiar de vida
                             </label>
@@ -267,7 +267,7 @@
                     <div class="col s12 m6">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="tratamientoFarmacologicoSiNecesario">
+                                <input type="checkbox" id="tratamientoFarmacologico">
                                 <span class="lever"></span>
                                 Tratamiento farmacológico si es necesario
                             </label>
@@ -286,7 +286,7 @@
                     <div class="col s12 m4">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="actividaManual">
+                                <input type="checkbox" id="actividadManual">
                                 <span class="lever"></span>
                                 Actividad manual
                             </label>
@@ -324,7 +324,7 @@
                     <div class="col s12 m4">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="corteCigarrillos">
+                                <input type="checkbox" id="corte">
                                 <span class="lever"></span>
                                 Corte de los cigarrillos
                             </label>
@@ -362,7 +362,7 @@
                     <div class="col s12 m4">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="chiclesSinAzucar">
+                                <input type="checkbox" id="chicles">
                                 <span class="lever"></span>
                                 Chicles sin azúcar
                             </label>
@@ -411,7 +411,7 @@
                     <div class="col s12 m4">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="cepilladoDientes">
+                                <input type="checkbox" id="cepilladoDiente">
                                 <span class="lever"></span>
                                 Cepillado de dientes
                             </label>
@@ -420,7 +420,7 @@
                     <div class="col s12 m4">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="baños">
+                                <input type="checkbox" id="banos">
                                 <span class="lever"></span>
                                 Baños
                             </label>
@@ -431,7 +431,7 @@
                     <div class="col s12 m4">
                         <div class="switch">
                             <label>
-                                <input type="checkbox" id="reunionesFumadores">
+                                <input type="checkbox" id="reuniones">
                                 <span class="lever"></span>
                                 Reuniones con fumadores
                             </label>
@@ -468,41 +468,41 @@
                         </div>
                     </div>
                     <div id="medicoDerivadoDetails" class="input-field col s12 m10 hide">
-                        <input id="medicoDerivado" type="text">
-                        <label for="medicoDerivado">Nombre del médico derivado</label>
+                        <input id="derivadoMedico" type="text">
+                        <label for="derivadoMedico">Nombre del médico derivado</label>
                     </div>
                 </div>
                 <div class="row hide" id="notificacionAlMedicoDetails">
                     <div class="input-field col s12 m10 offset-m2">
-                        <textarea id="notificacionAlMedico" class="materialize-textarea"></textarea>
-                        <label for="notificacionAlMedico">Notificación al médico</label>
+                        <textarea id="derivadoNotificacion" class="materialize-textarea"></textarea>
+                        <label for="derivadoNotificacion">Notificación al médico</label>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col s12 m4">
                         <div class="input-field">
-                            <input id="compromisoAbandono" type="text" class="datepicker">
-                            <label for="compromisoAbandono" class="active">Compromiso de abandono</label>
+                            <input id="fechaAbandonoCompromiso" type="text" class="datepicker">
+                            <label for="fechaAbandonoCompromiso" class="active">Compromiso de abandono</label>
                         </div>
                     </div>
                     <div class="col s12 m4">
                         <div class="input-field">
-                            <input id="abandonoEfectivo" type="text" class="datepicker">
-                            <label for="abandonoEfectivo">Abandono efectivo</label>
+                            <input id="fechaAbandonoEfectiva" type="text" class="datepicker">
+                            <label for="fechaAbandonoEfectiva">Abandono efectivo</label>
                         </div>
                     </div>
                     <div class="col s12 m4">
                         <div class="input-field">
-                            <input id="proximaConsulta" type="text" class="datepicker">
-                            <label for="proximaConsulta">Próxima consulta</label>
+                            <input id="fechaProximaConsulta" type="text" class="datepicker">
+                            <label for="fechaProximaConsulta">Próxima consulta</label>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
-                        <textarea id="observacionesGenerales" class="materialize-textarea"></textarea>
-                        <label for="observacionesGenerales">Observaciones generales</label>
+                        <textarea id="observacion" class="materialize-textarea"></textarea>
+                        <label for="observacion">Observaciones generales</label>
                     </div>
                 </div>
             </div>
@@ -568,7 +568,7 @@
             <ul>
                 <li><a class="btn-floating blue lighten-1 tooltipped" data-tooltip="Ver vista comparativa"
                         data-position="left"><i class="material-icons">grid_on</i></a></li>
-                <li><a class="btn-floating blue darken-2 tooltipped" data-tooltip="Guardar cambios manualmente"
+                <li><a id = "guardar" class="btn-floating blue darken-2 tooltipped" data-tooltip="Guardar cambios manualmente"
                         data-position="left"><i class="material-icons">save</i></a></li>
             </ul>
         </div>

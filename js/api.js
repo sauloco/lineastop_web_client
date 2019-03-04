@@ -76,7 +76,7 @@ const getPromise = ({endpoint, params, token}) => {
     
     switch (method) {
       case 'GET': 
-        if (url_params.length) {
+        if (url_params && url_params.length) {
           const param_names = url_params.map(v => v.split(':').join(''));
           for (name of param_names) {
             const param_value = params[name];
@@ -170,6 +170,27 @@ const api = {
       url_params: [':_id'],
     }
   },
+  consultas: {
+    all: {
+      location: 'consultas/'
+    },
+    get: {
+      location: 'consultas',
+      url_params: [':_id'],
+    },
+    create: {
+      method: 'POST',
+      location: 'consultas/'
+    },
+    update: {
+      method: 'PUT',
+      location: 'consultas',
+      url_params: [':_id'],
+    },
+    findBy: {
+      location: 'consultas',
+    },
+  },
   users: {
     me: {
       location: 'users/me'
@@ -190,7 +211,6 @@ const api = {
       url_params: [':_id'],
     }
   },
-
   auth: {
     local: {
       login: {

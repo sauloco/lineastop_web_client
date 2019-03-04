@@ -84,13 +84,17 @@ const Rustic = (() => {
         model
       });
     }
-
-    const modelSubscriptions = subscriptions.search(modelName);
-    for (const modelSubscription of modelSubscriptions) {
-      modelSubscription.callback({
-        prevModel,
-        model
-      });
+    
+    const sPrevModel = JSON.stringify(prevModel);
+    const sModel = JSON.stringify(model);
+    if (sPrevModel !== sModel) {
+      const modelSubscriptions = subscriptions.search(modelName);
+      for (const modelSubscription of modelSubscriptions) {
+        modelSubscription.callback({
+          prevModel,
+          model
+        });
+      }
     }
 
     mutating = false;
