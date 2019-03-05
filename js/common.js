@@ -1,4 +1,4 @@
-const URL_BASE = ['http://127.0.0.1:5500/', 'http://localhost:5500/'];
+//tslint
 
 $(document).ready(() => {
     validarToken();
