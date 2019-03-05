@@ -45,7 +45,8 @@ let Persona = {
 
 $(document).ready(() =>{
 
-  $('select').formSelect();  
+  M.FormSelect.init(document.querySelectorAll('select'), {});
+
   $('.datepicker').datepicker();
   $('#guardar').click(savePersonaWithToast);
   initializeDatepicker();
@@ -185,6 +186,14 @@ $(document).ready(() =>{
 
   const url = new URL(location.href);
   const _id = url.searchParams.get('id');
+  const nav = url.searchParams.get('nav');
+
+  if (nav === 'false') {
+    $('nav').addClass('hide');
+    $('.fixed-action-btn').addClass('hide');
+    $('.container').removeClass('container');
+
+  }
 
   if (_id) {
     R.mutate('Persona', {_id});
@@ -240,11 +249,11 @@ const savePersona = async (silent) => {
   }
   
   if(params.nacimiento){
-    params.nacimiento = normalizeDate(params.nacimiento); // moment(params.nacimiento, 'DD/MM/YYYY').toString(); 
+    params.nacimiento = normalizeDate(params.nacimiento);
   }
 
-  if(params.nacimiento){
-    params.primerConsulta = normalizeDate(params.primerConsulta); // moment(params.primerConsulta, 'DD/MM/YYYY').toString(); 
+  if(params.primerConsulta){
+    params.primerConsulta = normalizeDate(params.primerConsulta);
   }
 
   let result = false;

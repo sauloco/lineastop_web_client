@@ -72,6 +72,8 @@ $(document).ready(() => {
     $('.modal').modal();
   };
 
+  $('#toggle_detalles_persona').click(toggleDetailsPersona);
+
   R.s.add({
     model: 'Consulta',
     callback: modelCallback
@@ -84,7 +86,7 @@ $(document).ready(() => {
       if (model.ingreseParaBuscar) {
         R.mutate('Consulta', {'persona': PERSONAS[model.ingreseParaBuscar]});
       }
-      toggleDetails(model);
+      toggleDetails(prevModel, model);
     }
   })
 
@@ -104,7 +106,13 @@ $(document).ready(() => {
           'fecha': prevModel.fecha
         });
       }
-      toggleDetails(model);
+      if (model.ingreseParaBuscar) {
+        R.mutate('Consulta', {'persona': PERSONAS[model.ingreseParaBuscar]});
+      }
+      if (prevModel.persona && prevModel.persona._id) {
+        prevModel.persona = prevModel.persona._id;
+      }
+      toggleDetails(prevModel, model);
     }
   });
 
@@ -222,6 +230,16 @@ $(document).ready(() => {
 
 })
 
+const toggleDetailsPersona = (event) => {
+  if ($(event.target).prop('checked')) {
+    $('#persona_details_wrapper').removeClass('hide');
+    $('#persona_details_wrapper_helper').addClass('hide');
+  } else {
+    $('#persona_details_wrapper').addClass('hide');
+    $('#persona_details_wrapper_helper').removeClass('hide');
+  }
+}
+
 const loadConsultaById = async _id => {
   const data = await fetchData({endpoint: api.consultas.get, params: {_id}});
   if (data.statusCode === 404) {
@@ -282,7 +300,7 @@ const saveConsulta = async (silent) => {
 const createConsulta = async(params) => {
   const data = await fetchData({endpoint: api.consultas.create, params});
   if(data.error){
-    return api.common.errorHandler({endpoint: api.personas.create, error: data});
+    return api.common.errorHandler({endpoint: api.consultas.create, error: data});
   }
   CONSULTAS.push(data);
   navigatorCreator();
@@ -294,7 +312,7 @@ const createConsulta = async(params) => {
 const updateConsulta = async (params) => {
   const data = await fetchData({endpoint: api.consultas.update, params});
   if(data.error){
-    return api.common.errorHandler({endpoint: api.personas.create, error: data});
+    return api.common.errorHandler({endpoint: api.consultas.update, error: data});
   }
   return true;
 }
@@ -318,11 +336,14 @@ const openFinderPersonas = () => {
   modal.open();
 }
 
-const toggleDetails = ({persona, fecha}) => {
-  if (persona) {
+const toggleDetails = (prevModel, model) => {
+  if (model.persona) {
     navigatorCreator();
     $('.navigator_wrapper').removeClass('hide');
-    if (fecha) {
+    if (prevModel.persona !== model.persona) {
+      $('#persona_details').prop('src', `/personas/?nav=false&id=${model.persona}`);
+    }
+    if (model.fecha) {
       $('.wrapper').removeClass('hide');
     } else {
       $('.wrapper').addClass('hide');

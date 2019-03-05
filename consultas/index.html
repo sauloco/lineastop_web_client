@@ -86,6 +86,24 @@
                     </ul>
                 </div>
             </div>
+            <div class="row">
+                <div class="col s12 center">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="toggle_detalles_persona" checked>
+                            <span class="lever"></span>
+                            Mostrar detalles de persona
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div id = "persona_details_wrapper" class = "row">
+                <div class="col s12 center">
+                    <iframe id = "persona_details" class = "card white" src = "/personas/?nav=false&id=" height="600px" width="100%" frameBorder="0"></iframe>
+                </div>
+            </div>
+            <div id = "persona_details_wrapper_helper" class="row hide"></div>
         </div>
         <div class="wrapper">
             <label>Síntomas clínicos</label>
