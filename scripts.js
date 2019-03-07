@@ -25,14 +25,19 @@ CONSULTAS = [
       fechaProximaConsulta: ''
      },
 ]
-
-const collectionsCreator = async () => {
-CONSULTAS = await fetchData({endpoint: api.consultas.findBy, params: {persona: PERSONAS[Consulta.ingreseParaBuscar]}});
-  // pagination is the wrapper
-const wrapper = $('.collections');
+const collectionsCreator = async (params) => {
+CONSULTAS = await fetchData({endpoint: api.consultas.findBy, params});
+  // collection is the wrapper
+const wrapper = $('.collection');
 $(wrapper).html('');
  if (!CONSULTAS.length) {
     $(wrapper).html('Cargue una nueva consulta para esta persona');  
-  } 
+  }; 
 
-//<a href="#! aca pongo la id para mandarla a la pagina de consultas" class="collection-item">mostrar aca objeto persona</a> */
+  for (const index in CONSULTAS) {
+  const muestraAContactar = `<li id = "contactarA"><a href="/consultas/?id=:${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].persona.apellido}</a></li>`;
+$(wrapper).append(muestraAContactar);
+  }  
+    
+}
+
