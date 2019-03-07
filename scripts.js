@@ -21,7 +21,7 @@ CONSULTAS = [
         apellido: 'Fuentes',
         nombre: 'Pancho'
       },
-      _id: '1234567890',
+      _id: '5c7c11a62ce9980017f2617d',
       fechaProximaConsulta: '02/04/2019'
      },
      {
@@ -51,7 +51,7 @@ $(wrapper).html('');
   }; 
 
   for (const index in CONSULTAS) {
-  const muestraAContactar = `<li id = "contactarA"><a href="/consultas/?id=:${CONSULTAS._id}" class="collection-item">${CONSULTAS[index].persona.apellido}</a></li>`;
+  const muestraAContactar = `<li id = "contactarA"><a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].persona.apellido}</a></li>`;
 $(wrapper).append(muestraAContactar);
   }  
     
