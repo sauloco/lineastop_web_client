@@ -18,15 +18,31 @@ const logout = () => {
 CONSULTAS = [
     {
       persona: {
-        apellido: '',
-        nombre: ''
+        apellido: 'Fuentes',
+        nombre: 'Pancho'
       },
-      _id: '',
-      fechaProximaConsulta: ''
+      _id: '1234567890',
+      fechaProximaConsulta: '02/04/2019'
      },
+     {
+      persona: {
+        apellido: 'Tirao',
+        nombre: 'Cacho'
+      },
+      _id: '0987654321',
+      fechaProximaConsulta: '04/06/2019'
+     },
+     {
+     persona: {
+      apellido: 'Mollo',
+      nombre: 'Ricardo'
+    },
+    _id: '1234509876',
+    fechaProximaConsulta: '17/03/2019'
+   },
 ]
 const collectionsCreator = async (params) => {
-CONSULTAS = await fetchData({endpoint: api.consultas.findBy, params});
+//CONSULTAS = await fetchData({endpoint: api.consultas.findBy, params});
   // collection is the wrapper
 const wrapper = $('.collection');
 $(wrapper).html('');
@@ -35,7 +51,7 @@ $(wrapper).html('');
   }; 
 
   for (const index in CONSULTAS) {
-  const muestraAContactar = `<li id = "contactarA"><a href="/consultas/?id=:${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].persona.apellido}</a></li>`;
+  const muestraAContactar = `<li id = "contactarA"><a href="/consultas/?id=:${CONSULTAS._id}" class="collection-item">${CONSULTAS[index].persona.apellido}</a></li>`;
 $(wrapper).append(muestraAContactar);
   }  
     
