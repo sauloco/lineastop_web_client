@@ -1,4 +1,5 @@
 $(document).ready(() => {
+  $('.tooltipped').tooltip();
   $('.sidenav').sidenav();
   iniciarNavBar();
   collectionsCreator();
@@ -9,7 +10,7 @@ const iniciarNavBar = async () => {
   const response = await fetchData({
     endpoint: api.users.me
   })
-  $('#welcome').html(`Bienvenido ${response.username}`);
+  //$('#welcome').html(`Bienvenido ${response.username}`);
 }
 
 const logout = () => {
