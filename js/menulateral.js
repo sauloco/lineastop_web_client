@@ -2,7 +2,7 @@ $(document).ready(() => {
   $('.sidenav').sidenav();
   iniciarNavBar();
   $('#logout').click(logout);
-  $('.tooltipped').tooltip(data=pepe);
+  $('.tooltipped').tooltip();
   //$('#userTooltip').hover(toast);
 })
 let pepe='';
@@ -11,7 +11,7 @@ const iniciarNavBar = async () => {
     endpoint: api.users.me
     
   })
-  pepe=response.username;
+  $('#userTooltip').attr('data-tooltip', response.username);
 }
 /* const toast = () =>{
   M.toast({html: `${pepe}`});
