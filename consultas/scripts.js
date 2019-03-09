@@ -1,5 +1,7 @@
 let PERSONAS = {};
 let CONSULTAS = [];
+let PLANTILLAS = [];
+let Persona = {};
 
 let Consulta = {
   _id: '',
@@ -51,6 +53,18 @@ let Consulta = {
   persona: ''
 };
 
+let Mensaje = {
+  _id: '',
+  mensaje: '',
+  fechaEnvio: '',
+  cancelado: '',
+  enviado: '',
+  telefono: '',
+  email: '',
+  tipo: '',
+  persona: ''
+}
+
 let defaultConsulta = JSON.parse(JSON.stringify(Consulta));
 
 $(document).ready(() => {
@@ -60,6 +74,8 @@ $(document).ready(() => {
   getAllPersonas();
   $('#finderLauncherPersonas').click(openFinderPersonas);
   $('.fixed-action-btn').floatingActionButton();
+  
+  plantillasCreator();
 
   // por usar Materialize
   const modelCallback = () => {
@@ -80,11 +96,19 @@ $(document).ready(() => {
   });
 
   R.s.add({
+    model: 'Mensaje',
+    callback: modelCallback
+  });
+
+  R.s.add({
     model: 'Consulta',
     key: 'ingreseParaBuscar',
     callback: ({prevModel, model}) => {
       if (model.ingreseParaBuscar) {
         R.mutate('Consulta', {'persona': PERSONAS[model.ingreseParaBuscar]});
+      } else {
+        Persona = {};
+        R.mutate('Mensaje', {persona:  '', telefono: '', email: ''});
       }
       toggleDetails(prevModel, model);
     }
@@ -218,8 +242,18 @@ $(document).ready(() => {
     }
   });
 
+  R.s.add({model: 'Mensaje', key: 'tipo', callback: ({prevModel, model}) => {
+    toggleEnviar(model);
+  }});
+
+  R.s.add({model: 'Mensaje', key: 'mensaje', callback: ({prevModel, model}) => {
+    toggleEnviar(model);
+  }});
+
   // Inicialización
+  R.init('Mensaje');
   R.init('Consulta');
+  
 
   const url = new URL(location.href);
   const _id = url.searchParams.get('id');
@@ -250,6 +284,8 @@ const loadConsultaById = async _id => {
   const ingreseParaBuscar = Object.keys(PERSONAS);
   for (const idx of ingreseParaBuscar) {
     if (PERSONAS[idx] === data.persona._id) {
+      Persona = data.persona;
+      R.mutate('Mensaje', {persona:  data.persona._id, telefono: data.persona.telefono, email: data.persona.email});
       data.persona = data.persona._id;
       data.ingreseParaBuscar = idx;
       data.fecha = displayDate(data.fecha);
@@ -304,6 +340,7 @@ const createConsulta = async(params) => {
   }
   CONSULTAS.push(data);
   navigatorCreator();
+  carouselCreator();
   goTo(CONSULTAS.length - 1);
   // R.mutate('Consulta',{_id: data._id});   
   return true;
@@ -339,6 +376,7 @@ const openFinderPersonas = () => {
 const toggleDetails = (prevModel, model) => {
   if (model.persona) {
     navigatorCreator();
+    carouselCreator();
     $('.navigator_wrapper').removeClass('hide');
     if (prevModel.persona !== model.persona) {
       $('#persona_details').prop('src', `/personas/?nav=false&id=${model.persona}`);
@@ -463,4 +501,55 @@ const updateURL = (model) => {
         break;
     }
   }
+}
+
+const plantillasCreator = async () => {
+  if (!PLANTILLAS.length) {
+    const data = await fetchData({endpoint: api.plantillaMensaje.findBy});
+    PLANTILLAS = JSON.parse(JSON.stringify(data));
+  }  
+  const wrapper = $('#plantillas.collection');
+  for (const index in PLANTILLAS) {
+    const plantilla = PLANTILLAS[index]
+    wrapper.append(`<li class="collection-item"><div>${plantilla.titulo}<a href="#!" class="secondary-content" onClick = copyPlantilla(${index})><i class="material-icons blue-text">file_copy</i></a></div></li>`);
+  }
+}
+
+const copyPlantilla = (index) => {
+  const mensaje = eval('`'+PLANTILLAS[index].cuerpo.split('{{').join('${').split('}}').join('}')+'`');
+  const tipo = PLANTILLAS[index].usarEn;
+  R.mutate('Mensaje', {mensaje, tipo});
+  M.textareaAutoResize($('#mensaje'));
+  return mensaje;
+}
+
+
+
+const carouselCreator = async () => {
+  const response = await fetch('/assets/campaigns/availableAssets.json');
+  const descriptor = await response.json();
+  const wrapper = $('.carousel')
+  let i = 0;
+  for (const {title, alt, url} of descriptor) {
+    wrapper.append(`<a class="carousel-item" href="#${i++}!"><h3 class = "center">${title}</h3><img alt="${alt}" src="${url}"></a>`);
+  }
+  $('.carousel.carousel-slider').carousel({
+    fullWidth: true,
+    indicators: true
+  });
+}
+
+const toggleEnviar = ({tipo, mensaje}) => {
+  $('#enviar_email').addClass('disabled');
+  $('#enviar_whatsapp').addClass('disabled');
+  if (mensaje) {
+    if (tipo === 'ambos') {
+      $('#enviar_email').removeClass('disabled');
+      $('#enviar_whatsapp').removeClass('disabled');
+    } else {
+      $(`#enviar_${tipo}`).removeClass('disabled');
+    }
+  }
+  
+  M.textareaAutoResize($('#mensaje')); 
 }

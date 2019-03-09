@@ -191,6 +191,11 @@ const api = {
       location: 'consultas',
     },
   },
+  plantillaMensaje: {
+    findBy: {
+      location: 'plantillamensajes'
+    }
+  },
   users: {
     me: {
       location: 'users/me'
