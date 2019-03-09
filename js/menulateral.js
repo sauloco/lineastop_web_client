@@ -2,21 +2,17 @@ $(document).ready(() => {
   $('.sidenav').sidenav();
   iniciarNavBar();
   $('#logout').click(logout);
-  $('.tooltipped').tooltip(data=pepe);
-  //$('#userTooltip').hover(toast);
+  $('.tooltipped').tooltip();
 })
-let pepe='';
+let pepe = '';
 const iniciarNavBar = async () => {
   const response = await fetchData({
     endpoint: api.users.me
-    
-  })
-  pepe=response.username;
-}
-/* const toast = () =>{
-  M.toast({html: `${pepe}`});
 
-} */
+  })
+  $('#userTooltip').attr('data-tooltip', response.username);
+}
+
 const logout = () => {
   setCookie({
     name: 'jwt',

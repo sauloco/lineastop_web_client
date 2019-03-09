@@ -1,6 +1,6 @@
 $(document).ready(() => {
   collectionsCreator();
-  
+
 })
 
 CONSULTAS = [{

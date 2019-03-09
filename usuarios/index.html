@@ -18,8 +18,8 @@
     <script src="/js/rustic.js"></script>
     <script src="/js/date_helpers/date_utils.js"></script>
     <script src="scripts.js"></script>
+    <script src="/js/menulateral.js"></script>
     <script src="/js/moment-with-locales.js"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -29,30 +29,33 @@
 </head>
 
 <body>
-    <nav>
-        <div class="nav-wrapper blue darken-4">
-            <a href="#!" class="left brand-logo">
-                <i class="material-icons">menu</i>Línea Stop | Usuarios
-            </a>
+    <nav class="blue darken-4">
+        <div class="nav-wrapper">
+            <a href="#!" data-target="slide-out" class="sidenav-trigger show-on-large" class="brand-logo"><i class="material-icons">menu</i></a>
+            <a class="brand-logo"><i class="material-icons">smoke_free</i><span class="hide-on-med-and-down">Línea Stop
+                    | </span>Usuarios</a>
             <ul class="right">
-                <li>
-                    <a href="">
-                        <i class="material-icons">person</i>
-                    </a>
-                </li>
-                <li>
-                    <a href="">
-                        <i class="material-icons">help_outline</i>
-                    </a>
-                </li>
-                <li>
-                    <a href="">
-                        <i class="material-icons">exit_to_app</i>
-                    </a>
-                </li>
+                <li><a id='userTooltip' class="tooltipped blue darken-4" data-position="bottom" data-tooltip=""><i
+                            class="material-icons">person</i></a></li>
+                <li><a id='logout' href=""> <i class="material-icons">exit_to_app</i></a></li>
             </ul>
         </div>
     </nav>
+
+    <ul id="slide-out" class="sidenav">
+        <li>
+            <a><i class="material-icons">smoke_free</i>Linea Stop</a>
+            <a href="/index.html"><i class="material-icons">dashboard</i>Tablero</a>
+            <a href="/consultas"><i class="material-icons">assignment</i>Consultas</a>
+            <a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a>
+            <a href="/personas"><i class="material-icons">people</i>Persona nueva</a>
+            <a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a>
+            <a><i class="material-icons">save_alt</i>Exportar información</a>
+            <a href="/export/?collection=personas&export=true">Persona</a>
+            <a href="/export/?collection=personas&export=true">Consulta</a>
+            <a href="/export/?collection=personas&export=true">Usuario</a>
+            <a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a>
+    </ul>
     <div class="container">
         <label>Datos de usuario</label>
         <div class="card">
