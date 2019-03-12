@@ -19,9 +19,9 @@ const tablesCreator = async (params) => {
     $(wrapper).html('Cargue una nueva consulta para esta persona');
   };
 
-  for (const index in CONSULTAS) {
+  for (const index in CONSULTAS.reverse()) {
     const muestraDatos = `<tr>
-    <td><a href="/consultas/?id=${CONSULTAS[index]._id}">${displayDate(CONSULTAS[index].fecha)}</a></td>
+    <td><a href="/consultas/?id=${CONSULTAS[index]._id}" title = "${displayDate(CONSULTAS[index].fecha)}">${moment(CONSULTAS[index].fecha).fromNow()}</a></td>
     <td>${CONSULTAS[index].tos ? 'Sí':'No'}</td>
     <td>${CONSULTAS[index].expectoracion ? 'Sí':'No'}</td>
     <td>${CONSULTAS[index].dolorCalambre ? 'Sí':'No'}</td>
