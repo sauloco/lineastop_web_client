@@ -1,14 +1,18 @@
 $(document).ready(() => {
   const url = new URL(location.href);
   const _id = url.searchParams.get('id');
-  collectionsCreator({persona: _id});
+  tablesCreator({
+    persona: _id
+  });
 
 })
 
 
-const collectionsCreator = async (params) => {
-  let CONSULTAS = await fetchData({endpoint: api.consultas.findBy, params});
-  // collection is the wrapper
+const tablesCreator = async (params) => {
+  let CONSULTAS = await fetchData({
+    endpoint: api.consultas.findBy,
+    params
+  });
   const wrapper = $('.sintomasClinicos');
   $(wrapper).html('');
   if (!CONSULTAS.length) {
@@ -17,18 +21,19 @@ const collectionsCreator = async (params) => {
 
   for (const index in CONSULTAS) {
     const muestraDatos = `<tr>
-    <td <a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].tos ? 'Sí':'No'}</a></td>
-    <td <a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].expectoracion ? 'Sí':'No'}</a></td>
-    <td <a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].dolorCalambre ? 'Sí':'No'}</a></td>
-    <td <a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].dolorPrecordial ? 'Sí':'No'}</a></td>
-    <td <a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].dificultadRespiratoria ? 'Sí':'No'}</a></td>
-    <td <a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].sueño ? 'Sí':'No'}</a></td>
-    <td <a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].piel ? 'Sí':'No'}</a></td>
-    <td <a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].olfato ? 'Sí':'No'}</a></td>
-    <td <a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].dientes ? 'Sí':'No'}</a></td>
-    <td <a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].gusto ? 'Sí':'No'}</a></td>
-    <td <a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].claudicacionMi ? 'Sí':'No'}</a></td>
-    <td <a href="/consultas/?id=${CONSULTAS[index]._id}" class="collection-item">${CONSULTAS[index].problemaPeso ? 'Sí':'No'}</a></td>
+    <td><a href="/consultas/?id=${CONSULTAS[index]._id}">${displayDate(CONSULTAS[index].fecha)}</a></td>
+    <td>${CONSULTAS[index].tos ? 'Sí':'No'}</td>
+    <td>${CONSULTAS[index].expectoracion ? 'Sí':'No'}</td>
+    <td>${CONSULTAS[index].dolorCalambre ? 'Sí':'No'}</td>
+    <td>${CONSULTAS[index].dolorPrecordial ? 'Sí':'No'}</td>
+    <td>${CONSULTAS[index].dificultadRespiratoria ? 'Sí':'No'}</td>
+    <td>${CONSULTAS[index].sueno ? 'Sí':'No'}</td>
+    <td>${CONSULTAS[index].piel ? 'Sí':'No'}</td>
+    <td>${CONSULTAS[index].olfato ? 'Sí':'No'}</td>
+    <td>${CONSULTAS[index].dientes ? 'Sí':'No'}</td>
+    <td>${CONSULTAS[index].gusto ? 'Sí':'No'}</td>
+    <td>${CONSULTAS[index].claudicacionMi ? 'Sí':'No'}</td>
+    <td>${CONSULTAS[index].problemaPeso ? 'Sí':'No'}</td>
     </tr>`;
     $(wrapper).append(muestraDatos);
   }
