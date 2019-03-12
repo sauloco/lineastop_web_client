@@ -74,6 +74,8 @@ $(document).ready(() => {
   getAllPersonas();
   $('#finderLauncherPersonas').click(openFinderPersonas);
   $('.fixed-action-btn').floatingActionButton();
+  $('#history').click(goToHistory);
+  
   
   plantillasCreator();
 
@@ -399,6 +401,7 @@ const navigatorCreator = async () => {
   $(wrapper).html('');
   if (!CONSULTAS.length) {
     $(wrapper).html('Cargue una nueva consulta para esta persona');  
+    return;
   }
   const goToFirst = `<li id = "goToFirst" title = "Primera: ${displayDate(CONSULTAS[0].fecha)}"><a href="#" onClick = "goTo(0)"><i class="material-icons left">first_page</i></a></li>`;
   let disableLast = false;
@@ -552,4 +555,16 @@ const toggleEnviar = ({tipo, mensaje}) => {
   }
   
   M.textareaAutoResize($('#mensaje')); 
+}
+
+const goToHistory = () => {
+  if (Consulta.ingreseParaBuscar === "") {
+    M.toast({html: "Seleccione una persona para ver sus datos históricos"});
+    return;
+  }
+  if (!CONSULTAS.length) {
+    M.toast({html: "La persona seleccionada no posee consultas aún"});
+    return;
+  }
+  window.open(`/historico/?id=${Persona._id}`);
 }
