@@ -4,7 +4,6 @@ $(document).ready(() => {
   $('#logout').click(logout);
   $('.tooltipped').tooltip();
 })
-let pepe = '';
 const iniciarNavBar = async () => {
   const response = await fetchData({
     endpoint: api.users.me
