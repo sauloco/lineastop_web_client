@@ -184,18 +184,18 @@ $(document).ready(() => {
 
   R.s.add({
     model: 'Consulta',
-    key: 'proximaConsulta',
+    key: 'fechaProximaConsulta',
     callback: ({
       prevModel,
       model
     }) => {
       const hoy = moment();
-      if (moment(model.proximaConsulta, DATE_FORMAT_ES).isBefore(moment(hoy))) {
+      if (moment(model.fechaProximaConsulta, DATE_FORMAT_ES).isBefore(moment(hoy))) {
         M.toast({
           html: 'La fecha de próxima consulta no puede ser anterior a hoy.'
         })
         R.mutate('Consulta', {
-          'proximaConsulta': prevModel.proximaConsulta
+          'fechaProximaConsulta': prevModel.fechaProximaConsulta
         });
         return;
       }
@@ -316,8 +316,8 @@ const saveConsulta = async (silent) => {
   if(params.abandonoEfectivo){
     params.abandonoEfectivo = normalizeDate(params.abandonoEfectivo);
   }
-  if(params.proximaConsulta){
-    params.proximaConsulta = normalizeDate(params.proximaConsulta);
+  if(params.fechaProximaConsulta){
+    params.fechaProximaConsulta = normalizeDate(params.fechaProximaConsulta);
   }
   let result = false;
   if (!Consulta._id) {
