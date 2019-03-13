@@ -30,9 +30,36 @@
 </head>
 
 <body>
+        <nav class="blue darken-4">
+                <div class="nav-wrapper">
+                    <a href="#!" data-target="slide-out" class="sidenav-trigger show-on-large" class="brand-logo"><i class="material-icons">menu</i></a>
+                    <a class="brand-logo"><i class="material-icons">smoke_free</i><span class="hide-on-med-and-down">Línea Stop
+                            | </span>Histórico</a>
+                    <ul class="right">
+                        <li><a id='userTooltip' class="tooltipped blue darken-4" data-position="bottom" data-tooltip=""><i
+                                    class="material-icons">person</i></a></li>
+                        <li><a id='logout' href=""> <i class="material-icons">exit_to_app</i></a></li>
+                    </ul>
+                </div>
+            </nav>
+        
+            <ul id="slide-out" class="sidenav">
+                <li>
+                    <a><i class="material-icons">smoke_free</i>Linea Stop</a>
+                    <a href="/index.html"><i class="material-icons">dashboard</i>Tablero</a>
+                    <a href="/consultas"><i class="material-icons">assignment</i>Consultas</a>
+                    <a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a>
+                    <a href="/personas"><i class="material-icons">people</i>Persona nueva</a>
+                    <a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a>
+                    <a><i class="material-icons">save_alt</i>Exportar información</a>
+                    <a href="/export/?collection=personas&export=true">Persona</a>
+                    <a href="/export/?collection=personas&export=true">Consulta</a>
+                    <a href="/export/?collection=personas&export=true">Usuario</a>
+                    <a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a>
+            </ul>
     <div>
-        <h5>Datos historicos de {{Acá va el nombre de la persona}}</h5>
-        <label>Acá va el nombre de la sección</label>
+        <div class="nombrePersona"></div>
+        <label>Síntomas clínicos</label>
         <table class="centered responsive-table striped">
             <thead>
                 <tr>
@@ -52,6 +79,67 @@
                 </tr>
             </thead>
             <tbody class="sintomasClinicos">
+            </tbody>
+        </table>
+        <label>Tratamientos cognitivos</label>
+        <table class="centered responsive-table striped">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tabaquismo es una efermedad</th>
+                    <th>Que es la triple adicción</th>
+                    <th>Cada abandono es una experiencia</th>
+                    <th>Control + apoyo telefónico</th>
+                    <th>Dejar de fumar es cambiar de vida</th>
+                    <th>Tratamiento farmacológico si es necesario</th>
+                </tr>
+            </thead>
+            <tbody class="tratamientosCognitivos">
+            </tbody>
+        </table>
+        <label>Tratamiento Conductual</label>
+        <table class="centered responsive-table striped">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Actividad manual</th>
+                    <th>Tiempo libre</th>
+                    <th>Cartelería</th>
+                    <th>Comprometerse</th>
+                    <th>Corte de los cigarrillos</th>
+                    <th>Desayuno</th>
+                    <th>Actividad física</th>
+                    <th>Agua</th>
+                    <th>Chicles sin azúcar</th>
+                    <th>Zanahoria/Manzana</th>
+                    <th>Auto sin tabaco</th>
+                    <th>Casa sin tabaco</th>
+                    <th>Alimentación</th>
+                    <th>Cepillado de dientes</th>
+                    <th>Baños</th>
+                    <th>Reuniones con fumadores</th>
+                    <th>Cambio de marca</th>
+                    <th>Otros</th>
+                </tr>
+            </thead>
+            <tbody class="tratamientoConductual">
+            </tbody>
+        </table>
+        <label>Conducta terapéutica</label>
+        <table class="centered responsive-table striped">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Derivado</th>
+                    <th>Nombre del médico derivado</th>
+                    <th>Notificación al médico</th>
+                    <th>Compromiso abandono</th>
+                    <th>Abandono efectivo</th>
+                    <th>Proxima consulta</th>
+                    <th>Observaciones generales</th>
+                </tr>
+            </thead>
+            <tbody class="conductaTerapeutica">
             </tbody>
         </table>
     </div>
