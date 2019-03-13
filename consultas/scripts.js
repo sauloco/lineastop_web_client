@@ -566,5 +566,5 @@ const goToHistory = () => {
     M.toast({html: "La persona seleccionada no posee consultas aún"});
     return;
   }
-  window.open(`/historico/?id=${Persona._id}`);
+  window.open(`/historico/?id=${PERSONAS[Consulta.ingreseParaBuscar]}`);
 }
