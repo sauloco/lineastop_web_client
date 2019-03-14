@@ -13,83 +13,80 @@ const tablesCreator = async (params) => {
     endpoint: api.consultas.findBy,
     params
   });
-   $('.nombrePersona').html(`<h5>Datos historicos de ${CONSULTAS[0].persona.apellido} ${CONSULTAS[0].persona.nombre}</h5>`);
 
-  /*const wrapper = $('.sintomasClinicos');
-   $(wrapper).html('');
-  if (!CONSULTAS.length) {
-    $(wrapper).html('Cargue una nueva consulta para esta persona');
-  }; */
+  if (params.persona !== "") {
+      if (!CONSULTAS.length) {  
+        $('.nombrePersona').html(`<h5>La persona seleccionada no tiene consultas</h5>`)
+      }
+    } else {
+      $('.nombrePersona').html(`<h5>El dato de la persona es requerido para mostrar su historia</h5>`)
+    };
 
-  for (const index in CONSULTAS.reverse()) {
-    const muestraDatos = `<tr>
-    <td><a href="/consultas/?id=${CONSULTAS[index]._id}" title = "${displayDate(CONSULTAS[index].fecha)}">${moment(CONSULTAS[index].fecha).fromNow()}</a></td>
-    <td>${CONSULTAS[index].tos ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].expectoracion ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].dolorCalambre ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].dolorPrecordial ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].dificultadRespiratoria ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].sueno ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].piel ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].olfato ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].dientes ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].gusto ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].claudicacionMi ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].problemaPeso ? 'Sí':'No'}</td>
+  $('.nombrePersona').html(`<h5>Datos historicos de ${CONSULTAS[0].persona.apellido} ${CONSULTAS[0].persona.nombre}</h5>`);
+
+  for (const consulta of CONSULTAS.reverse()) {
+
+    const muestraSintomasClinicos = `<tr>
+    <td><a href="/consultas/?id=${consulta._id}" title = "${displayDate(consulta.fecha)}">${moment(consulta.fecha).fromNow()}</a></td>
+    <td>${consulta.tos ? 'Sí':'No'}</td>
+    <td>${consulta.expectoracion ? 'Sí':'No'}</td>
+    <td>${consulta.dolorCalambre ? 'Sí':'No'}</td>
+    <td>${consulta.dolorPrecordial ? 'Sí':'No'}</td>
+    <td>${consulta.dificultadRespiratoria ? 'Sí':'No'}</td>
+    <td>${consulta.sueno ? 'Sí':'No'}</td>
+    <td>${consulta.piel ? 'Sí':'No'}</td>
+    <td>${consulta.olfato ? 'Sí':'No'}</td>
+    <td>${consulta.dientes ? 'Sí':'No'}</td>
+    <td>${consulta.gusto ? 'Sí':'No'}</td>
+    <td>${consulta.claudicacionMi ? 'Sí':'No'}</td>
+    <td>${consulta.problemaPeso ? 'Sí':'No'}</td>
     </tr>`;
-    $('.sintomasClinicos').append(muestraDatos);
+    $('.sintomasClinicos').append(muestraSintomasClinicos);
 
-  }    
-    for (const index in CONSULTAS.reverse()) {
-      const muestraDatos = `<tr>
-      <td><a href="/consultas/?id=${CONSULTAS[index]._id}" title = "${displayDate(CONSULTAS[index].fecha)}">${moment(CONSULTAS[index].fecha).fromNow()}</a></td>
-      <td>${CONSULTAS[index].tabaquismoEnfermedad ? 'Sí':'No'}</td>
-      <td>${CONSULTAS[index].tripleAdiccion ? 'Sí':'No'}</td>
-      <td>${CONSULTAS[index].abandonoExperiencia ? 'Sí':'No'}</td>
-      <td>${CONSULTAS[index].controlApoyo ? 'Sí':'No'}</td>
-      <td>${CONSULTAS[index].cambiarVida ? 'Sí':'No'}</td>
-      <td>${CONSULTAS[index].tratamientoFarmacologico ? 'Sí':'No'}</td>
-      </tr>`;
-      $('.tratamientosCognitivos').append(muestraDatos);
-  }
-
-  for (const index in CONSULTAS.reverse()) {
-    const muestraDatos = `<tr>
-    <td><a href="/consultas/?id=${CONSULTAS[index]._id}" title = "${displayDate(CONSULTAS[index].fecha)}">${moment(CONSULTAS[index].fecha).fromNow()}</a></td>
-    <td>${CONSULTAS[index].actividadManual ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].tiempoLibre ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].cartelaria ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].comprometerse ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].corte ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].desayuno ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].actividadFisica ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].agua ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].chicles ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].zanahoriaManzana ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].autoSinTabaco ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].casaSinTabaco ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].alimentacion ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].cepilladoDiente ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].banos ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].reuniones ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].cambiaMarca ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].otros}</td>
+    const muestraTratamientosCognitivos= `<tr>
+    <td><a href="/consultas/?id=${consulta._id}" title = "${displayDate(consulta.fecha)}">${moment(consulta.fecha).fromNow()}</a></td>
+    <td>${consulta.tabaquismoEnfermedad ? 'Sí':'No'}</td>
+    <td>${consulta.tripleAdiccion ? 'Sí':'No'}</td>
+    <td>${consulta.abandonoExperiencia ? 'Sí':'No'}</td>
+    <td>${consulta.controlApoyo ? 'Sí':'No'}</td>
+    <td>${consulta.cambiarVida ? 'Sí':'No'}</td>
+    <td>${consulta.tratamientoFarmacologico ? 'Sí':'No'}</td>
     </tr>`;
-    $('.tratamientoConductual').append(muestraDatos);
-  }  
-
-  for (const index in CONSULTAS.reverse()) {
-    const muestraDatos = `<tr>
-    <td><a href="/consultas/?id=${CONSULTAS[index]._id}" title = "${displayDate(CONSULTAS[index].fecha)}">${moment(CONSULTAS[index].fecha).fromNow()}</a></td>
-    <td>${CONSULTAS[index].derivado ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].derivadoMedico ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].derivadoNotificacion ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].fechaAbandonoCompromiso ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].fechaAbandonoEfectiva ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].fechaProximaConsulta ? 'Sí':'No'}</td>
-    <td>${CONSULTAS[index].observacion ? 'Sí':'No'}</td>
-
+    $('.tratamientosCognitivos').append(muestraTratamientosCognitivos);
+  
+    const muestraTratamientoConductual = `<tr>
+    <td><a href="/consultas/?id=${consulta._id}" title = "${displayDate(consulta.fecha)}">${moment(consulta.fecha).fromNow()}</a></td>
+    <td>${consulta.actividadManual ? 'Sí':'No'}</td>
+    <td>${consulta.tiempoLibre ? 'Sí':'No'}</td>
+    <td>${consulta.cartelaria ? 'Sí':'No'}</td>
+    <td>${consulta.comprometerse ? 'Sí':'No'}</td>
+    <td>${consulta.corte ? 'Sí':'No'}</td>
+    <td>${consulta.desayuno ? 'Sí':'No'}</td>
+    <td>${consulta.actividadFisica ? 'Sí':'No'}</td>
+    <td>${consulta.agua ? 'Sí':'No'}</td>
+    <td>${consulta.chicles ? 'Sí':'No'}</td>
+    <td>${consulta.zanahoriaManzana ? 'Sí':'No'}</td>
+    <td>${consulta.autoSinTabaco ? 'Sí':'No'}</td>
+    <td>${consulta.casaSinTabaco ? 'Sí':'No'}</td>
+    <td>${consulta.alimentacion ? 'Sí':'No'}</td>
+    <td>${consulta.cepilladoDiente ? 'Sí':'No'}</td>
+    <td>${consulta.banos ? 'Sí':'No'}</td>
+    <td>${consulta.reuniones ? 'Sí':'No'}</td>
+    <td>${consulta.cambiaMarca ? 'Sí':'No'}</td>
+    <td>${consulta.otros}</td>
     </tr>`;
-    $('.conductaTerapeutica').append(muestraDatos);
+    $('.tratamientoConductual').append(muestraTratamientoConductual);
+ 
+    const muestraConductaTerapeutica = `<tr>
+    <td><a href="/consultas/?id=${consulta._id}" title = "${displayDate(consulta.fecha)}">${moment(consulta.fecha).fromNow()}</a></td>
+    <td>${consulta.derivado ? 'Sí':'No'}</td>
+    <td>${consulta.derivadoMedico ? 'Sí':'No'}</td>
+    <td>${consulta.derivadoNotificacion ? 'Sí':'No'}</td>
+    <td>${consulta.fechaAbandonoCompromiso ? 'Sí':'No'}</td>
+    <td>${consulta.fechaAbandonoEfectiva ? 'Sí':'No'}</td>
+    <td>${consulta.fechaProximaConsulta ? 'Sí':'No'}</td>
+    <td>${consulta.observacion ? 'Sí':'No'}</td>
+    </tr>`;
+    $('.conductaTerapeutica').append(muestraConductaTerapeutica);
   }
 }
