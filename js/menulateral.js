@@ -19,5 +19,17 @@ const logout = () => {
     day: 0,
     force: true
   });
+  setCookie({
+    name: 'username',
+    value: '',
+    day: 0,
+    force: true
+  });
+  setCookie({
+    name: 'email',
+    value: '',
+    day: 0,
+    force: true
+  });
   validarToken();
 }

@@ -55,6 +55,7 @@ let Consulta = {
 
 let Mensaje = {
   _id: '',
+  subject: '',
   mensaje: '',
   fechaEnvio: '',
   cancelado: '',
@@ -75,6 +76,8 @@ $(document).ready(() => {
   $('#finderLauncherPersonas').click(openFinderPersonas);
   $('.fixed-action-btn').floatingActionButton();
   $('#history').click(goToHistory);
+  $('#enviar_email').click(sendEmail);
+  $('#enviar_whatsapp').click(sendWhatsapp);
   
   
   plantillasCreator();
@@ -567,4 +570,35 @@ const goToHistory = () => {
     return;
   }
   window.open(`/historico/?id=${PERSONAS[Consulta.ingreseParaBuscar]}`);
+}
+
+const sendEmail = async () => {
+  if (!Mensaje.subject) {
+    M.toast({html: 'Por favor, cargue el asunto del mensaje'});
+    return;
+  }
+  if (!Mensaje.mensaje) {
+    M.toast({html: 'Por favor, cargue el texto del mensaje'});
+    return;
+  }
+  if (!Persona.email) {
+    M.toast({html: 'La persona seleccionada no posee correo electrónico'});
+    return;
+  }
+  const params = {
+    to: Persona.email,
+    from: `${getCookie('username')} <no.responder@lineastop.com>`,
+    text: Mensaje.mensaje,
+    subject: Mensaje.subject,
+    replyTo: `${getCookie('email')}`
+  };
+  const data = await fetchData({endpoint: api.email.send, params});
+  if (data.error) {
+    return api.common.errorHandler({endpoint: api.email.send, error: data.error});
+  }
+  M.toast({html: 'El correo electrónico se ha enviado satisfactoriamente.'});
+}
+
+const sendWhatsapp = () => {
+
 }
