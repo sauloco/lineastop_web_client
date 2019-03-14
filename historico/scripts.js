@@ -2,38 +2,30 @@
 $(document).ready(() => {
   const url = new URL(location.href);
   const _id = url.searchParams.get('id');
-  validaId({
-    persona: _id
-  });
   tablesCreator({
     persona: _id
   });
   moment.lang('es');
 })
 
-const validaId = (params) =>{
- if (!params.persona) {
-  $('.nombrePersona').html(`<h5>El dato de la persona es requerido para mostrar su historia</h5>`)
-  return;
-} 
-}
 const tablesCreator = async (params) => {
+  if (!params.persona) {
+    $('.validaIdConsulta').html(`<h5>El dato de la persona es requerido para mostrar su historia</h5>`)
+    return;
+  }
   let CONSULTAS = await fetchData({
     endpoint: api.consultas.findBy,
     params
   });
 
   if(CONSULTAS.error){
-    return api.common.errorHandler({endpoint: api.consultas, error: data});
-}
+    return api.common.errorHandler({endpoint: api.consultas.all, error: CONSULTAS.error})
+  };
 
- /*  if (params.persona !== "") {
-      if (!CONSULTAS.length) {  
-        $('.nombrePersona').html(`<h5>La persona seleccionada no tiene consultas</h5>`)
-      }
-    } else {
-      $('.nombrePersona').html(`<h5>El dato de la persona es requerido para mostrar su historia</h5>`)
-    }; */
+  if(!CONSULTAS.length){
+    $('.validaIdConsulta').html(`<h5>La persona seleccionada no tiene consultas</h5>`)
+    return;
+  }
 
   $('.nombrePersona').html(`<h5>Datos historicos de ${CONSULTAS[0].persona.apellido} ${CONSULTAS[0].persona.nombre}</h5>`);
 
