@@ -7,6 +7,10 @@ $(document).ready(() => {
   });
   moment.lang('es');
 })
+if (!params.persona) {
+  $('.nombrePersona').html(`<h5>El dato de la persona es requerido para mostrar su historia</h5>`)
+  return;
+}
 
 const tablesCreator = async (params) => {
   let CONSULTAS = await fetchData({
@@ -14,13 +18,17 @@ const tablesCreator = async (params) => {
     params
   });
 
-  if (params.persona !== "") {
+  if(CONSULTAS.error){
+    return api.common.errorHandler({endpoint: api.consultas, error: data});
+}
+
+ /*  if (params.persona !== "") {
       if (!CONSULTAS.length) {  
         $('.nombrePersona').html(`<h5>La persona seleccionada no tiene consultas</h5>`)
       }
     } else {
       $('.nombrePersona').html(`<h5>El dato de la persona es requerido para mostrar su historia</h5>`)
-    };
+    }; */
 
   $('.nombrePersona').html(`<h5>Datos historicos de ${CONSULTAS[0].persona.apellido} ${CONSULTAS[0].persona.nombre}</h5>`);
 
