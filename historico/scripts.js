@@ -2,16 +2,21 @@
 $(document).ready(() => {
   const url = new URL(location.href);
   const _id = url.searchParams.get('id');
+  validaId({
+    persona: _id
+  });
   tablesCreator({
     persona: _id
   });
   moment.lang('es');
 })
-if (!params.persona) {
+
+const validaId = (params) =>{
+ if (!params.persona) {
   $('.nombrePersona').html(`<h5>El dato de la persona es requerido para mostrar su historia</h5>`)
   return;
+} 
 }
-
 const tablesCreator = async (params) => {
   let CONSULTAS = await fetchData({
     endpoint: api.consultas.findBy,
