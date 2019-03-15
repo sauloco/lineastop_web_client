@@ -85,12 +85,12 @@ const tablesCreator = async (params) => {
     const muestraConductaTerapeutica = `<tr>
     <td><a href="/consultas/?id=${consulta._id}" title = "${displayDate(consulta.fecha)}">${moment(consulta.fecha).fromNow()}</a></td>
     <td>${consulta.derivado ? 'Sí':'No'}</td>
-    <td>${consulta.derivadoMedico ? 'Sí':'No'}</td>
-    <td>${consulta.derivadoNotificacion ? 'Sí':'No'}</td>
-    <td>${consulta.fechaAbandonoCompromiso ? 'Sí':'No'}</td>
-    <td>${consulta.fechaAbandonoEfectiva ? 'Sí':'No'}</td>
-    <td>${consulta.fechaProximaConsulta ? 'Sí':'No'}</td>
-    <td>${consulta.observacion ? 'Sí':'No'}</td>
+    <td>${consulta.derivado && consulta.derivadoMedico ? consulta.derivadoMedico : ''}</td>
+    <td>${consulta.derivado && consulta.derivadoNotificacion ? consulta.derivadoNotificacion : ''}</td>
+    <td>${consulta.fechaAbandonoCompromiso ? displayDate(consulta.fechaAbandonoCompromiso):'No'}</td>
+    <td>${consulta.fechaAbandonoEfectiva ? displayDate(consulta.fechaAbandonoEfectiva):'No'}</td>
+    <td>${consulta.fechaProximaConsulta ? displayDate(consulta.fechaProximaConsulta):'No'}</td>
+    <td>${consulta.observacion}</td>
     </tr>`;
     $('.conductaTerapeutica').append(muestraConductaTerapeutica);
   }

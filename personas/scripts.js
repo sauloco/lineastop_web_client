@@ -47,10 +47,12 @@ $(document).ready(() =>{
 
   M.FormSelect.init(document.querySelectorAll('select'), {});
 
-  $('.datepicker').datepicker();
+  
   $('#guardar').click(savePersonaWithToast);
   initializeDatepicker();
- 
+  initializeDatepicker({
+    yearRange: [1930, 2018]
+  }, '#nacimiento');
 
   // por usar Materialize
   const modelCallback = () => {

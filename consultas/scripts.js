@@ -147,18 +147,18 @@ $(document).ready(() => {
 
   R.s.add({
     model: 'Consulta',
-    key: 'compromisoAbandono',
+    key: 'fechaAbandonoCompromiso',
     callback: ({
       prevModel,
       model
     }) => {
       const hoy = moment();
-      if (moment(model.compromisoAbandono, DATE_FORMAT_ES).isBefore(moment(hoy))) {
+      if (moment(model.fechaAbandonoCompromiso, DATE_FORMAT_ES).isBefore(moment(hoy))) {
         M.toast({
           html: 'La fecha de compromiso no puede ser anterior a hoy.'
         });
         R.mutate('Consulta', {
-          'compromisoAbandono': prevModel.compromisoAbandono
+          'fechaAbandonoCompromiso': prevModel.fechaAbandonoCompromiso
         });
         return;
       }
@@ -167,18 +167,18 @@ $(document).ready(() => {
 
   R.s.add({
     model: 'Consulta',
-    key: 'abandonoEfectivo',
+    key: 'fechaAbandonoEfectiva',
     callback: ({
       prevModel,
       model
     }) => {
       const hoy = moment();
-      if (moment(model.abandonoEfectivo, DATE_FORMAT_ES).isAfter(moment(hoy))) {
+      if (moment(model.fechaAbandonoEfectiva, DATE_FORMAT_ES).isAfter(moment(hoy))) {
         M.toast({
           html: 'La fecha de abandono efectivo no puede ser futura.'
         });
         R.mutate('Consulta', {
-          'abandonoEfectivo': prevModel.abandonoEfectivo
+          'fechaAbandonoEfectiva': prevModel.fechaAbandonoEfectiva
         });
         return;
       }
@@ -294,6 +294,15 @@ const loadConsultaById = async _id => {
       data.persona = data.persona._id;
       data.ingreseParaBuscar = idx;
       data.fecha = displayDate(data.fecha);
+      if (data.fechaAbandonoCompromiso) {
+        data.fechaAbandonoCompromiso = displayDate(data.fechaAbandonoCompromiso);
+      }
+      if (data.fechaAbandonoEfectiva) {
+        data.fechaAbandonoEfectiva = displayDate(data.fechaAbandonoEfectiva);  
+      }
+      if (data.fechaProximaConsulta) {
+        data.fechaProximaConsulta = displayDate(data.fechaProximaConsulta);  
+      }
       R.mutate('Consulta', data);
       return;
     }
@@ -313,11 +322,11 @@ const saveConsulta = async (silent) => {
     return;
   }
 
-  if(params.compromisoAbandono){
-    params.compromisoAbandono = normalizeDate(params.compromisoAbandono);
+  if(params.fechaAbandonoCompromiso){
+    params.fechaAbandonoCompromiso = normalizeDate(params.fechaAbandonoCompromiso);
   }
-  if(params.abandonoEfectivo){
-    params.abandonoEfectivo = normalizeDate(params.abandonoEfectivo);
+  if(params.fechaAbandonoEfectiva){
+    params.fechaAbandonoEfectiva = normalizeDate(params.fechaAbandonoEfectiva);
   }
   if(params.fechaProximaConsulta){
     params.fechaProximaConsulta = normalizeDate(params.fechaProximaConsulta);
