@@ -196,6 +196,15 @@ const api = {
       location: 'plantillamensajes'
     }
   },
+  email: {
+    send: {
+      location: 'email',
+      method: 'POST',
+      errors: {
+        default: 'Ocurrió un error al enviar el correo electrónico, por favor, reintenta nuevamente más tarde.',
+      }
+    }
+  },
   users: {
     me: {
       location: 'users/me'

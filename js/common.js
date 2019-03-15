@@ -5,21 +5,20 @@ $(document).ready(() => {
 })
 
 
-const validarToken = (token) => {
-  token = token || getCookie('jwt') || '';
-  if (!token) {
-    if(location.href.indexOf('login') < 0) {
-        location.href = `/login/?redirectTo=${encodeURIComponent(location.href)}`;
-    }
-  };
-  getPromise({
-      endpoint: api.users.me, 
-      token
-  })
-  .then(response => response.json())
-  .then(data => {
-        if(location.href.indexOf('login') < 0) {
-            if(data.error){
+const validarToken = async (token) => {
+    token = token || getCookie('jwt') || '';
+    if (!token) {
+        if (location.href.indexOf('login') < 0) {
+            location.href = `/login/?redirectTo=${encodeURIComponent(location.href)}`;
+        }
+    };
+    const data = await fetchData({
+        endpoint: api.users.me,
+        token
+    });
+    try {
+        if (location.href.indexOf('login') < 0) {
+            if (data.error) {
                 location.href = `/login/?redirectTo=${encodeURIComponent(location.href)}`;
             }
         } else {
@@ -29,9 +28,7 @@ const validarToken = (token) => {
                 location.href = redirectTo ? decodeURIComponent(redirectTo) : '/';
             }
         }
-      
-  })
-  .catch(error => {
-    location.href = `/login/?redirectTo=${encodeURIComponent(location.href)}`;
-    })
+    } catch (error) {
+        location.href = `/login/?redirectTo=${encodeURIComponent(location.href)}`;
+    };
 }
