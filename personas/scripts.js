@@ -88,7 +88,7 @@ $(document).ready(() =>{
       
       };
       R.mutate('Persona', {edad: `${difference} año${difference === 1 ? '' : 's'}`})
-    
+      <a href="/consultas/?id=${consulta._id}" title = "${displayDate(consulta.fecha)}">${moment(consulta.fecha).fromNow()}</a>
   }});
   
   R.s.add({model: 'Persona', key: 'primerConsulta', callback: ({prevModel, model}) => {
