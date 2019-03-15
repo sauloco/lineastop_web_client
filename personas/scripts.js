@@ -58,6 +58,7 @@ $(document).ready(() =>{
       $('select').formSelect();
       M.textareaAutoResize($('textarea'));
       $('.fixed-action-btn').floatingActionButton();
+      moment.lang('es');
       if (Persona.apellido && Persona.nombre) {
         savePersonaSilently();
 
@@ -87,9 +88,8 @@ $(document).ready(() =>{
         return;
       
       };
-      R.mutate('Persona', {edad: `${difference} año${difference === 1 ? '' : 's'}`})
-      <a href="/consultas/?id=${consulta._id}" title = "${displayDate(consulta.fecha)}">${moment(consulta.fecha).fromNow()}</a>
-  }});
+      R.mutate('Persona', {edad: `${moment(model.nacimiento).toNow(true)}`})
+    }});
   
   R.s.add({model: 'Persona', key: 'primerConsulta', callback: ({prevModel, model}) => {
     const hoy = moment();
