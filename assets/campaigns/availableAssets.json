@@ -169,12 +169,21 @@
     "title": "Propósito2",
     "alt": "Deja de fumar!",
     "url": "/assets/campaigns/relax.jpg"
+  },
+  {
+    "title": "Propósito3",
+    "alt": "Deja de fumar!",
+    "url": "/assets/campaigns/RECUERDE.jpg"
+  },
+  {
+    "title": "Propósito2",
+    "alt": "Deja de fumar!",
+    "url": "/assets/campaigns/reloj.jpg"
+  },
+  {
+    "title": "Propósito2",
+    "alt": "Deja de fumar!",
+    "url": "/assets/campaigns/vaso.jpg"
   }
-  
-  
-//RECUERDE.jpg  
-//reloj.jpg
-//vaso.jpg
-
 ]
 
