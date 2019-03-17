@@ -354,7 +354,8 @@ const createConsulta = async(params) => {
   }
   CONSULTAS.push(data);
   navigatorCreator();
-  carouselCreator();
+  galleryCreator();
+  // carouselCreator();
   goTo(CONSULTAS.length - 1);
   // R.mutate('Consulta',{_id: data._id});   
   return true;
@@ -390,7 +391,8 @@ const openFinderPersonas = () => {
 const toggleDetails = (prevModel, model) => {
   if (model.persona) {
     navigatorCreator();
-    carouselCreator();
+    galleryCreator();
+    // carouselCreator();
     $('.navigator_wrapper').removeClass('hide');
     if (prevModel.persona !== model.persona) {
       $('#persona_details').prop('src', `/personas/?nav=false&id=${model.persona}`);
@@ -538,6 +540,15 @@ const copyPlantilla = (index) => {
   return mensaje;
 }
 
+const galleryCreator = async () => {
+  const response = await fetch('/assets/campaigns/availableAssets.json');
+  const descriptor = await response.json();
+  const wrapper = $(".gallery");
+  for (const {title, alt, url} of descriptor) {
+    wrapper.append(`<div class = "col s12 m4 l3 card" >${title}<img class="materialboxed" data-caption="${alt}" width="100%" style = "max-height:230px;" src="${url}"></div>`);
+  }
+  $('.materialboxed').materialbox();
+}
 
 
 const carouselCreator = async () => {
@@ -609,5 +620,14 @@ const sendEmail = async () => {
 }
 
 const sendWhatsapp = () => {
-
+  if (!Mensaje.mensaje) {
+    M.toast({html: 'Por favor, cargue el texto del mensaje'});
+    return;
+  }
+  if (!Persona.telefono) {
+    M.toast({html: 'La persona seleccionada no posee teléfono'});
+    return;
+  }
+  let url = `https://api.whatsapp.com/send?phone=${Persona.telefono}&text=${encodeURIComponent(Mensaje.mensaje)}`;
+  window.open(url);
 }
