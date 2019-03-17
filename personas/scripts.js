@@ -82,13 +82,13 @@ $(document).ready(() =>{
         R.mutate('Persona', {nacimiento: prevModel.nacimiento});
         return;
       }
-      if (moment(model.nacimiento) .isBefore (moment(hoy))&& difference<=18){
+      /* if (moment(model.nacimiento) .isBefore (moment(hoy))&& difference<=18){
         M.toast({html: 'El paciente debe ser mayor de edad, verifique la fecha de nacimiento.'})
         R.mutate('Persona', {nacimiento: prevModel.nacimiento});
         return;
       
-      };
-      R.mutate('Persona', {edad: `${moment(model.nacimiento).toNow(true)}`})
+      }; */
+      R.mutate('Persona', {edad: `${moment(model.nacimiento).fromNow(true)}`})
     }});
   
   R.s.add({model: 'Persona', key: 'primerConsulta', callback: ({prevModel, model}) => {
