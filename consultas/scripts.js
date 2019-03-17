@@ -147,18 +147,18 @@ $(document).ready(() => {
 
   R.s.add({
     model: 'Consulta',
-    key: 'compromisoAbandono',
+    key: 'fechaAbandonoCompromiso',
     callback: ({
       prevModel,
       model
     }) => {
       const hoy = moment();
-      if (moment(model.compromisoAbandono, DATE_FORMAT_ES).isBefore(moment(hoy))) {
+      if (moment(model.fechaAbandonoCompromiso, DATE_FORMAT_ES).isBefore(moment(hoy))) {
         M.toast({
           html: 'La fecha de compromiso no puede ser anterior a hoy.'
         });
         R.mutate('Consulta', {
-          'compromisoAbandono': prevModel.compromisoAbandono
+          'fechaAbandonoCompromiso': prevModel.fechaAbandonoCompromiso
         });
         return;
       }
@@ -167,18 +167,18 @@ $(document).ready(() => {
 
   R.s.add({
     model: 'Consulta',
-    key: 'abandonoEfectivo',
+    key: 'fechaAbandonoEfectiva',
     callback: ({
       prevModel,
       model
     }) => {
       const hoy = moment();
-      if (moment(model.abandonoEfectivo, DATE_FORMAT_ES).isAfter(moment(hoy))) {
+      if (moment(model.fechaAbandonoEfectiva, DATE_FORMAT_ES).isAfter(moment(hoy))) {
         M.toast({
           html: 'La fecha de abandono efectivo no puede ser futura.'
         });
         R.mutate('Consulta', {
-          'abandonoEfectivo': prevModel.abandonoEfectivo
+          'fechaAbandonoEfectiva': prevModel.fechaAbandonoEfectiva
         });
         return;
       }
@@ -294,6 +294,15 @@ const loadConsultaById = async _id => {
       data.persona = data.persona._id;
       data.ingreseParaBuscar = idx;
       data.fecha = displayDate(data.fecha);
+      if (data.fechaAbandonoCompromiso) {
+        data.fechaAbandonoCompromiso = displayDate(data.fechaAbandonoCompromiso);
+      }
+      if (data.fechaAbandonoEfectiva) {
+        data.fechaAbandonoEfectiva = displayDate(data.fechaAbandonoEfectiva);  
+      }
+      if (data.fechaProximaConsulta) {
+        data.fechaProximaConsulta = displayDate(data.fechaProximaConsulta);  
+      }
       R.mutate('Consulta', data);
       return;
     }
@@ -313,11 +322,11 @@ const saveConsulta = async (silent) => {
     return;
   }
 
-  if(params.compromisoAbandono){
-    params.compromisoAbandono = normalizeDate(params.compromisoAbandono);
+  if(params.fechaAbandonoCompromiso){
+    params.fechaAbandonoCompromiso = normalizeDate(params.fechaAbandonoCompromiso);
   }
-  if(params.abandonoEfectivo){
-    params.abandonoEfectivo = normalizeDate(params.abandonoEfectivo);
+  if(params.fechaAbandonoEfectiva){
+    params.fechaAbandonoEfectiva = normalizeDate(params.fechaAbandonoEfectiva);
   }
   if(params.fechaProximaConsulta){
     params.fechaProximaConsulta = normalizeDate(params.fechaProximaConsulta);
@@ -345,7 +354,8 @@ const createConsulta = async(params) => {
   }
   CONSULTAS.push(data);
   navigatorCreator();
-  carouselCreator();
+  galleryCreator();
+  // carouselCreator();
   goTo(CONSULTAS.length - 1);
   // R.mutate('Consulta',{_id: data._id});   
   return true;
@@ -381,7 +391,8 @@ const openFinderPersonas = () => {
 const toggleDetails = (prevModel, model) => {
   if (model.persona) {
     navigatorCreator();
-    carouselCreator();
+    galleryCreator();
+    // carouselCreator();
     $('.navigator_wrapper').removeClass('hide');
     if (prevModel.persona !== model.persona) {
       $('#persona_details').prop('src', `/personas/?nav=false&id=${model.persona}`);
@@ -529,6 +540,15 @@ const copyPlantilla = (index) => {
   return mensaje;
 }
 
+const galleryCreator = async () => {
+  const response = await fetch('/assets/campaigns/availableAssets.json');
+  const descriptor = await response.json();
+  const wrapper = $(".gallery");
+  for (const {title, alt, url} of descriptor) {
+    wrapper.append(`<div class = "col s12 m4 l3 card" >${title}<img class="materialboxed" data-caption="${alt}" width="100%" style = "max-height:230px;" src="${url}"></div>`);
+  }
+  $('.materialboxed').materialbox();
+}
 
 
 const carouselCreator = async () => {
@@ -600,5 +620,14 @@ const sendEmail = async () => {
 }
 
 const sendWhatsapp = () => {
-
+  if (!Mensaje.mensaje) {
+    M.toast({html: 'Por favor, cargue el texto del mensaje'});
+    return;
+  }
+  if (!Persona.telefono) {
+    M.toast({html: 'La persona seleccionada no posee teléfono'});
+    return;
+  }
+  let url = `https://api.whatsapp.com/send?phone=${Persona.telefono}&text=${encodeURIComponent(Mensaje.mensaje)}`;
+  window.open(url);
 }
