@@ -2,6 +2,7 @@ let PERSONAS = {};
 let CONSULTAS = [];
 let PLANTILLAS = [];
 let Persona = {};
+let galleryLoaded = false;
 
 let Consulta = {
   _id: '',
@@ -541,28 +542,43 @@ const copyPlantilla = (index) => {
 }
 
 const galleryCreator = async () => {
-  const response = await fetch('/assets/campaigns/availableAssets.json');
-  const descriptor = await response.json();
+  if (galleryLoaded) {
+    return;
+  }
+  galleryLoaded = true;
   const wrapper = $(".gallery");
-  for (const {title, alt, url} of descriptor) {
-    wrapper.append(`<div class = "col s12 m4 l3 card" >${title}<img class="materialboxed" data-caption="${alt}" width="100%" style = "max-height:230px;" src="${url}"></div>`);
-  }
-  $('.materialboxed').materialbox();
-}
-
-
-const carouselCreator = async () => {
+  wrapper.html("");
   const response = await fetch('/assets/campaigns/availableAssets.json');
   const descriptor = await response.json();
-  const wrapper = $('.carousel')
-  let i = 0;
+  
   for (const {title, alt, url} of descriptor) {
-    wrapper.append(`<a class="carousel-item" href="#${i++}!"><h3 class = "center">${title}</h3><img alt="${alt}" src="${url}"></a>`);
+    // let img = document.createElement('img');
+    // img.src = url;
+    // img.className = "materialboxed";
+    // img.setAttribute('data-caption', alt);
+    // img.alt = alt;
+    // // img.width = "100%";
+    // let div = document.createElement('div');
+    // div.className = "col s12 m4 l3 card";
+    // div.innerHTML = title;
+    // $(div).append(img);
+    // wrapper.append(div);
+    
+    // img.onload = function () {
+    //   if (this.naturalHeight > this.naturalWidth) {
+    //     this.height = 230;
+    //   } else {
+    //     if (this.parentElement.parentElement.clientWidth > this.naturalWidth) {
+    //       this.width = this.naturalWidth;
+    //     } else {
+    //       this.width = "100%";
+    //     }
+    //   }
+    // };
+    
+    wrapper.append(`<div class = "col s12 m4 l3 center-align" style = "height:250px;"><h6>${title}</h6><img class="materialboxed responsive-img card" data-caption="${alt}" style = "max-height:220px;" src="${url}"></div>`);
   }
-  $('.carousel.carousel-slider').carousel({
-    fullWidth: true,
-    indicators: true
-  });
+  $('.materialboxed').materialbox(); 
 }
 
 const toggleEnviar = ({tipo, mensaje}) => {

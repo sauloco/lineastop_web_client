@@ -45,7 +45,7 @@ let Persona = {
 
 $(document).ready(() =>{
 
-  M.FormSelect.init(document.querySelectorAll('select'), {});
+  // M.FormSelect.init(document.querySelectorAll('select'), {});
 
   
   $('#guardar').click(savePersonaWithToast);
