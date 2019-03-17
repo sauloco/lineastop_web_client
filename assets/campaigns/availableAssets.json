@@ -1,27 +1,189 @@
 [
   {
-    "title": "Motivación",
-    "alt": "Motivación para dejar de fumar",
-    "url": "http://slideplayer.es/slide/3195664/11/images/18/MOTIVACI%C3%93N+PARA+DEJAR+DE+FUMAR.jpg"
+    "title": "Beneficios",
+    "alt": "Beneficios de dejar de fumar",
+    "url": "/assets/campaigns/BENEFICIOSDEJARFUMAR.png"
   },
+  {
+    "title": "Beneficios 2",
+    "alt": "Beneficios de dejar de fumar",
+    "url": "/assets/campaigns/CAMBIARMIVIDA.jpg"
+  },
+  {
+    "title": "Beneficios 3",
+    "alt": "Beneficios de dejar de fumar",
+    "url": "/assets/campaigns/infografiabeneficiosdejardefumar.jpg"
+  },
+  {
+    "title": "Beneficios 4",
+    "alt": "Beneficios de dejar de fumar",
+    "url": "/assets/campaigns/tiempofumar.jpg"
+  },
+  {
+    "title": "Beneficios 5",
+    "alt": "Beneficios de dejar de fumar",
+    "url": "/assets/campaigns/yoparodefumar.jpg"
+  },
+  {
+    "title": "Clave del exito",
+    "alt": "",
+    "url": "/assets/campaigns/EXITO.jpg"
+  },  
   {
     "title": "Consejo",
     "alt": "",
-    "url": "http://slideplayer.es/slide/1105557/3/images/14/Breve+consejo+para+dejar+de+fumar.jpg"
+    "url": "/assets/campaigns/consejos.jpg"
   },
   {
-    "title": "Motivación 2",
-    "alt": "Dejar de fumar solo depende de ti",
-    "url": "https://oliviacastrocranwell.files.wordpress.com/2013/10/dejar-fumar.jpg"
+    "title": "Consejo 2",
+    "alt": "",
+    "url": "/assets/campaigns/Comodejardefumar.jpg"
   },
   {
-    "title": "Propósito",
-    "alt": "Deja de fumar!",
-    "url": "http://grupo.farmaciastrebol.com/images/blog/proposito_fumar.jpg"
+    "title": "Consejo 3",
+    "alt": "",
+    "url": "/assets/campaigns/casassintabaco.jpg"
+  },
+  {
+    "title": "Consejo 4",
+    "alt": "",
+    "url": "/assets/campaigns/DejardeFumar.png"
+  },
+  {
+    "title": "Consejo 4",
+    "alt": "",
+    "url": "/assets/campaigns/escuchar.jpg"
+  },
+  {
+    "title": "Consejo 5",
+    "alt": "",
+    "url": "/assets/campaigns/homero.jpg"
+  },
+  {
+    "title": "Consejo 6",
+    "alt": "",
+    "url": "/assets/campaigns/MANZANA.jpg"
+  },
+  {
+    "title": "Consejo 7",
+    "alt": "",
+    "url": "/assets/campaigns/MOMENTOSDIFICILES.jpg"
+  },
+  {
+    "title": "Consejo 8",
+    "alt": "",
+    "url": "/assets/campaigns/tomaragua.jpg"
   },
   {
     "title": "Mejoras",
     "alt": "Mejoras al dejar de fumar",
-    "url": "http://3.bp.blogspot.com/-OvI0TTuDKdY/UgGvrdRyoGI/AAAAAAAAhtc/Q1O4acUV3B0/w1200-h630-p-k-no-nu/motivacion+dejar+de+fumar.jpg"
+    "url": "/assets/campaigns/DEJARDEFUMARESCOMO.jpg"
+  },
+  {
+    "title": "Mejoras",
+    "alt": "Mejoras al dejar de fumar",
+    "url": "/assets/campaigns/LINDO.jpg"
+  },
+  {
+    "title": "Motivación 1",
+    "alt": "Dejar de fumar solo depende de ti",
+    "url": "/assets/campaigns/MOTIVACION.jpg"
+  },
+  {
+    "title": "Motivación 2",
+    "alt": "Dejar de fumar solo depende de ti",
+    "url": "/assets/campaigns/CONFIANZA.jpg"
+  },
+  {
+    "title": "Motivación 3",
+    "alt": "Dejar de fumar solo depende de ti",
+    "url": "/assets/campaigns/CUENTADEDIASYCANTIDADSINFUMAR.jpg"
+  },
+  {
+    "title": "Motivación 4",
+    "alt": "Dejar de fumar solo depende de ti",
+    "url": "/assets/campaigns/EMPUJA.jpg"
+  },
+  {
+    "title": "Motivación 5",
+    "alt": "Dejar de fumar solo depende de ti",
+    "url": "/assets/campaigns/images.jpg"
+  },
+  {
+    "title": "Motivación 6",
+    "alt": "Dejar de fumar solo depende de ti",
+    "url": "/assets/campaigns/IMPOSIBLE.jpg"
+  },
+  {
+    "title": "Motivación 7",
+    "alt": "Pros? y contras",
+    "url": "/assets/campaigns/Maitena.jpg"
+  },
+  {
+    "title": "Motivación 8",
+    "alt": "El infierno de los fumadores",
+    "url": "/assets/campaigns/maitenafumadores.jpg"
+  },
+  {
+    "title": "Motivación 9",
+    "alt": "Imparable",
+    "url": "/assets/campaigns/nadatedetiene.jpeg"
+  },
+  {
+    "title": "Motivación 10",
+    "alt": "Imparable",
+    "url": "/assets/campaigns/NOTERINDAS.jpg"
+  },
+  {
+    "title": "Motivación 11",
+    "alt": "Imparable",
+    "url": "/assets/campaigns/PODESCAMBIAR.png"
+  },
+  {
+    "title": "Motivación 12",
+    "alt": "Posible1",
+    "url": "/assets/campaigns/POSIBLE.jpg"
+  },
+  {
+    "title": "Motivación 13",
+    "alt": "Posible2",
+    "url": "/assets/campaigns/POSIBLE1.jpg"
+  },
+  {
+    "title": "Motivación 14",
+    "alt": "Y si recaigo?",
+    "url": "/assets/campaigns/RECAIDAS.jpg"
+  },
+  
+  {
+    "title": "Propósito",
+    "alt": "Deja de fumar!",
+    "url": "/assets/campaigns/CUIDAME.jpg"
+  },
+  {
+    "title": "Propósito1",
+    "alt": "Deja de fumar!",
+    "url": "/assets/campaigns/porquedejardefumaratusalud.jpg"
+  },
+  {
+    "title": "Propósito2",
+    "alt": "Deja de fumar!",
+    "url": "/assets/campaigns/relax.jpg"
+  },
+  {
+    "title": "Propósito3",
+    "alt": "Deja de fumar!",
+    "url": "/assets/campaigns/RECUERDE.jpg"
+  },
+  {
+    "title": "Propósito2",
+    "alt": "Deja de fumar!",
+    "url": "/assets/campaigns/reloj.jpg"
+  },
+  {
+    "title": "Propósito2",
+    "alt": "Deja de fumar!",
+    "url": "/assets/campaigns/vaso.jpg"
   }
 ]
+
