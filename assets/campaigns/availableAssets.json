@@ -20,15 +20,9 @@
     "url": "/assets/campaigns/tiempofumar.jpg"
   },
   {
-<<<<<<< HEAD
     "title": "Mas salud",
     "alt": "Mas mejoras en la salud",
     "url": "/assets/campaigns/yoparodefumar.jpg"
-=======
-    "title": "Beneficios 5",
-    "alt": "Beneficios de dejar de fumar",
-    "url": "/assets/campaigns/yo paro de fumar.jpg"
->>>>>>> efa9c903cca509001942aa8f07fa58fa52f64a6a
   },
   {
     "title": "Tener exito",
@@ -46,15 +40,9 @@
     "url": "/assets/campaigns/Comodejardefumar.jpg"
   },
   {
-<<<<<<< HEAD
     "title": "Mejora el entorno",
     "alt": "Casa limpia",
     "url": "/assets/campaigns/casassintabaco.jpg"
-=======
-    "title": "Consejo 3",
-    "alt": "",
-    "url": "/assets/campaigns/casas sin tabaco.jpg"
->>>>>>> efa9c903cca509001942aa8f07fa58fa52f64a6a
   },
   {
     "title": "Primeros pasos",
@@ -62,7 +50,6 @@
     "url": "/assets/campaigns/DejardeFumar.png"
   },
   {
-<<<<<<< HEAD
     "title": "Mas consejos",
     "alt": "Buena predisposición",
     "url": "/assets/campaigns/escuchar.jpg"
@@ -85,30 +72,6 @@
   {
     "title": "Tomar agua",
     "alt": "La importancia de consumir agua",
-=======
-    "title": "Consejo 5",
-    "alt": "",
-    "url": "/assets/campaigns/escuchar.jpg"
-  },
-  {
-    "title": "Consejo 6",
-    "alt": "",
-    "url": "/assets/campaigns/homero.jpg"
-  },
-  {
-    "title": "Consejo 7",
-    "alt": "",
-    "url": "/assets/campaigns/MANZANA.jpg"
-  },
-  {
-    "title": "Consejo 8",
-    "alt": "",
-    "url": "/assets/campaigns/MOMENTOSDIFICILES.bmp"
-  },
-  {
-    "title": "Consejo 9",
-    "alt": "",
->>>>>>> efa9c903cca509001942aa8f07fa58fa52f64a6a
     "url": "/assets/campaigns/tomaragua.jpg"
   },
   {
