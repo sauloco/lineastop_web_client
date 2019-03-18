@@ -180,7 +180,7 @@ const validExports = {
       { "field": "_id", "caption": "id", "size": "0%", "hidden": true}, 
       { "field": "apellido", "caption": "Apellido", "size": "20%", "sortable": false, 
         "render": (record) => {
-          return `<a href = "/${currentCollection}/?id=${record._id}">${record.apellido}</a>`;
+          return `<a href = "/personas/?id=${record._id}">${record.apellido}</a>`;
         }
       },
       { "field": "nombre", "caption": "Nombre", "size": "20%", "sortable": true},
@@ -196,10 +196,15 @@ const validExports = {
       { "field": "username", "caption": "Nombre", "type": "text" },
       { "field": "email", "caption": "Correo electrónico", "type": "text" },
       { "field": "confirmed", "caption": "Confirmado", "type": "enum", "options": {"items": ["true", "false"]}},
-      { "field": "blocked", "caption": "Desactivado", "type": "enum", "options": {"items": ["true", "false"]}}
+      { "field": "blocked", "caption": "Desactivado", "type": "enum", "options": {"items": ["true", "false"]}},
+      { "field": "_id", "caption": "ID ", "type": "text" }
     ],
     "columns": [
-      { "field": "username", "caption": "Nombre", "size": "30%", "sortable": true},
+      { "field": "username", "caption": "Nombre", "size": "30%", "sortable": true,
+        "render": (record) => {
+          return `<a href = "/usuarios/?id=${record._id}">${record.username}</a>`;
+        }
+      },
       { "field": "email", "caption": "Correo electrónico", "size": "30%", "sortable": true},
       { "field": "confirmed", "caption": "Confirmado", "size": "40%", "render": "toggle", "sortable": true},
       { "field": "blocked", "caption": "Desactivado", "size": "40%", "render": "toggle", "sortable": true}
