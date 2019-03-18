@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Linea Stop | Data mining</title>
+  <title>Linea Stop | Buscar y exportar datos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -16,11 +16,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
   <script src="../js/jquery.table2excel/table2excel.js"></script>
-  <script src="/js/api.js"></script>
   <script src="/js/cookies.js"></script>
-  <script src="/js/common.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/common.js"></script>
   <script src="/js/rustic.js"></script>
   <script src="finderService.js"></script>
   <script src="/js/menulateral.js"></script>
@@ -32,7 +31,7 @@
         <div class="nav-wrapper">
             <a href="#!" data-target="slide-out" class="sidenav-trigger show-on-large" class="brand-logo"><i class="material-icons">menu</i></a>
             <a class="brand-logo"><i class="material-icons">smoke_free</i><span class="hide-on-med-and-down">Línea Stop
-                    | </span>Export</a>
+                    | </span>Buscar y exportar datos</a>
             <ul class="right">
                 <li><a id='userTooltip' class="tooltipped blue darken-4" data-position="bottom" data-tooltip=""><i
                             class="material-icons">person</i></a></li>
@@ -54,16 +53,16 @@
       <li><a href="/export/?collection=personas&export=true">Usuario</a></li>    
       <li><a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a></li>
     </ul>
-  <div class="container">
+  <div class="">
     <div class="row">
       <div class="col s12">
-        <div id="_grid" style="width: 100%; height: 100vh;"></div>
+        <div id="_grid" style="width: 100%; height: calc(100vh - 85px);"></div>
       </div>
     </div>
   </div>
   <div class="fixed-action-btn">
     <a id="export" class="btn-floating btn-large red">
-      <i class="large material-icons">mode_edit</i>
+      <i class="large material-icons">save_alt</i>
     </a>
   </div>
 

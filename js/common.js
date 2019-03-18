@@ -1,10 +1,3 @@
-//tslint
-
-$(document).ready(() => {
-    validarToken();
-})
-
-
 const validarToken = async (token) => {
     token = token || getCookie('jwt') || '';
     if (!token) {
@@ -32,3 +25,4 @@ const validarToken = async (token) => {
         location.href = `/login/?redirectTo=${encodeURIComponent(location.href)}`;
     };
 }
+validarToken();

@@ -71,7 +71,7 @@ let defaultConsulta = JSON.parse(JSON.stringify(Consulta));
 
 $(document).ready(() => {
   $('select').formSelect();
-  $('#guardar').click(saveConsulta);
+  $('#guardar').click(saveConsultaVerbosely);
   initializeDatepicker();
   getAllPersonas();
   $('#finderLauncherPersonas').click(openFinderPersonas);
@@ -92,6 +92,7 @@ $(document).ready(() => {
     $('.tooltipped').tooltip();
     $('.fixed-action-btn').floatingActionButton();
     $('.modal').modal();
+    saveConsultaSilently();
   };
 
   $('#toggle_detalles_persona').click(toggleDetailsPersona);
@@ -311,9 +312,22 @@ const loadConsultaById = async _id => {
   
 }
 
+const saveConsultaSilently = () => {
+  return saveConsulta(true);
+}
+
+const saveConsultaVerbosely = () => {
+  return saveConsulta(false);
+}
+
 const saveConsulta = async (silent) => {
   const params = JSON.parse(JSON.stringify(Consulta));
-
+  if (!params.persona) {
+    if (!silent) {
+      M.toast('La persona es obligatoria');
+    }
+    return;
+  }
   if(params.fecha){
     params.fecha = normalizeDate(params.fecha);
   } else {
@@ -411,6 +425,20 @@ const toggleDetails = (prevModel, model) => {
 
 const navigatorCreator = async () => {
   CONSULTAS = await fetchData({endpoint: api.consultas.findBy, params: {persona: PERSONAS[Consulta.ingreseParaBuscar]}});
+  CONSULTAS = CONSULTAS.map(v => {
+    v.fecha = displayDate(v.fecha);
+    if (v.fechaAbandonoCompromiso) {
+      v.fechaAbandonoCompromiso = displayDate(v.fechaAbandonoCompromiso);
+    }
+    if (v.fechaAbandonoEfectiva) {
+      v.fechaAbandonoEfectiva = displayDate(v.fechaAbandonoEfectiva);  
+    }
+    if (v.fechaProximaConsulta) {
+      v.fechaProximaConsulta = displayDate(v.fechaProximaConsulta);  
+    }
+    return v;
+  });
+  
   // pagination is the wrapper
   const wrapper = $('.pagination');
   $(wrapper).html('');
