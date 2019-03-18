@@ -51,8 +51,10 @@ const apiDefaultErrorController = ({endpoint, error}) => {
  */
 
 const getPromise = ({endpoint, params, token}) => {
-  
-  const BASE_URI = 'https://hcdigital.herokuapp.com';
+  const production = 'https://lineastop.herokuapp.com';
+  const staging = 'https://hcdigital.herokuapp.com';
+  const development = 'http://localhost:1337';
+  const BASE_URI = staging;
   let {location, method, url_params} = endpoint;
   
   if (location.split('')[0] !== '/'){
@@ -226,6 +228,13 @@ const api = {
     }
   },
   auth: {
+    resetPassword: {
+      method: 'POST',
+      location: 'auth/reset-password',
+      errors: {
+        default: 'Ocurrió un error al solicitar el reinicio de la contraseña, por favor, reintenta'
+      }
+    },
     local: {
       login: {
         location: 'auth/local',
@@ -248,7 +257,22 @@ const api = {
       },
       register: {
         location: 'auth/local/register',
-        method: 'POST'
+        method: 'POST',
+        errors: {
+          default: 'Ocurrió un error durante el registro, por favor, reintenta.',
+          400: (error) => {
+            switch (error.message) {
+              case 'Email is already taken.':
+                return 'El correo electrónico provisto ya tiene un usuario';
+              case 'This hcdigital,users,permissions is already taken':
+                return 'El nombre de usuario ya ha sido utilizado';
+              case 'Please provide your password.':
+                return 'La contraseña es obligatoria';
+              default: 
+                return api.auth.local.register.errors.default;
+            }
+          }
+        }
       }
     },
     forgotPassword: {

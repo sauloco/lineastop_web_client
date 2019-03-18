@@ -48,40 +48,37 @@ const validarParametros = () => {
 }
 const guardarNuevo = async () => {
     
-    let params = {username: $('#name').val()}
+    // let params = {username: $('#name').val()}
 
-    let data = await fetchData({endpoint: api.users.findBy, params});
+    // let data = await fetchData({endpoint: api.users.findBy, params});
 
-    if (data.length) { 
-        M.toast({html: 'Ya existe un usuario registrado con ese nombre de usuario'})
-        return;
-    }   
+    // if (data.length) { 
+    //     M.toast({html: 'Ya existe un usuario registrado con ese nombre de usuario'})
+    //     return;
+    // }   
     
-    params = {email: $('#email').val()}
+    // params = {email: $('#email').val()}
     
-    data = await fetchData({endpoint: api.users.findBy, params});
+    // data = await fetchData({endpoint: api.users.findBy, params});
 
-    if (data.length) { 
-        M.toast({html: 'Ya existe un usuario registrado con esa direccion de correo electrónico'})
-        return;
-    }   
+    // if (data.length) { 
+    //     M.toast({html: 'Ya existe un usuario registrado con esa direccion de correo electrónico'})
+    //     return;
+    // }   
 
     params = {
         username: $('#name').val(),
         email: $('#email').val(),
         password: $('#password').val()
     }
-        
     
-    getPromise({endpoint: api.auth.local.register, params})
-        .then(response => response.json())
-        .then(data => {
-            if(data.error){
-                return api.common.errorHandler({endpoint: api.auth.local.register, error: data});
-            }
-            M.toast({html:'Revise su correo electrónico y siga las instrucciones recibidas'});
-        })
-        .catch(error => api.common.errorHandler({endpoint: api.auth.local.register, error}));
+    const data = await fetchData({endpoint: api.auth.local.register, params});
+    
+    if(data.error){
+        return api.common.errorHandler({endpoint: api.auth.local.register, error: data});
+    }
+    M.toast({html:'Revise su correo electrónico y siga las instrucciones recibidas'});
+
 }
     
 

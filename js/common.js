@@ -1,5 +1,5 @@
 const validarToken = async (token) => {
-    token = token || getCookie('jwt') || '';
+    token = token || getCookie('jwt') || new URL(location.href).searchParams.get('redirectTo') || '';
     if (!token) {
         if (location.href.indexOf('login') < 0) {
             location.href = `/login/?redirectTo=${encodeURIComponent(location.href)}`;
@@ -12,6 +12,7 @@ const validarToken = async (token) => {
     try {
         if (location.href.indexOf('login') < 0) {
             if (data.error) {
+                emptyCookies();
                 location.href = `/login/?redirectTo=${encodeURIComponent(location.href)}`;
             }
         } else {
@@ -22,7 +23,28 @@ const validarToken = async (token) => {
             }
         }
     } catch (error) {
+        emptyCookies();
         location.href = `/login/?redirectTo=${encodeURIComponent(location.href)}`;
     };
 }
 validarToken();
+const emptyCookies = () => {
+    setCookie({
+        name: 'jwt',
+        value: '',
+        day: 0,
+        force: true
+      });
+      setCookie({
+        name: 'username',
+        value: '',
+        day: 0,
+        force: true
+      });
+      setCookie({
+        name: 'email',
+        value: '',
+        day: 0,
+        force: true
+      });
+};

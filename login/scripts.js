@@ -70,7 +70,7 @@ const registrarUsuario = () => {
     location.href = "/usuario/nuevo/";
 
 };
-const olvideContrasena = async () => {
+const olvideContrasena = () => {
 
     const email = $('#email').val();
     if (!email) {
@@ -82,14 +82,12 @@ const olvideContrasena = async () => {
     const params = {
         email
     }
-    const data = await fetchData({
+    const data = fetchData({
         endpoint: api.auth.forgotPassword,
         params
     });
 
-    if (data) {
-        M.toast({
-            html: 'Si el correo electrónico es válido recibirá un mensaje con las instrucciones para continuar.'
-        });
-    }
+    M.toast({
+        html: 'Si el correo electrónico es válido recibirá un mensaje con las instrucciones para continuar.'
+    });
 }
