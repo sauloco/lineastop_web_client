@@ -561,7 +561,13 @@ const goTo = (index) => {
     return;
   }
   const data = JSON.parse(JSON.stringify(CONSULTAS[index]));
-  // data.fecha = displayDate(data.fecha);
+  let fechaHelper = data.fecha;
+  try {
+    fechaHelper = displayDate(fechaHelper);
+  } catch (e) {
+    console.warn({fechaHelper, dataFecha: data.fecha});
+  }
+  data.fecha = fechaHelper;
   R.mutate('Consulta', data);
   updateURL(Consulta);
   if (index === 0) {
