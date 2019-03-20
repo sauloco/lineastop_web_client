@@ -9,13 +9,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Dashboard | Línea Stop</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://browser.sentry-cdn.com/4.4.2/bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/bundle.min.js" crossorigin="anonymous"></script>
     <script>
         Sentry.init({
             dsn: 'https://e3abd2577a644e5a84e1b4398d0f56f5@sentry.io/1363621'
         });
     </script>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    <script src="/js/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous">
     </script>
     <script src="/js/cookies.js"></script>
@@ -25,8 +25,8 @@
     <script src="/js/menulateral.js"></script>
     <script src="/js/moment-with-locales.js"></script>
     <script src="/js/date_helpers/date_utils.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="/js/materialize/materialize.min.css">
+    <script src="/js/materialize/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
@@ -53,9 +53,10 @@
         <li><a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a></li>    
         <li><a><i class="material-icons">save_alt</i>Exportar información</a></li>    
         <li><a href="/export/?collection=personas&export=true">Persona</a></li>    
-        <li><a href="/export/?collection=personas&export=true">Consulta</a></li>    
-        <li><a href="/export/?collection=personas&export=true">Usuario</a></li>    
-        <li><a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a></li>    
+        <li><a href="/export/?collection=consultas&export=true">Consulta</a></li>    
+        <li><a href="/export/?collection=users&export=true">Usuario</a></li>    
+        <li><a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a></li>
+        <li><a href="/export/?collection=users"><i class="material-icons">find_in_page</i>Buscar usuarios</a></li>    
     </ul>
     <div class="container">
         <div class="row">

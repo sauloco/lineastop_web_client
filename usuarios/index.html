@@ -8,10 +8,10 @@
     <meta name="author" content="RusticIT https://rusticit.com">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Línea Stop | Usuarios</title>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    <script src="/js/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 
-    <script src="https://browser.sentry-cdn.com/4.4.2/bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/bundle.min.js" crossorigin="anonymous"></script>
     <script>
         Sentry.init({
             dsn: 'https://e3abd2577a644e5a84e1b4398d0f56f5@sentry.io/1363621'
@@ -26,8 +26,8 @@
     <script src="scripts.js"></script>
     <script src="/js/menulateral.js"></script>
     <script src="/js/moment-with-locales.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="/js/materialize/materialize.min.css">
+    <script src="/js/materialize/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -55,11 +55,12 @@
         <li><a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a></li>    
         <li><a href="/personas"><i class="material-icons">people</i>Persona nueva</a></li>    
         <li><a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a></li>    
-        <li><a><i class="material-icons">save_alt</i>Exportar información</a></li>    
-        <li><a href="/export/?collection=personas&export=true">Persona</a></li>    
-        <li><a href="/export/?collection=personas&export=true">Consulta</a></li>    
-        <li><a href="/export/?collection=personas&export=true">Usuario</a></li>    
+        <li><a><i class="material-icons">save_alt</i>Exportar información</a></li>   
+        <li><a href="/export/?collection=personas&export=true">Persona</a></li>     
+        <li><a href="/export/?collection=consultas&export=true">Consulta</a></li>    
+        <li><a href="/export/?collection=users&export=true">Usuario</a></li>    
         <li class = "active"><a><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a></li>
+        <li><a href="/export/?collection=users"><i class="material-icons">find_in_page</i>Buscar usuarios</a></li>    
     </ul>
     <div class="container">
         <label>Datos de usuario</label>
@@ -100,25 +101,25 @@
                 </div>
                 <div class="col l2 m2 s12">
                     <label>
-                        <input name="role" id="rolePublico" type="radio" value="5c13989b4464571258360e8d" />
+                        <input name="role" id="rolePublico" type="radio" value="5c8f00cbda246c0017884e15" />
                         <span>Público</span>
                     </label>
                 </div>
                 <div class="col l3 m2 s12">
                     <label>
-                        <input name="role" id="roleInvitado" type="radio" value="5c13989b4464571258360e8c" />
+                        <input name="role" id="roleInvitado" type="radio" value="5c8f00cbda246c0017884e14" />
                         <span>Invitado</span>
                     </label>
                 </div>
                 <div class="col l3 m2 s12">
                     <label>
-                        <input name="role" id="rolemedico" type="radio" value="5c1542c6936da40424b9e37b" />
+                        <input name="role" id="rolemedico" type="radio" value="5c8f28c1447da3001756f64b" />
                         <span>Médico</span>
                     </label>
                 </div>
                 <div class="col l3 m2 s12">
                     <label>
-                        <input name="role" id="roleadministrador" type="radio" value="5c13989b4464571258360e8b" />
+                        <input name="role" id="roleadministrador" type="radio" value="5c8f00cbda246c0017884e13" />
                         <span>Administrador</span>
                     </label>
                 </div>

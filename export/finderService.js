@@ -39,15 +39,14 @@ const initFinder = async (collection, preloader_modal_selector) => {
   }
 
   initPreloader(preloader_modal_selector);
-  const data = validExports;
 
-  currentCollection = new URLSearchParams(window.location.search).get('collection');
+  currentCollection = collection || new URLSearchParams(window.location.search).get('collection');
   exportButton = new URLSearchParams(window.location.search).get('export');
 
   if (exportButton === "true") {
-    $(".fixed-action-btn").click(exportData);
+    $(".export").click(exportData);
   } else {
-    $(".fixed-action-btn").addClass("hide");
+    $(".export").addClass("hide");
   }
 
 
@@ -109,56 +108,64 @@ const calculateHeight = ($grid) => {
 
 const exportData = () => {
   const gridName = `${currentCollection}_grid`
-  const grid = w2ui[gridName];
-  let records = [];
-  if (grid.getSelection().length === 0 || grid.getSelection().length === 1) {
-    records = grid.records;
-  } else {
-    for (const index of grid.getSelection()) {
-      for (const record of grid.records) {
-        if (record.recid === index) records.push(record);
-      }
-    }
+  // const grid = w2ui[gridName];
+  // let records = [];
+  // if (grid.getSelection().length === 0 || grid.getSelection().length === 1) {
+  //   records = grid.records;
+  // } else {
+  //   for (const index of grid.getSelection()) {
+  //     for (const record of grid.records) {
+  //       if (record.recid === index) records.push(record);
+  //     }
+  //   }
+  // }
+  recordsToExcel(gridName);
+}
+
+const recordsToExcel = (gridName) => {
+  if (w2ui[gridName].records.length === 0) {
+    M.toast({html: 'No hay registros para exportar.'});
+    return;
   }
-  recordsToExcel(records);
+  w2ui[gridName].exportData(w2ui[gridName].getSelection().length > 1 ? w2ui[gridName].getSelection().map(v => w2ui[gridName].records.filter(v1 => v1.recid === v)[0]) : w2ui[gridName].records, "xls", true);
 }
 
-const recordsToExcel = (records) => {
-  let table = $("<table/>");
-  let thead = $("<thead/>");
-  let tbody = $("<tbody/>");
-  let th = $("<tr/>");
+// const recordsToExcel = (records) => {
+//   let table = $("<table/>");
+//   let thead = $("<thead/>");
+//   let tbody = $("<tbody/>");
+//   let th = $("<tr/>");
 
-  let headerLabels = []
-  $.each(records, function (index, value) {
-    let tr = $("<tr/>")
-    $.each(value, function (label, cell) {
-      if (label === "recid") {
-        return
-      }
+//   let headerLabels = []
+//   $.each(records, function (index, value) {
+//     let tr = $("<tr/>")
+//     $.each(value, function (label, cell) {
+//       if (label === "recid") {
+//         return
+//       }
 
-      //Header
-      if ($.inArray(label, headerLabels) == -1) {
-        headerLabels.push(label)
-        th.append("<th>" + label.trim() + "</th>")
-      }
+//       //Header
+//       if ($.inArray(label, headerLabels) == -1) {
+//         headerLabels.push(label)
+//         th.append("<th>" + label.trim() + "</th>")
+//       }
 
-      //Content
-      tr.append("<td>" + cell + "</td>")
-    })
-    tbody.append(tr)
-  })
-  thead.append(th)
-  table.append(thead)
-  table.append(tbody)
-  const filename = `Linea Stop - ${toCamelCase(currentCollection)}.xls`;
-  $(table).table2excel({
-    // exclude CSS class
-    exclude: ".noExl",
-    name: "Worksheet Name",
-    filename
-  });
-}
+//       //Content
+//       tr.append("<td>" + cell + "</td>")
+//     })
+//     tbody.append(tr)
+//   })
+//   thead.append(th)
+//   table.append(thead)
+//   table.append(tbody)
+//   const filename = `Linea Stop - ${toCamelCase(currentCollection)}.xls`;
+//   $(table).table2excel({
+//     // exclude CSS class
+//     exclude: ".noExl",
+//     name: "Worksheet Name",
+//     filename
+//   });
+// }
 
 const toCamelCase = (value) => {
   if (typeof value !== "string") return false;
@@ -205,6 +212,7 @@ const validExports = {
           return `<a href = "/usuarios/?id=${record._id}">${record.username}</a>`;
         }
       },
+      { "field": "role.name", "caption": "Rol", "size": "30%", "sortable": true},
       { "field": "email", "caption": "Correo electrónico", "size": "30%", "sortable": true},
       { "field": "confirmed", "caption": "Confirmado", "size": "40%", "render": "toggle", "sortable": true},
       { "field": "blocked", "caption": "Desactivado", "size": "40%", "render": "toggle", "sortable": true}

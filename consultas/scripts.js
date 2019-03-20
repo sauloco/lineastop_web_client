@@ -56,30 +56,31 @@ let Consulta = {
 
 let Mensaje = {
   _id: '',
-  subject: '',
+  subject: 'Linea Stop | Seguimiento',
   mensaje: '',
-  fechaEnvio: '',
-  cancelado: '',
-  enviado: '',
+  programarEnvio: false,
+  fechaEnvio: moment().format(DATE_FORMAT_ES),
+  cancelado: false,
+  enviado: false,
   telefono: '',
   email: '',
-  tipo: '',
+  tipo: 'email',
   persona: ''
 }
 
 let defaultConsulta = JSON.parse(JSON.stringify(Consulta));
 
-$(document).ready(() => {
+$(document).ready(async () => {
   $('select').formSelect();
   $('#guardar').click(saveConsultaVerbosely);
   initializeDatepicker();
-  getAllPersonas();
+  await getAllPersonas();
   $('#finderLauncherPersonas').click(openFinderPersonas);
   $('.fixed-action-btn').floatingActionButton();
   $('#history').click(goToHistory);
-  $('#enviar_email').click(sendEmail);
-  $('#enviar_whatsapp').click(sendWhatsapp);
-  
+  $('#enviar').click(sendMessage);
+  $('#preview').click(previewMessage);
+  $('.modal').modal();
   
   plantillasCreator();
 
@@ -91,7 +92,7 @@ $(document).ready(() => {
     $('.sidenav').sidenav();
     $('.tooltipped').tooltip();
     $('.fixed-action-btn').floatingActionButton();
-    $('.modal').modal();
+    
     saveConsultaSilently();
   };
 
@@ -131,11 +132,18 @@ $(document).ready(() => {
       const hoy = moment();
       if (moment(model.fecha, DATE_FORMAT_ES).isAfter(moment(hoy))) {
         M.toast({
-          html: 'La fecha de la consulta no puede ser futura.'
+          html: 'La fecha de la consulta no debe ser futura.'
         });
-        R.mutate('Consulta', {
-          'fecha': prevModel.fecha
-        });
+        if (prevModel._id === model._id) {
+          R.mutate('Consulta', {
+            'fecha': prevModel.fecha
+          });
+        } else {
+          R.mutate('Consulta', {
+            'fecha': ''
+          });
+        }
+        
       }
       if (model.ingreseParaBuscar) {
         R.mutate('Consulta', {'persona': PERSONAS[model.ingreseParaBuscar]});
@@ -144,6 +152,7 @@ $(document).ready(() => {
         prevModel.persona = prevModel.persona._id;
       }
       toggleDetails(prevModel, model);
+      
     }
   });
 
@@ -155,13 +164,19 @@ $(document).ready(() => {
       model
     }) => {
       const hoy = moment();
-      if (moment(model.fechaAbandonoCompromiso, DATE_FORMAT_ES).isBefore(moment(hoy))) {
+      if (moment(model.fechaAbandonoCompromiso, DATE_FORMAT_ES).isBefore(moment(model.fecha, DATE_FORMAT_ES))) {
         M.toast({
-          html: 'La fecha de compromiso no puede ser anterior a hoy.'
+          html: 'La fecha de compromiso no debe ser anterior a la fecha de la consulta.'
         });
-        R.mutate('Consulta', {
-          'fechaAbandonoCompromiso': prevModel.fechaAbandonoCompromiso
-        });
+        if (prevModel._id === model._id) {
+          R.mutate('Consulta', {
+            'fechaAbandonoCompromiso': prevModel.fechaAbandonoCompromiso
+          });
+        } else {
+          R.mutate('Consulta', {
+            'fechaAbandonoCompromiso': ''
+          });
+        }
         return;
       }
     }
@@ -175,13 +190,19 @@ $(document).ready(() => {
       model
     }) => {
       const hoy = moment();
-      if (moment(model.fechaAbandonoEfectiva, DATE_FORMAT_ES).isAfter(moment(hoy))) {
+      if (moment(model.fechaAbandonoEfectiva, DATE_FORMAT_ES).isAfter(moment(model.fecha, DATE_FORMAT_ES))) {
         M.toast({
-          html: 'La fecha de abandono efectivo no puede ser futura.'
+          html: 'La fecha de abandono efectivo no debe ser posterior a la fecha de la consulta.'
         });
-        R.mutate('Consulta', {
-          'fechaAbandonoEfectiva': prevModel.fechaAbandonoEfectiva
-        });
+        if (prevModel._id === model._id){
+          R.mutate('Consulta', {
+            'fechaAbandonoEfectiva': prevModel.fechaAbandonoEfectiva
+          });
+        } else {
+          R.mutate('Consulta', {
+            'fechaAbandonoEfectiva': ''
+          });
+        }
         return;
       }
     }
@@ -195,13 +216,20 @@ $(document).ready(() => {
       model
     }) => {
       const hoy = moment();
-      if (moment(model.fechaProximaConsulta, DATE_FORMAT_ES).isBefore(moment(hoy))) {
+      if (moment(model.fechaProximaConsulta, DATE_FORMAT_ES).isBefore(moment(model.fecha, DATE_FORMAT_ES))) {
         M.toast({
-          html: 'La fecha de próxima consulta no puede ser anterior a hoy.'
+          html: 'La fecha de próxima consulta no puede ser anterior a la fecha de la consulta.'
         })
-        R.mutate('Consulta', {
-          'fechaProximaConsulta': prevModel.fechaProximaConsulta
-        });
+        if (prevModel._id === model._id) {
+          R.mutate('Consulta', {
+            'fechaProximaConsulta': prevModel.fechaProximaConsulta
+          });
+        } else {
+          R.mutate('Consulta', {
+            'fechaProximaConsulta': ''
+          });
+        }
+        
         return;
       }
     }
@@ -250,11 +278,30 @@ $(document).ready(() => {
   });
 
   R.s.add({model: 'Mensaje', key: 'tipo', callback: ({prevModel, model}) => {
-    toggleEnviar(model);
+    const wrapper = $('.subject_wrapper');
+    if (model.tipo === 'whatsapp') {
+      wrapper.addClass('hide');
+    } else {
+      wrapper.removeClass('hide');
+    }
   }});
 
-  R.s.add({model: 'Mensaje', key: 'mensaje', callback: ({prevModel, model}) => {
-    toggleEnviar(model);
+  R.s.add({model: 'Mensaje', key: 'programarEnvio', callback: ({prevModel, model}) => {
+    const wrapper = $('.fechaEnvio_wrapper');
+    if (model.programarEnvio) {
+      wrapper.removeClass('hide');
+      $('#enviarIcon').html('schedule');
+      $('#enviar').attr('data-tooltip', 'Programar envio');
+    } else {
+      wrapper.addClass('hide');
+      $('#enviarIcon').html('send');
+      $('#enviar').attr('data-tooltip', 'Enviar ahora');
+    }
+    $('.tooltiped').tooltip();
+  }});
+
+  R.s.add({model: 'Mensaje', key: 'fechaEnvio', callback: ({prevModel, model}) => {
+
   }});
 
   // Inicialización
@@ -354,6 +401,9 @@ const saveConsulta = async (silent) => {
     result = updateConsulta(params);
   }
   if (result.toString() === 'true') {
+    if (CONSULTAS.length) {
+      actualizarCacheConsultas(Consulta);
+    }
     if (!silent) {
       M.toast({html:'Los datos de la persona se han guardado correctamente'});
       return true;
@@ -386,6 +436,10 @@ const updateConsulta = async (params) => {
 
 const getAllPersonas = async () => {
   const personas = await fetchData({endpoint: api.personas.all});
+  if (personas.statusCode !== 200) {
+    api.common.errorHandler({endpoint: api.personas.all, error: personas.error});
+    return;
+  }
   const data = [];
   PERSONAS = [];
   for (persona of personas) {
@@ -396,8 +450,8 @@ const getAllPersonas = async () => {
   $('input.autocomplete').autocomplete({data});
 }
 
-const openFinderPersonas = () => {
-  initFinder('personas', '#preloader_modal');
+const openFinderPersonas = async() => {
+  await initFinder('personas', '#preloader_modal');
 
   const modal = M.Modal.getInstance(document.querySelector('#buscadorPersonas'));
   modal.open();
@@ -407,6 +461,7 @@ const toggleDetails = (prevModel, model) => {
   if (model.persona) {
     navigatorCreator();
     galleryCreator();
+    historicoMensajesCreator(model.persona);
     // carouselCreator();
     $('.navigator_wrapper').removeClass('hide');
     if (prevModel.persona !== model.persona) {
@@ -446,7 +501,7 @@ const navigatorCreator = async () => {
     $(wrapper).html('Cargue una nueva consulta para esta persona');  
     return;
   }
-  const goToFirst = `<li id = "goToFirst" title = "Primera: ${displayDate(CONSULTAS[0].fecha)}"><a href="#" onClick = "goTo(0)"><i class="material-icons left">first_page</i></a></li>`;
+  const goToFirst = `<li id = "goToFirst" title = "Primera: ${CONSULTAS[0].fecha}"><a href="#" onClick = "goTo(0)"><i class="material-icons left">first_page</i></a></li>`;
   let disableLast = false;
   
   $(wrapper).append(goToFirst)
@@ -463,10 +518,10 @@ const navigatorCreator = async () => {
         disableLast = true;
       }
     }
-    const goTo = `<li class = "${setClass}" id = "goTo${index}" title = "${displayDate(CONSULTAS[index].fecha)}"}><a href="#" ${disableClick ? '' : `onClick = "goTo(${index})"`}>${+index + 1}</a></li>`;
+    const goTo = `<li class = "${setClass}" id = "goTo${index}" title = "${CONSULTAS[index].fecha}"}><a href="#" ${disableClick ? '' : `onClick = "goTo(${index})"`}>${+index + 1}</a></li>`;
     $(wrapper).append(goTo)
   }
-  const goToLast = `<li class = "${disableLast ? 'disabled' : ''}" id = "goToLast" title = "Última: ${displayDate(CONSULTAS[CONSULTAS.length - 1].fecha)}"><a href="#" onClick = "goTo(${CONSULTAS.length - 1})"><i class="material-icons right">last_page</i></a></li>`;
+  const goToLast = `<li class = "${disableLast ? 'disabled' : ''}" id = "goToLast" title = "Última: ${CONSULTAS[CONSULTAS.length - 1].fecha}"><a href="#" onClick = "goTo(${CONSULTAS.length - 1})"><i class="material-icons right">last_page</i></a></li>`;
   $(wrapper).append(goToLast)
   const goToNew = `<li class = "blue darken-1" id = "goToNew"><a href="#" class = "white-text" onClick = "goToNew()">Nueva</a></li>`;
   $(wrapper).append(goToNew)
@@ -485,7 +540,7 @@ const goTo = (index) => {
     return;
   }
   const data = JSON.parse(JSON.stringify(CONSULTAS[index]));
-  data.fecha = displayDate(data.fecha);
+  // data.fecha = displayDate(data.fecha);
   R.mutate('Consulta', data);
   updateURL(Consulta);
   if (index === 0) {
@@ -580,48 +635,16 @@ const galleryCreator = async () => {
   const descriptor = await response.json();
   
   for (const {title, alt, url} of descriptor) {
-    // let img = document.createElement('img');
-    // img.src = url;
-    // img.className = "materialboxed";
-    // img.setAttribute('data-caption', alt);
-    // img.alt = alt;
-    // // img.width = "100%";
-    // let div = document.createElement('div');
-    // div.className = "col s12 m4 l3 card";
-    // div.innerHTML = title;
-    // $(div).append(img);
-    // wrapper.append(div);
-    
-    // img.onload = function () {
-    //   if (this.naturalHeight > this.naturalWidth) {
-    //     this.height = 230;
-    //   } else {
-    //     if (this.parentElement.parentElement.clientWidth > this.naturalWidth) {
-    //       this.width = this.naturalWidth;
-    //     } else {
-    //       this.width = "100%";
-    //     }
-    //   }
-    // };
-    
-    wrapper.append(`<div class = "col s12 m4 l3 center-align" style = "height:250px;"><h6>${title}</h6><img class="materialboxed responsive-img card" data-caption="${alt}" style = "max-height:220px;" src="${url}"></div>`);
+    wrapper.append(`<div class = "col s12 m4 l3 center-align" style = "height:250px;"><h6>${title}<i class = "material-icons" onclick="addToMessage('${url}','${alt}','${title}')">add_photo_alternate</i></h6><img class="materialboxed responsive-img card" data-caption="${alt}" style = "max-height:220px;" src="${url}"></div>`);
   }
   $('.materialboxed').materialbox(); 
 }
 
-const toggleEnviar = ({tipo, mensaje}) => {
-  $('#enviar_email').addClass('disabled');
-  $('#enviar_whatsapp').addClass('disabled');
-  if (mensaje) {
-    if (tipo === 'ambos') {
-      $('#enviar_email').removeClass('disabled');
-      $('#enviar_whatsapp').removeClass('disabled');
-    } else {
-      $(`#enviar_${tipo}`).removeClass('disabled');
-    }
-  }
-  
-  M.textareaAutoResize($('#mensaje')); 
+const addToMessage = (url, alt, title) => {
+  const mensaje = `${Mensaje.mensaje}
+  ![${alt}](${url} "${title}")
+  `;
+  R.mutate('Mensaje', {mensaje});
 }
 
 const goToHistory = () => {
@@ -634,6 +657,14 @@ const goToHistory = () => {
     return;
   }
   window.open(`/historico/?id=${PERSONAS[Consulta.ingreseParaBuscar]}`);
+}
+
+const sendMessage = () => {
+  if (Mensaje.tipo === 'whatsapp') {
+    sendWhatsapp();
+  } else {
+    sendEmail();
+  }
 }
 
 const sendEmail = async () => {
@@ -652,7 +683,7 @@ const sendEmail = async () => {
   const params = {
     to: Persona.email,
     from: `${getCookie('username')} <no.responder@lineastop.com>`,
-    text: Mensaje.mensaje,
+    html: marked(Mensaje.mensaje),
     subject: Mensaje.subject,
     replyTo: `${getCookie('email')}`
   };
@@ -674,4 +705,28 @@ const sendWhatsapp = () => {
   }
   let url = `https://api.whatsapp.com/send?phone=${Persona.telefono}&text=${encodeURIComponent(Mensaje.mensaje)}`;
   window.open(url);
+}
+
+const actualizarCacheConsultas = (model) => {
+  for (const index in CONSULTAS) {
+    consulta = CONSULTAS[index];
+    if (consulta._id === model._id) {
+      CONSULTAS[index] = model;
+      return;
+    }
+  }
+}
+
+const historicoMensajesCreator = (personaId) => {
+  // obtener los whatsapps
+  // obtener los emails
+  // mergear y ordenar por fecha
+  // renderizar
+}
+
+const previewMessage = () => {
+  $('.container.flow-text').html(marked(Mensaje.mensaje));
+  $('.container.flow-text > p > img').addClass('responsive-img');
+  const modal = M.Modal.getInstance(document.querySelector('#previewModal'));
+  modal.open();
 }

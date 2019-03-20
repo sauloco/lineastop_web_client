@@ -35,8 +35,11 @@ $(document).ready(() =>{
       }
 
       updateURL(model);
-
-      data.role = data.role._id;
+      if (data.role) {
+        data.role = data.role._id;
+      } else {
+        data.role = "5c8f00cbda246c0017884e15";
+      }
 
       R.mutate('Usuario', data);
     }

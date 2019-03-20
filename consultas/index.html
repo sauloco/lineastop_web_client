@@ -8,9 +8,8 @@
     <meta name="author" content="RusticIT https://rusticit.com">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Línea Stop | Consultas</title>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-    <script src="https://browser.sentry-cdn.com/4.4.2/bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="/js/bundle.min.js" crossorigin="anonymous"></script>
     <script>
         Sentry.init({
             dsn: 'https://e3abd2577a644e5a84e1b4398d0f56f5@sentry.io/1363621'
@@ -23,50 +22,50 @@
     <script src="/js/rustic.js"></script>
     <script src="/js/date_helpers/date_utils.js"></script>
     <script src="/export/finderService.js"></script>
-    <script src="scripts.js"></script>
     <script src="/js/menulateral.js"></script>
     <script src="/js/moment-with-locales.js"></script>
+    <script src="/js/marked.min.js"></script>
+    <script src="/js/w2ui/w2ui-1.5.rc1.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="/js/w2ui/w2ui-1.5.rc1.css" />
 
-    <script src="../js/w2ui/w2ui-1.5.rc1.min.js"></script>
-    <link rel="stylesheet" type="text/css" media="screen" href="../js/w2ui/w2ui-1.5.rc1.min.css" />
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="/js/materialize/materialize.min.css">
+    <script src="/js/materialize/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <link rel="stylesheet" href="/css/global.css">
-
+    <script src="scripts.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-        <nav class="blue darken-4">
-                <div class="nav-wrapper">
-                    <a href="#!" data-target="slide-out" class="sidenav-trigger show-on-large" class="brand-logo"><i class="material-icons">menu</i></a>
-                    <a class="brand-logo"><i class="material-icons">smoke_free</i><span class="hide-on-med-and-down">Línea Stop
-                            | </span>Consultas</a>
-                    <ul class="right">
-                        <li><a id='userTooltip' class="tooltipped blue darken-4" data-position="bottom" data-tooltip=""><i
-                                    class="material-icons">person</i></a></li>
-                        <li><a id='logout' href=""> <i class="material-icons">exit_to_app</i></a></li>
-                    </ul>
-                </div>
-            </nav>
-        
-            <ul id="slide-out" class="sidenav">
-                <li class = "blue darken-4 "><a><i class="material-icons">smoke_free</i>Linea Stop</a></li>
-                <li><a href="/"><i class="material-icons">dashboard</i>Tablero</a></li> 
-                <li class = "active"><a><i class="material-icons">assignment</i>Consultas</a></li>    
-                <li><a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a></li>    
-                <li><a href="/personas"><i class="material-icons">people</i>Persona nueva</a></li>    
-                <li><a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a></li>    
-                <li><a><i class="material-icons">save_alt</i>Exportar información</a></li>    
-                <li><a href="/export/?collection=personas&export=true">Persona</a></li>    
-                <li><a href="/export/?collection=personas&export=true">Consulta</a></li>    
-                <li><a href="/export/?collection=personas&export=true">Usuario</a></li>    
-                <li><a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a></li>
+    <nav class="blue darken-4">
+        <div class="nav-wrapper">
+            <a href="#!" data-target="slide-out" class="sidenav-trigger show-on-large" class="brand-logo"><i class="material-icons">menu</i></a>
+            <a class="brand-logo"><i class="material-icons">smoke_free</i><span class="hide-on-med-and-down">Línea Stop
+                    | </span>Consultas</a>
+            <ul class="right">
+                <li><a id='userTooltip' class="tooltipped blue darken-4" data-position="bottom" data-tooltip=""><i
+                            class="material-icons">person</i></a></li>
+                <li><a id='logout' href=""> <i class="material-icons">exit_to_app</i></a></li>
             </ul>
         </div>
+    </nav>
+
+    <ul id="slide-out" class="sidenav">
+        <li class="blue darken-4 "><a><i class="material-icons">smoke_free</i>Linea Stop</a></li>
+        <li><a href="/"><i class="material-icons">dashboard</i>Tablero</a></li>
+        <li class="active"><a><i class="material-icons">assignment</i>Consultas</a></li>
+        <li><a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a></li>
+        <li><a href="/personas"><i class="material-icons">people</i>Persona nueva</a></li>
+        <li><a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a></li>
+        <li><a><i class="material-icons">save_alt</i>Exportar información</a></li>
+        <li><a href="/export/?collection=personas&export=true">Persona</a></li>
+        <li><a href="/export/?collection=consultas&export=true">Consulta</a></li>
+        <li><a href="/export/?collection=users&export=true">Usuario</a></li>
+        <li><a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a></li>
+        <li><a href="/export/?collection=users"><i class="material-icons">find_in_page</i>Buscar usuarios</a></li>
+    </ul>
+    </div>
     </nav>
 
     <ul id="slide-out" class="sidenav">
@@ -573,18 +572,44 @@
                     <div class="col s12 m6">
                         <div class="card">
                             <div class="card-content">
-                                <div class="input-field">
-                                    <input id="subject" type="text">
-                                    <label for="subject">Asunto</label>
+                                <div class="row">
+                                    <div class="col s12">
+                                        <label>
+                                            <input type="radio" id="tipoEmail" checked name="tipo" value='email'>
+                                            <span>Email</span>
+                                        </label>
+                                        <label>
+                                            <input type="radio" id="tipoWhatsapp" name="tipo" value='whatsapp'>
+                                            <span>Whatsapp</span>
+                                        </label>
+                                    </div>
+                                    <div class="col input-field s12 subject_wrapper">
+                                        <input id="subject" type="text">
+                                        <label for="subject">Asunto</label>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <textarea id="mensaje" class="materialize-textarea"></textarea>
+                                        <label for="mensaje">Mensaje</label>
+                                    </div>
+                                    <div class="col s12">
+                                        <a id = "preview" class="btn-flat waves-effect wave-orange"><i class="material-icons">visibility</i> Previsualizar mensaje</a>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <div class="switch">
+                                            <label>
+                                                Enviar ahora
+                                                <input type="checkbox" id="programarEnvio" checked>
+                                                <span class="lever"></span>
+                                                Programar envio
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col input-field s12 hide fechaEnvio_wrapper">
+                                        <input id="fechaEnvio" class="datepicker" type="text">
+                                        <label for="fechaEnvio">Fecha de envío</label>
+                                    </div>
+                                    <a id="enviar" class="btn-floating halfway-fab waves-effect waves-light blue tooltipped" data-tooltip="Enviar ahora" data-position="left"><i id = "enviarIcon" class="material-icons">send</i></a>
                                 </div>
-                                <div class="input-field">
-                                    <textarea id="mensaje" class="materialize-textarea"></textarea>
-                                    <label for="mensaje">Mensaje</label>
-                                </div>
-                            </div>
-                            <div class="card-action">
-                                <a class="blue-text" id="enviar_email">Correo</a>
-                                <a class="green-text" id="enviar_whatsapp">Whatsapp</a>
                             </div>
                         </div>
                     </div>
@@ -625,6 +650,10 @@
         <div class="modal-footer">
             <a href="#!" class=" modal-action modal-close waves-effect waves-light btn blue">Aceptar</a>
         </div>
+    </div>
+    <div id="previewModal" class="modal">
+        <div class="container flow-text">
+        </div>        
     </div>
     <div id="preloader_modal" class="modal">
         <div class="progress">
