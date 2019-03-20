@@ -85,7 +85,7 @@ $(document).ready(async () => {
   $('#preview').click(previewMessage);
   $('.modal').modal();
   moment.lang('es');
-  
+
   plantillasCreator();
 
   // por usar Materialize
@@ -96,7 +96,7 @@ $(document).ready(async () => {
     $('.sidenav').sidenav();
     $('.tooltipped').tooltip();
     $('.fixed-action-btn').floatingActionButton();
-    
+
     saveConsultaSilently();
   };
 
@@ -115,12 +115,21 @@ $(document).ready(async () => {
   R.s.add({
     model: 'Consulta',
     key: 'ingreseParaBuscar',
-    callback: ({prevModel, model}) => {
+    callback: ({
+      prevModel,
+      model
+    }) => {
       if (model.ingreseParaBuscar) {
-        R.mutate('Consulta', {'persona': PERSONAS[model.ingreseParaBuscar]});
+        R.mutate('Consulta', {
+          'persona': PERSONAS[model.ingreseParaBuscar]
+        });
       } else {
         Persona = {};
-        R.mutate('Mensaje', {persona:  '', telefono: '', email: ''});
+        R.mutate('Mensaje', {
+          persona: '',
+          telefono: '',
+          email: ''
+        });
       }
       toggleDetails(prevModel, model);
     }
@@ -147,16 +156,18 @@ $(document).ready(async () => {
             'fecha': ''
           });
         }
-        
+
       }
       if (model.ingreseParaBuscar) {
-        R.mutate('Consulta', {'persona': PERSONAS[model.ingreseParaBuscar]});
+        R.mutate('Consulta', {
+          'persona': PERSONAS[model.ingreseParaBuscar]
+        });
       }
       if (prevModel.persona && prevModel.persona._id) {
         prevModel.persona = prevModel.persona._id;
       }
       toggleDetails(prevModel, model);
-      
+
     }
   });
 
@@ -198,7 +209,7 @@ $(document).ready(async () => {
         M.toast({
           html: 'La fecha de abandono efectivo no debe ser posterior a la fecha de la consulta.'
         });
-        if (prevModel._id === model._id){
+        if (prevModel._id === model._id) {
           R.mutate('Consulta', {
             'fechaAbandonoEfectiva': prevModel.fechaAbandonoEfectiva
           });
@@ -233,7 +244,7 @@ $(document).ready(async () => {
             'fechaProximaConsulta': ''
           });
         }
-        
+
         return;
       }
     }
@@ -268,7 +279,7 @@ $(document).ready(async () => {
       if (model._id) {
         if (CONSULTAS.length && model._id !== prevModel._id) {
           const targetConsultaIdx = CONSULTAS.map((v, i) => {
-            if (v._id === model._id){
+            if (v._id === model._id) {
               return i;
             }
           }).filter(v => v)[0];
@@ -281,47 +292,70 @@ $(document).ready(async () => {
     }
   });
 
-  R.s.add({model: 'Mensaje', key: 'tipo', callback: ({prevModel, model}) => {
-    const wrapper = $('.subject_wrapper');
-    if (model.tipo === 'whatsapp') {
-      wrapper.addClass('hide');
-    } else {
-      wrapper.removeClass('hide');
+  R.s.add({
+    model: 'Mensaje',
+    key: 'tipo',
+    callback: ({
+      prevModel,
+      model
+    }) => {
+      const wrapper = $('.subject_wrapper');
+      if (model.tipo === 'whatsapp') {
+        wrapper.addClass('hide');
+      } else {
+        wrapper.removeClass('hide');
+      }
+      M.textareaAutoResize($('#texto'));
     }
-    M.textareaAutoResize($('#texto'));
-  }});
+  });
 
-  R.s.add({model: 'Mensaje', key: 'programarEnvio', callback: ({prevModel, model}) => {
-    const wrapper = $('.fechaEnvio_wrapper');
-    $('#enviar').off('click');
-    if (model.programarEnvio) {
-      wrapper.removeClass('hide');
-      $('#enviarIcon').html('schedule');
-      $('#enviar').attr('data-tooltip', 'Programar envio');
-      $('#enviar').click(sendLater);
-    } else {
-      wrapper.addClass('hide');
-      $('#enviarIcon').html('send');
-      $('#enviar').attr('data-tooltip', 'Enviar ahora');
-      $('#enviar').click(sendMessage);
+  R.s.add({
+    model: 'Mensaje',
+    key: 'programarEnvio',
+    callback: ({
+      prevModel,
+      model
+    }) => {
+      const wrapper = $('.fechaEnvio_wrapper');
+      $('#enviar').off('click');
+      if (model.programarEnvio) {
+        wrapper.removeClass('hide');
+        $('#enviarIcon').html('schedule');
+        $('#enviar').attr('data-tooltip', 'Programar envio');
+        $('#enviar').click(sendLater);
+      } else {
+        wrapper.addClass('hide');
+        $('#enviarIcon').html('send');
+        $('#enviar').attr('data-tooltip', 'Enviar ahora');
+        $('#enviar').click(sendMessage);
+      }
+      $('.tooltiped').tooltip();
     }
-    $('.tooltiped').tooltip();
-  }});
+  });
 
-  R.s.add({model: 'Mensaje', key: 'fechaEnvio', callback: ({prevModel, model}) => {
+  R.s.add({
+    model: 'Mensaje',
+    key: 'fechaEnvio',
+    callback: ({
+      prevModel,
+      model
+    }) => {
 
-  }});
+    }
+  });
 
   // Inicialización
   R.init('Mensaje');
   R.init('Consulta');
-  
+
 
   const url = new URL(location.href);
   const _id = url.searchParams.get('id');
 
   if (_id) {
-    R.mutate('Consulta', {_id});
+    R.mutate('Consulta', {
+      _id
+    });
   }
 
 })
@@ -337,17 +371,30 @@ const toggleDetailsPersona = (event) => {
 }
 
 const loadConsultaById = async _id => {
-  const data = await fetchData({endpoint: api.consultas.get, params: {_id}});
+  const data = await fetchData({
+    endpoint: api.consultas.get,
+    params: {
+      _id
+    }
+  });
   if (data.statusCode === 404) {
-    M.toast({html:'No se encontró ninguna consulta con la información proporcionada.'});
-    R.mutate('Consulta', {_id: ''});
+    M.toast({
+      html: 'No se encontró ninguna consulta con la información proporcionada.'
+    });
+    R.mutate('Consulta', {
+      _id: ''
+    });
     return;
   }
   const ingreseParaBuscar = Object.keys(PERSONAS);
   for (const idx of ingreseParaBuscar) {
     if (PERSONAS[idx] === data.persona._id) {
       Persona = data.persona;
-      R.mutate('Mensaje', {persona:  data.persona._id, telefono: data.persona.telefono, email: data.persona.email});
+      R.mutate('Mensaje', {
+        persona: data.persona._id,
+        telefono: data.persona.telefono,
+        email: data.persona.email
+      });
       data.persona = data.persona._id;
       data.ingreseParaBuscar = idx;
       data.fecha = displayDate(data.fecha);
@@ -355,16 +402,16 @@ const loadConsultaById = async _id => {
         data.fechaAbandonoCompromiso = displayDate(data.fechaAbandonoCompromiso);
       }
       if (data.fechaAbandonoEfectiva) {
-        data.fechaAbandonoEfectiva = displayDate(data.fechaAbandonoEfectiva);  
+        data.fechaAbandonoEfectiva = displayDate(data.fechaAbandonoEfectiva);
       }
       if (data.fechaProximaConsulta) {
-        data.fechaProximaConsulta = displayDate(data.fechaProximaConsulta);  
+        data.fechaProximaConsulta = displayDate(data.fechaProximaConsulta);
       }
       R.mutate('Consulta', data);
       return;
     }
   }
-  
+
 }
 
 const saveConsultaSilently = () => {
@@ -383,7 +430,7 @@ const saveConsulta = async (silent) => {
     }
     return;
   }
-  if(params.fecha){
+  if (params.fecha) {
     params.fecha = normalizeDate(params.fecha);
   } else {
     if (!silent) {
@@ -392,13 +439,13 @@ const saveConsulta = async (silent) => {
     return;
   }
 
-  if(params.fechaAbandonoCompromiso){
+  if (params.fechaAbandonoCompromiso) {
     params.fechaAbandonoCompromiso = normalizeDate(params.fechaAbandonoCompromiso);
   }
-  if(params.fechaAbandonoEfectiva){
+  if (params.fechaAbandonoEfectiva) {
     params.fechaAbandonoEfectiva = normalizeDate(params.fechaAbandonoEfectiva);
   }
-  if(params.fechaProximaConsulta){
+  if (params.fechaProximaConsulta) {
     params.fechaProximaConsulta = normalizeDate(params.fechaProximaConsulta);
   }
   let result = false;
@@ -413,17 +460,25 @@ const saveConsulta = async (silent) => {
       actualizarCacheConsultas(Consulta);
     }
     if (!silent) {
-      M.toast({html:'Los datos de la persona se han guardado correctamente'});
+      M.toast({
+        html: 'Los datos de la persona se han guardado correctamente'
+      });
       return true;
     }
   }
 
 }
 
-const createConsulta = async(params) => {
-  const data = await fetchData({endpoint: api.consultas.create, params});
-  if(data.error){
-    return api.common.errorHandler({endpoint: api.consultas.create, error: data});
+const createConsulta = async (params) => {
+  const data = await fetchData({
+    endpoint: api.consultas.create,
+    params
+  });
+  if (data.error) {
+    return api.common.errorHandler({
+      endpoint: api.consultas.create,
+      error: data
+    });
   }
   CONSULTAS.push(data);
   navigatorCreator();
@@ -435,19 +490,30 @@ const createConsulta = async(params) => {
 }
 
 const updateConsulta = async (params) => {
-  const data = await fetchData({endpoint: api.consultas.update, params});
-  if(data.error){
-    return api.common.errorHandler({endpoint: api.consultas.update, error: data});
+  const data = await fetchData({
+    endpoint: api.consultas.update,
+    params
+  });
+  if (data.error) {
+    return api.common.errorHandler({
+      endpoint: api.consultas.update,
+      error: data
+    });
   }
   return true;
 }
 
 const getAllPersonas = async () => {
   PERSONAS = [];
-  const personas = await fetchData({endpoint: api.personas.all});
+  const personas = await fetchData({
+    endpoint: api.personas.all
+  });
   if (personas.error) {
-    api.common.errorHandler({endpoint: api.personas.all, personas});
-    
+    api.common.errorHandler({
+      endpoint: api.personas.all,
+      personas
+    });
+
     return;
   }
   const data = [];
@@ -455,11 +521,13 @@ const getAllPersonas = async () => {
     data[`${persona.apellido} ${persona.nombre} (${persona.telefono}. ${persona.email})`] = null;
     PERSONAS[`${persona.apellido} ${persona.nombre} (${persona.telefono}. ${persona.email})`] = persona._id;
   }
-  
-  $('input.autocomplete').autocomplete({data});
+
+  $('input.autocomplete').autocomplete({
+    data
+  });
 }
 
-const openFinderPersonas = async() => {
+const openFinderPersonas = async () => {
   await initFinder('personas', '#preloader_modal');
 
   const modal = M.Modal.getInstance(document.querySelector('#buscadorPersonas'));
@@ -467,10 +535,18 @@ const openFinderPersonas = async() => {
 }
 
 const getPersonaById = async (_id) => {
-  const params = {_id};
-  const data = await fetchData({endpoint: api.personas.get, params});
+  const params = {
+    _id
+  };
+  const data = await fetchData({
+    endpoint: api.personas.get,
+    params
+  });
   if (data.error) {
-    api.common.errorHandler({endpoint: api.personas.get, data});
+    api.common.errorHandler({
+      endpoint: api.personas.get,
+      data
+    });
     return false;
   }
   return data;
@@ -486,7 +562,11 @@ const toggleDetails = async (prevModel, model) => {
     if (prevModel.persona !== model.persona) {
       $('#persona_details').prop('src', `/personas/?nav=false&id=${model.persona}`);
       Persona = await getPersonaById(model.persona);
-      R.mutate('Mensaje', {persona:  Persona._id, telefono: Persona.telefono, email: Persona.email});
+      R.mutate('Mensaje', {
+        persona: Persona._id,
+        telefono: Persona.telefono,
+        email: Persona.email
+      });
     }
     if (model.fecha) {
       $('.wrapper').removeClass('hide');
@@ -500,31 +580,36 @@ const toggleDetails = async (prevModel, model) => {
 }
 
 const navigatorCreator = async () => {
-  CONSULTAS = await fetchData({endpoint: api.consultas.findBy, params: {persona: PERSONAS[Consulta.ingreseParaBuscar]}});
+  CONSULTAS = await fetchData({
+    endpoint: api.consultas.findBy,
+    params: {
+      persona: PERSONAS[Consulta.ingreseParaBuscar]
+    }
+  });
   CONSULTAS = CONSULTAS.map(v => {
     v.fecha = displayDate(v.fecha);
     if (v.fechaAbandonoCompromiso) {
       v.fechaAbandonoCompromiso = displayDate(v.fechaAbandonoCompromiso);
     }
     if (v.fechaAbandonoEfectiva) {
-      v.fechaAbandonoEfectiva = displayDate(v.fechaAbandonoEfectiva);  
+      v.fechaAbandonoEfectiva = displayDate(v.fechaAbandonoEfectiva);
     }
     if (v.fechaProximaConsulta) {
-      v.fechaProximaConsulta = displayDate(v.fechaProximaConsulta);  
+      v.fechaProximaConsulta = displayDate(v.fechaProximaConsulta);
     }
     return v;
   });
-  
+
   // pagination is the wrapper
   const wrapper = $('.pagination');
   $(wrapper).html('');
   if (!CONSULTAS.length) {
-    $(wrapper).html('Cargue una nueva consulta para esta persona');  
+    $(wrapper).html('Cargue una nueva consulta para esta persona');
     return;
   }
   const goToFirst = `<li id = "goToFirst" title = "Primera: ${CONSULTAS[0].fecha}"><a href="#" onClick = "goTo(0)"><i class="material-icons left">first_page</i></a></li>`;
   let disableLast = false;
-  
+
   $(wrapper).append(goToFirst)
   for (const index in CONSULTAS) {
     let disableClick = false;
@@ -562,12 +647,10 @@ const goTo = (index) => {
   }
   const data = JSON.parse(JSON.stringify(CONSULTAS[index]));
   let fechaHelper = data.fecha;
-  try {
-    fechaHelper = displayDate(fechaHelper);
-  } catch (e) {
-    console.warn({fechaHelper, dataFecha: data.fecha});
+  fechaHelper = displayDate(fechaHelper);
+  if (fechaHelper !== "Invalid date") {
+    data.fecha = fechaHelper;
   }
-  data.fecha = fechaHelper;
   R.mutate('Consulta', data);
   updateURL(Consulta);
   if (index === 0) {
@@ -615,17 +698,17 @@ const updateURL = (model) => {
   if (model._id !== currentId) {
     switch (mode) {
       case 'empty':
-        window.history.replaceState( {} , '', newURL);
+        window.history.replaceState({}, '', newURL);
         break;
       case 'first':
         newURL = "?";
       case 'add':
         newURL = `${newURL}id=${model._id}`;
-        window.history.replaceState( {} , '', newURL);
+        window.history.replaceState({}, '', newURL);
         break;
       case 'edit':
-        newURL =  location.href.split('?')[1].split(currentId).join(model._id);
-        window.history.replaceState( {} , '', `?${newURL}`);
+        newURL = location.href.split('?')[1].split(currentId).join(model._id);
+        window.history.replaceState({}, '', `?${newURL}`);
         break;
     }
   }
@@ -633,9 +716,11 @@ const updateURL = (model) => {
 
 const plantillasCreator = async () => {
   if (!PLANTILLAS.length) {
-    const data = await fetchData({endpoint: api.plantillaMensaje.findBy});
+    const data = await fetchData({
+      endpoint: api.plantillaMensaje.findBy
+    });
     PLANTILLAS = JSON.parse(JSON.stringify(data));
-  }  
+  }
   const wrapper = $('#plantillas.collection');
   for (const index in PLANTILLAS) {
     const plantilla = PLANTILLAS[index]
@@ -644,12 +729,17 @@ const plantillasCreator = async () => {
 }
 
 const copyPlantilla = (index) => {
-  const texto = eval('`'+PLANTILLAS[index].cuerpo.split('{{').join('${').split('}}').join('}')+'`');
+  const texto = eval('`' + PLANTILLAS[index].cuerpo.split('{{').join('${').split('}}').join('}') + '`');
   const tipo = PLANTILLAS[index].usarEn;
   if (tipo === 'ambos') {
-    R.mutate('Mensaje', {texto});
+    R.mutate('Mensaje', {
+      texto
+    });
   } else {
-    R.mutate('Mensaje', {texto, tipo});
+    R.mutate('Mensaje', {
+      texto,
+      tipo
+    });
   }
   M.textareaAutoResize($('#texto'));
   return texto;
@@ -664,28 +754,38 @@ const galleryCreator = async () => {
   wrapper.html("");
   const response = await fetch('/assets/campaigns/availableAssets.json');
   const descriptor = await response.json();
-  
-  for (const {title, alt, url} of descriptor) {
+
+  for (const {
+      title,
+      alt,
+      url
+    } of descriptor) {
     wrapper.append(`<div class = "col s12 m4 l3 center-align" style = "height:250px;"><h6>${title}<i class = "material-icons" onclick="addToMessage('${url}','${alt}','${title}')">add_photo_alternate</i></h6><img class="materialboxed responsive-img card" data-caption="${alt}" style = "max-height:220px;" src="${url}"></div>`);
   }
-  $('.materialboxed').materialbox(); 
+  $('.materialboxed').materialbox();
 }
 
 const addToMessage = (url, alt, title) => {
   const texto = `${Mensaje.texto}
   ![${alt}](https://${location.host}${url} "${title}")
   `;
-  R.mutate('Mensaje', {texto});
+  R.mutate('Mensaje', {
+    texto
+  });
   M.textareaAutoResize($('#texto'));
 }
 
 const goToHistory = () => {
   if (Consulta.ingreseParaBuscar === "") {
-    M.toast({html: "Seleccione una persona para ver sus datos históricos"});
+    M.toast({
+      html: "Seleccione una persona para ver sus datos históricos"
+    });
     return;
   }
   if (!CONSULTAS.length) {
-    M.toast({html: "La persona seleccionada no posee consultas aún"});
+    M.toast({
+      html: "La persona seleccionada no posee consultas aún"
+    });
     return;
   }
   window.open(`/historico/?id=${PERSONAS[Consulta.ingreseParaBuscar]}`);
@@ -701,15 +801,21 @@ const sendMessage = () => {
 
 const sendEmail = async () => {
   if (!Mensaje.subject) {
-    M.toast({html: 'Por favor, cargue el asunto del mensaje'});
+    M.toast({
+      html: 'Por favor, cargue el asunto del mensaje'
+    });
     return;
   }
   if (!Mensaje.texto) {
-    M.toast({html: 'Por favor, cargue el texto del mensaje'});
+    M.toast({
+      html: 'Por favor, cargue el texto del mensaje'
+    });
     return;
   }
   if (!Persona.email) {
-    M.toast({html: 'La persona seleccionada no posee correo electrónico'});
+    M.toast({
+      html: 'La persona seleccionada no posee correo electrónico'
+    });
     return;
   }
 
@@ -720,9 +826,15 @@ const sendEmail = async () => {
     subject: Mensaje.subject,
     replyTo: `${getCookie('email')}`
   };
-  let data = await fetchData({endpoint: api.email.send, params});
+  let data = await fetchData({
+    endpoint: api.email.send,
+    params
+  });
   if (data.error) {
-    return api.common.errorHandler({endpoint: api.email.send, error: data.error});
+    return api.common.errorHandler({
+      endpoint: api.email.send,
+      error: data.error
+    });
   }
 
   params = {
@@ -734,22 +846,34 @@ const sendEmail = async () => {
     email: Mensaje.email,
     persona: Mensaje.persona
   }
-  data = await fetchData({endpoint: api.email.create, params});
+  data = await fetchData({
+    endpoint: api.email.create,
+    params
+  });
   if (data.error) {
-    return api.common.errorHandler({endpoint: api.email.create, error: data.error});
+    return api.common.errorHandler({
+      endpoint: api.email.create,
+      error: data.error
+    });
   }
   historicoMensajesCreator(Mensaje.persona, true);
-  M.toast({html: 'El correo electrónico se ha enviado y registrado satisfactoriamente.'});
+  M.toast({
+    html: 'El correo electrónico se ha enviado y registrado satisfactoriamente.'
+  });
   R.mutate('Mensaje', defaultMensaje);
 }
 
 const sendWhatsapp = async () => {
   if (!Mensaje.texto) {
-    M.toast({html: 'Por favor, cargue el texto del mensaje'});
+    M.toast({
+      html: 'Por favor, cargue el texto del mensaje'
+    });
     return;
   }
   if (!Persona.telefono) {
-    M.toast({html: 'La persona seleccionada no posee teléfono'});
+    M.toast({
+      html: 'La persona seleccionada no posee teléfono'
+    });
     return;
   }
   let url = `https://api.whatsapp.com/send?phone=54${Persona.telefono}&text=${encodeURIComponent(Mensaje.texto)}`;
@@ -762,12 +886,20 @@ const sendWhatsapp = async () => {
     email: Mensaje.email,
     persona: Mensaje.persona
   }
-  const data = await fetchData({endpoint: api.whatsapps.create, params});
+  const data = await fetchData({
+    endpoint: api.whatsapps.create,
+    params
+  });
   if (data.error) {
-    return api.common.errorHandler({endpoint: api.whatsapps.create, error: data.error});
+    return api.common.errorHandler({
+      endpoint: api.whatsapps.create,
+      error: data.error
+    });
   }
-  historicoMensajesCreator(Mensaje.persona,  true);
-  M.toast({html: 'El mensaje de Whatsapp se ha registrado como enviado, asegúrese de finalizar el envío en la pestaña abierta recientemente.'});
+  historicoMensajesCreator(Mensaje.persona, true);
+  M.toast({
+    html: 'El mensaje de Whatsapp se ha registrado como enviado, asegúrese de finalizar el envío en la pestaña abierta recientemente.'
+  });
   R.mutate('Mensaje', defaultMensaje);
 }
 
@@ -781,15 +913,21 @@ const sendLater = () => {
 
 const sendEmailLater = async () => {
   if (!Mensaje.subject) {
-    M.toast({html: 'Por favor, cargue el asunto del mensaje'});
+    M.toast({
+      html: 'Por favor, cargue el asunto del mensaje'
+    });
     return;
   }
   if (!Mensaje.texto) {
-    M.toast({html: 'Por favor, cargue el texto del mensaje'});
+    M.toast({
+      html: 'Por favor, cargue el texto del mensaje'
+    });
     return;
   }
   if (!Persona.email) {
-    M.toast({html: 'La persona seleccionada no posee correo electrónico'});
+    M.toast({
+      html: 'La persona seleccionada no posee correo electrónico'
+    });
     return;
   }
   const params = {
@@ -801,22 +939,34 @@ const sendEmailLater = async () => {
     email: Mensaje.email,
     persona: Mensaje.persona
   }
-  const data = await fetchData({endpoint: api.email.create, params});
+  const data = await fetchData({
+    endpoint: api.email.create,
+    params
+  });
   if (data.error) {
-    return api.common.errorHandler({endpoint: api.email.create, error: data.error});
+    return api.common.errorHandler({
+      endpoint: api.email.create,
+      error: data.error
+    });
   }
   const humanReadableDate = moment(normalizeDateTime(Mensaje.fechaEnvio)).from(moment());
-  M.toast({html: `Te recordaré enviar este correo electrónico ${humanReadableDate}.`});
+  M.toast({
+    html: `Te recordaré enviar este correo electrónico ${humanReadableDate}.`
+  });
   R.mutate('Mensaje', defaultMensaje);
 }
 
 const sendWhatsappLater = async () => {
   if (!Mensaje.texto) {
-    M.toast({html: 'Por favor, cargue el texto del mensaje'});
+    M.toast({
+      html: 'Por favor, cargue el texto del mensaje'
+    });
     return;
   }
   if (!Persona.telefono) {
-    M.toast({html: 'La persona seleccionada no posee teléfono'});
+    M.toast({
+      html: 'La persona seleccionada no posee teléfono'
+    });
     return;
   }
   const params = {
@@ -828,12 +978,20 @@ const sendWhatsappLater = async () => {
     email: Mensaje.email,
     persona: Mensaje.persona
   }
-  const data = await fetchData({endpoint: api.whatsapps.create, params});
+  const data = await fetchData({
+    endpoint: api.whatsapps.create,
+    params
+  });
   if (data.error) {
-    return api.common.errorHandler({endpoint: api.whatsapps.create, error: data.error});
+    return api.common.errorHandler({
+      endpoint: api.whatsapps.create,
+      error: data.error
+    });
   }
   const humanReadableDate = moment(normalizeDateTime(Mensaje.fechaEnvio)).from(moment());
-  M.toast({html: `Te recordaré enviar este mensaje de Whatsapp ${humanReadableDate}.`});
+  M.toast({
+    html: `Te recordaré enviar este mensaje de Whatsapp ${humanReadableDate}.`
+  });
   R.mutate('Mensaje', defaultMensaje);
 }
 
@@ -855,13 +1013,21 @@ const historicoMensajesCreator = async (persona, force) => {
     return;
   }
   historicoLoaded = true;
-  const params = {persona}
+  const params = {
+    persona
+  }
 
-  let whatsapps = await fetchData({endpoint: api.whatsapps.findBy, params});
-  
-  
-  let emails = await fetchData({endpoint: api.email.findBy, params});
-  
+  let whatsapps = await fetchData({
+    endpoint: api.whatsapps.findBy,
+    params
+  });
+
+
+  let emails = await fetchData({
+    endpoint: api.email.findBy,
+    params
+  });
+
 
   // mergear y ordenar por fecha
   let data = [];
@@ -903,8 +1069,7 @@ const historicoMensajesCreator = async (persona, force) => {
           <label>${moment(oldMessage.fechaEnvio).fromNow()}</label>
         </div>
         <div class="collapsible-body">${oldMessage.texto ? marked(oldMessage.texto) : ''}</div>
-      </li>`
-    );
+      </li>`);
   }
   if (data.length) {
     $('.collapsible').collapsible();
@@ -915,7 +1080,9 @@ const historicoMensajesCreator = async (persona, force) => {
 const previewMessage = (message) => {
   message = typeof message === 'string' ? message : Mensaje.texto;
   if (!message) {
-    M.toast({html:'No se ha ingresado texto en el mensaje.'});
+    M.toast({
+      html: 'No se ha ingresado texto en el mensaje.'
+    });
     return;
   }
   $('.container.flow-text').html(marked(message));
