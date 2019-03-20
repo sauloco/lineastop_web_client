@@ -26,3 +26,7 @@ const displayDate = (normalizedDate) => {
 const normalizeDate = (displayedDate) => {
   return moment(displayedDate, 'DD/MM/YYYY').toString(); 
 }
+
+const normalizeDateTime = (displayedDateTime) => {
+  return moment(displayedDateTime, 'DD/MM/YYYY hh:mm:ss').toString(); 
+}

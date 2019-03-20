@@ -3,6 +3,7 @@ let CONSULTAS = [];
 let PLANTILLAS = [];
 let Persona = {};
 let galleryLoaded = false;
+let historicoLoaded = false;
 
 let Consulta = {
   _id: '',
@@ -57,7 +58,7 @@ let Consulta = {
 let Mensaje = {
   _id: '',
   subject: 'Linea Stop | Seguimiento',
-  mensaje: '',
+  texto: '',
   programarEnvio: false,
   fechaEnvio: moment().format(DATE_FORMAT_ES),
   cancelado: false,
@@ -67,6 +68,8 @@ let Mensaje = {
   tipo: 'email',
   persona: ''
 }
+
+const defaultMensaje = JSON.parse(JSON.stringify(Mensaje));
 
 let defaultConsulta = JSON.parse(JSON.stringify(Consulta));
 
@@ -81,6 +84,7 @@ $(document).ready(async () => {
   $('#enviar').click(sendMessage);
   $('#preview').click(previewMessage);
   $('.modal').modal();
+  moment.lang('es');
   
   plantillasCreator();
 
@@ -284,18 +288,22 @@ $(document).ready(async () => {
     } else {
       wrapper.removeClass('hide');
     }
+    M.textareaAutoResize($('#texto'));
   }});
 
   R.s.add({model: 'Mensaje', key: 'programarEnvio', callback: ({prevModel, model}) => {
     const wrapper = $('.fechaEnvio_wrapper');
+    $('#enviar').off('click');
     if (model.programarEnvio) {
       wrapper.removeClass('hide');
       $('#enviarIcon').html('schedule');
       $('#enviar').attr('data-tooltip', 'Programar envio');
+      $('#enviar').click(sendLater);
     } else {
       wrapper.addClass('hide');
       $('#enviarIcon').html('send');
       $('#enviar').attr('data-tooltip', 'Enviar ahora');
+      $('#enviar').click(sendMessage);
     }
     $('.tooltiped').tooltip();
   }});
@@ -435,13 +443,14 @@ const updateConsulta = async (params) => {
 }
 
 const getAllPersonas = async () => {
+  PERSONAS = [];
   const personas = await fetchData({endpoint: api.personas.all});
-  if (personas.statusCode !== 200) {
-    api.common.errorHandler({endpoint: api.personas.all, error: personas.error});
+  if (personas.error) {
+    api.common.errorHandler({endpoint: api.personas.all, personas});
+    
     return;
   }
   const data = [];
-  PERSONAS = [];
   for (persona of personas) {
     data[`${persona.apellido} ${persona.nombre} (${persona.telefono}. ${persona.email})`] = null;
     PERSONAS[`${persona.apellido} ${persona.nombre} (${persona.telefono}. ${persona.email})`] = persona._id;
@@ -457,7 +466,17 @@ const openFinderPersonas = async() => {
   modal.open();
 }
 
-const toggleDetails = (prevModel, model) => {
+const getPersonaById = async (_id) => {
+  const params = {_id};
+  const data = await fetchData({endpoint: api.personas.get, params});
+  if (data.error) {
+    api.common.errorHandler({endpoint: api.personas.get, data});
+    return false;
+  }
+  return data;
+}
+
+const toggleDetails = async (prevModel, model) => {
   if (model.persona) {
     navigatorCreator();
     galleryCreator();
@@ -466,6 +485,8 @@ const toggleDetails = (prevModel, model) => {
     $('.navigator_wrapper').removeClass('hide');
     if (prevModel.persona !== model.persona) {
       $('#persona_details').prop('src', `/personas/?nav=false&id=${model.persona}`);
+      Persona = await getPersonaById(model.persona);
+      R.mutate('Mensaje', {persona:  Persona._id, telefono: Persona.telefono, email: Persona.email});
     }
     if (model.fecha) {
       $('.wrapper').removeClass('hide');
@@ -617,11 +638,15 @@ const plantillasCreator = async () => {
 }
 
 const copyPlantilla = (index) => {
-  const mensaje = eval('`'+PLANTILLAS[index].cuerpo.split('{{').join('${').split('}}').join('}')+'`');
+  const texto = eval('`'+PLANTILLAS[index].cuerpo.split('{{').join('${').split('}}').join('}')+'`');
   const tipo = PLANTILLAS[index].usarEn;
-  R.mutate('Mensaje', {mensaje, tipo});
-  M.textareaAutoResize($('#mensaje'));
-  return mensaje;
+  if (tipo === 'ambos') {
+    R.mutate('Mensaje', {texto});
+  } else {
+    R.mutate('Mensaje', {texto, tipo});
+  }
+  M.textareaAutoResize($('#texto'));
+  return texto;
 }
 
 const galleryCreator = async () => {
@@ -641,10 +666,11 @@ const galleryCreator = async () => {
 }
 
 const addToMessage = (url, alt, title) => {
-  const mensaje = `${Mensaje.mensaje}
-  ![${alt}](${url} "${title}")
+  const texto = `${Mensaje.texto}
+  ![${alt}](https://${location.host}${url} "${title}")
   `;
-  R.mutate('Mensaje', {mensaje});
+  R.mutate('Mensaje', {texto});
+  M.textareaAutoResize($('#texto'));
 }
 
 const goToHistory = () => {
@@ -672,7 +698,87 @@ const sendEmail = async () => {
     M.toast({html: 'Por favor, cargue el asunto del mensaje'});
     return;
   }
-  if (!Mensaje.mensaje) {
+  if (!Mensaje.texto) {
+    M.toast({html: 'Por favor, cargue el texto del mensaje'});
+    return;
+  }
+  if (!Persona.email) {
+    M.toast({html: 'La persona seleccionada no posee correo electrónico'});
+    return;
+  }
+
+  let params = {
+    to: Persona.email,
+    from: `${getCookie('username')} <no.responder@lineastop.com>`,
+    html: marked(Mensaje.texto),
+    subject: Mensaje.subject,
+    replyTo: `${getCookie('email')}`
+  };
+  let data = await fetchData({endpoint: api.email.send, params});
+  if (data.error) {
+    return api.common.errorHandler({endpoint: api.email.send, error: data.error});
+  }
+
+  params = {
+    subject: Mensaje.subject,
+    texto: params.html,
+    fechaEnvio: normalizeDateTime(moment()),
+    cancelado: false,
+    enviado: true,
+    email: Mensaje.email,
+    persona: Mensaje.persona
+  }
+  data = await fetchData({endpoint: api.email.create, params});
+  if (data.error) {
+    return api.common.errorHandler({endpoint: api.email.create, error: data.error});
+  }
+  historicoMensajesCreator(Mensaje.persona, true);
+  M.toast({html: 'El correo electrónico se ha enviado y registrado satisfactoriamente.'});
+  R.mutate('Mensaje', defaultMensaje);
+}
+
+const sendWhatsapp = async () => {
+  if (!Mensaje.texto) {
+    M.toast({html: 'Por favor, cargue el texto del mensaje'});
+    return;
+  }
+  if (!Persona.telefono) {
+    M.toast({html: 'La persona seleccionada no posee teléfono'});
+    return;
+  }
+  let url = `https://api.whatsapp.com/send?phone=54${Persona.telefono}&text=${encodeURIComponent(Mensaje.texto)}`;
+  window.open(url);
+  params = {
+    texto: Mensaje.texto,
+    fechaEnvio: normalizeDateTime(moment()),
+    cancelado: false,
+    enviado: true,
+    email: Mensaje.email,
+    persona: Mensaje.persona
+  }
+  const data = await fetchData({endpoint: api.whatsapps.create, params});
+  if (data.error) {
+    return api.common.errorHandler({endpoint: api.whatsapps.create, error: data.error});
+  }
+  historicoMensajesCreator(Mensaje.persona,  true);
+  M.toast({html: 'El mensaje de Whatsapp se ha registrado como enviado, asegúrese de finalizar el envío en la pestaña abierta recientemente.'});
+  R.mutate('Mensaje', defaultMensaje);
+}
+
+const sendLater = () => {
+  if (Mensaje.tipo === 'email') {
+    sendEmailLater();
+  } else {
+    sendWhatsappLater();
+  }
+}
+
+const sendEmailLater = async () => {
+  if (!Mensaje.subject) {
+    M.toast({html: 'Por favor, cargue el asunto del mensaje'});
+    return;
+  }
+  if (!Mensaje.texto) {
     M.toast({html: 'Por favor, cargue el texto del mensaje'});
     return;
   }
@@ -681,21 +787,25 @@ const sendEmail = async () => {
     return;
   }
   const params = {
-    to: Persona.email,
-    from: `${getCookie('username')} <no.responder@lineastop.com>`,
-    html: marked(Mensaje.mensaje),
     subject: Mensaje.subject,
-    replyTo: `${getCookie('email')}`
-  };
-  const data = await fetchData({endpoint: api.email.send, params});
-  if (data.error) {
-    return api.common.errorHandler({endpoint: api.email.send, error: data.error});
+    texto: Mensaje.texto,
+    fechaEnvio: normalizeDate(Mensaje.fechaEnvio),
+    cancelado: false,
+    enviado: false,
+    email: Mensaje.email,
+    persona: Mensaje.persona
   }
-  M.toast({html: 'El correo electrónico se ha enviado satisfactoriamente.'});
+  const data = await fetchData({endpoint: api.email.create, params});
+  if (data.error) {
+    return api.common.errorHandler({endpoint: api.email.create, error: data.error});
+  }
+  const humanReadableDate = moment(normalizeDateTime(Mensaje.fechaEnvio)).from(moment());
+  M.toast({html: `Te recordaré enviar este correo electrónico ${humanReadableDate}.`});
+  R.mutate('Mensaje', defaultMensaje);
 }
 
-const sendWhatsapp = () => {
-  if (!Mensaje.mensaje) {
+const sendWhatsappLater = async () => {
+  if (!Mensaje.texto) {
     M.toast({html: 'Por favor, cargue el texto del mensaje'});
     return;
   }
@@ -703,8 +813,22 @@ const sendWhatsapp = () => {
     M.toast({html: 'La persona seleccionada no posee teléfono'});
     return;
   }
-  let url = `https://api.whatsapp.com/send?phone=${Persona.telefono}&text=${encodeURIComponent(Mensaje.mensaje)}`;
-  window.open(url);
+  const params = {
+    subject: Mensaje.subject,
+    texto: Mensaje.texto,
+    fechaEnvio: normalizeDate(Mensaje.fechaEnvio),
+    cancelado: false,
+    enviado: false,
+    email: Mensaje.email,
+    persona: Mensaje.persona
+  }
+  const data = await fetchData({endpoint: api.whatsapps.create, params});
+  if (data.error) {
+    return api.common.errorHandler({endpoint: api.whatsapps.create, error: data.error});
+  }
+  const humanReadableDate = moment(normalizeDateTime(Mensaje.fechaEnvio)).from(moment());
+  M.toast({html: `Te recordaré enviar este mensaje de Whatsapp ${humanReadableDate}.`});
+  R.mutate('Mensaje', defaultMensaje);
 }
 
 const actualizarCacheConsultas = (model) => {
@@ -717,15 +841,78 @@ const actualizarCacheConsultas = (model) => {
   }
 }
 
-const historicoMensajesCreator = (personaId) => {
-  // obtener los whatsapps
-  // obtener los emails
+const historicoMensajesCreator = async (persona, force) => {
+  if (!persona) {
+    return;
+  }
+  if (historicoLoaded && !force) {
+    return;
+  }
+  historicoLoaded = true;
+  const params = {persona}
+
+  let whatsapps = await fetchData({endpoint: api.whatsapps.findBy, params});
+  
+  
+  let emails = await fetchData({endpoint: api.email.findBy, params});
+  
+
   // mergear y ordenar por fecha
+  let data = [];
+  const wrapper = $('#historicoMensajes');
+  wrapper.html('');
+  if (!whatsapps.error && !emails.error) {
+    emails = emails.filter(v => v.enviado);
+    whatsapps = whatsapps.filter(v => v.enviado);
+    data = whatsapps.concat(emails);
+  } else if (!whatsapps.error) {
+    whatsapps = whatsapps.filter(v => v.enviado);
+    data = whatsapps;
+  } else if (!email.error) {
+    emails = emails.filter(v => v.enviado);
+    data = emails;
+  }
+
+  if (!data.length) {
+    wrapper.append('<li><div class = "collapsible-header">No se han encontrado mensajes para esta persona.</div></li>');
+    historicoLoaded = true;
+    return;
+  }
+  if (data.length > 1) {
+    data = data.sort((a, b) => a.fechaEnvio.localeCompare(b.fechaEnvio)).reverse();
+  }
   // renderizar
+  for (const idx in data) {
+    let oldMessage = data[idx];
+    if (!oldMessage) {
+      continue;
+    }
+    oldMessage.tipo = oldMessage.subject ? 'email' : 'whatsapp';
+    const thumbnail = oldMessage.texto && oldMessage.texto.length > 50 ? oldMessage.texto.substring(0, 49).trim() + '...' : oldMessage.texto;
+    wrapper.append(`
+      <li>
+        <div class="collapsible-header tooltiped" data-tooltip = "${thumbnail}" data-position = "right">
+          <i class="material-icons ${oldMessage.tipo === 'email'  ? 'blue-text">email' : 'green-text">call'}</i>
+          <span>${oldMessage.tipo === 'email' ? oldMessage.subject : 'Mensaje de Whatsapp'}</span>
+          <label>${moment(oldMessage.fechaEnvio).fromNow()}</label>
+        </div>
+        <div class="collapsible-body">${oldMessage.texto ? marked(oldMessage.texto) : ''}</div>
+      </li>`
+    );
+  }
+  if (data.length) {
+    $('.collapsible').collapsible();
+    $(".tooltiped").tooltip();
+  }
 }
 
-const previewMessage = () => {
-  $('.container.flow-text').html(marked(Mensaje.mensaje));
+const previewMessage = (message) => {
+  message = typeof message === 'string' ? message : Mensaje.texto;
+  if (!message) {
+    M.toast({html:'No se ha ingresado texto en el mensaje.'});
+    return;
+  }
+  $('.container.flow-text').html(marked(message));
   $('.container.flow-text > p > img').addClass('responsive-img');
   const modal = M.Modal.getInstance(document.querySelector('#previewModal'));
   modal.open();

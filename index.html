@@ -25,6 +25,7 @@
     <script src="/js/menulateral.js"></script>
     <script src="/js/moment-with-locales.js"></script>
     <script src="/js/date_helpers/date_utils.js"></script>
+    <script src="/js/marked.min.js"></script>
     <link rel="stylesheet" href="/js/materialize/materialize.min.css">
     <script src="/js/materialize/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -33,7 +34,8 @@
 <body>
     <nav class="blue darken-4">
         <div class="nav-wrapper">
-            <a href="#!" data-target="slide-out" class="sidenav-trigger show-on-large" class="brand-logo"><i class="material-icons">menu</i></a>
+            <a href="#!" data-target="slide-out" class="sidenav-trigger show-on-large" class="brand-logo"><i
+                    class="material-icons">menu</i></a>
             <a class="brand-logo"><i class="material-icons">smoke_free</i><span class="hide-on-med-and-down">Línea Stop
                     | </span>Tablero</a>
             <ul class="right">
@@ -45,51 +47,30 @@
     </nav>
 
     <ul id="slide-out" class="sidenav">
-        <li class = "blue darken-4 "><a><i class="material-icons">smoke_free</i>Linea Stop</a></li>
-        <li class="active"><a ><i class="material-icons">dashboard</i>Tablero</a></li>  
-        <li><a href="/consultas"><i class="material-icons">assignment</i>Consultas</a></li>    
-        <li><a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a></li>    
-        <li><a href="/personas"><i class="material-icons">people</i>Persona nueva</a></li>    
-        <li><a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a></li>    
-        <li><a><i class="material-icons">save_alt</i>Exportar información</a></li>    
-        <li><a href="/export/?collection=personas&export=true">Persona</a></li>    
-        <li><a href="/export/?collection=consultas&export=true">Consulta</a></li>    
-        <li><a href="/export/?collection=users&export=true">Usuario</a></li>    
+        <li class="blue darken-4 "><a><i class="material-icons">smoke_free</i>Linea Stop</a></li>
+        <li class="active"><a><i class="material-icons">dashboard</i>Tablero</a></li>
+        <li><a href="/consultas"><i class="material-icons">assignment</i>Consultas</a></li>
+        <li><a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a></li>
+        <li><a href="/personas"><i class="material-icons">people</i>Persona nueva</a></li>
+        <li><a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a></li>
+        <li><a><i class="material-icons">save_alt</i>Exportar información</a></li>
+        <li><a href="/export/?collection=personas&export=true">Persona</a></li>
+        <li><a href="/export/?collection=consultas&export=true">Consulta</a></li>
+        <li><a href="/export/?collection=users&export=true">Usuario</a></li>
         <li><a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a></li>
-        <li><a href="/export/?collection=users"><i class="material-icons">find_in_page</i>Buscar usuarios</a></li>    
+        <li><a href="/export/?collection=users"><i class="material-icons">find_in_page</i>Buscar usuarios</a></li>
     </ul>
     <div class="container">
         <div class="row">
-            <div class="col s6 m6">
-                <div class="card navigator_wrapper">
-                    <div class="row">
-                        <div class="col s12 m6">
-                            <label>Personas a contactar esta semana</label>
-                        </div>
-                        <div class="col s12 center">
-                            <ul class="collection">
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+            <div class="col s12 m6">
+                <h5>Personas a contactar esta semana</h5>
+                <ul id="aContactar" class="collection">
+                </ul>
             </div>
-            <div class="col s6 m6">
-                <div class="card">
-                    <div class="row">
-                        <div class="col s12 m6">
-                            <label>Mensajes del dia</label>
-                        </div>
-                        <div class="col s12 center">
-                            <ul class="pagination">
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col s12 center">
-                            <label>En progreso</label>
-                        </div>
-                    </div>
-                </div>
+            <div class="col s12 m6">
+                <h5>Mensajes programados para enviar</h5>
+                <ul id="historicoMensajes" class="collection">
+                </ul>
             </div>
         </div>
     </div>

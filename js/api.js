@@ -205,6 +205,32 @@ const api = {
       errors: {
         default: 'Ocurrió un error al enviar el correo electrónico, por favor, reintenta nuevamente más tarde.',
       }
+    },
+    create: {
+      method: 'POST',
+      location: 'emails'
+    },
+    update: {
+      method: 'PUT',
+      location: 'emails',
+      url_params: [':_id'],
+    },
+    findBy: {
+      location: 'emails'
+    }
+  },
+  whatsapps: {
+    create: {
+      method: 'POST',
+      location: 'whatsapps'
+    },
+    update: {
+      method: 'PUT',
+      location: 'whatsapps',
+      url_params: [':_id'],
+    },
+    findBy: {
+      location: 'whatsapps'
     }
   },
   users: {
