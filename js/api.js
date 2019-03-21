@@ -55,7 +55,7 @@ const getPromise = ({endpoint, params, token}) => {
   const production = 'https://hcdigital.herokuapp.com';
   const staging = 'https://stag-lineastop.herokuapp.com';
   const development = 'http://localhost:1337';
-  const BASE_URI = staging;
+  const BASE_URI = production;
   let {location, method, url_params} = endpoint;
   
   if (location.split('')[0] !== '/'){
