@@ -60,7 +60,7 @@ $(document).ready(() =>{
       $('select').formSelect();
       M.textareaAutoResize($('textarea'));
       $('.fixed-action-btn').floatingActionButton();
-      moment.lang('es');
+      moment.locale('es');
       if (Persona.apellido && Persona.nombre) {
         savePersonaSilently();
 

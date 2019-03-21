@@ -1,7 +1,7 @@
 $(document).ready(() => {
   collectionsCreator();
   historicoMensajesCreator();
-  moment.lang('es');
+  moment.locale('es');
 })
 
 const collectionsCreator = async (params) => {

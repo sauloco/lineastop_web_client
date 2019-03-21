@@ -5,7 +5,7 @@ $(document).ready(() => {
   tablesCreator({
     persona: _id
   });
-  moment.lang('es');
+  moment.locale('es');
 })
 
 const tablesCreator = async (params) => {

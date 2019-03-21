@@ -92,6 +92,10 @@ const loadObject = async (location, w2uiDataGrid) => {
   const data = await fetchData({
     endpoint
   });
+  if (data.error) {
+    api.common.errorHandler({endpoint, data});
+    return w2uiDataGrid;
+  }
   let i = 0;
   for (let obj of data) {
     if (typeof obj === 'object') {

@@ -84,7 +84,7 @@ $(document).ready(async () => {
   $('#enviar').click(sendMessage);
   $('#preview').click(previewMessage);
   $('.modal').modal();
-  moment.lang('es');
+  moment.locale('es');
 
   plantillasCreator();
 
