@@ -516,6 +516,7 @@ const getAllPersonas = async () => {
 
     return;
   }
+  
   const data = [];
   for (persona of personas) {
     data[`${persona.apellido} ${persona.nombre} (${persona.telefono}. ${persona.email})`] = null;
@@ -612,11 +613,9 @@ const navigatorCreator = async () => {
 
   $(wrapper).append(goToFirst)
   for (const index in CONSULTAS) {
-    let disableClick = false;
     let setClass = "";
     if (CONSULTAS[index]._id === Consulta._id) {
       setClass += " active blue";
-      disableClick = true;
       if (+index === 0) {
         $("#goToFirst").addClass('disabled');
       }
@@ -624,7 +623,7 @@ const navigatorCreator = async () => {
         disableLast = true;
       }
     }
-    const goTo = `<li class = "${setClass}" id = "goTo${index}" title = "${CONSULTAS[index].fecha}"}><a href="#" ${disableClick ? '' : `onClick = "goTo(${index})"`}>${+index + 1}</a></li>`;
+    const goTo = `<li class = "${setClass}" id = "goTo${index}" title = "${CONSULTAS[index].fecha}"><a href="#" onClick = "goTo(${index.toString()})">${+index + 1}</a></li>`;
     $(wrapper).append(goTo)
   }
   const goToLast = `<li class = "${disableLast ? 'disabled' : ''}" id = "goToLast" title = "Última: ${CONSULTAS[CONSULTAS.length - 1].fecha}"><a href="#" onClick = "goTo(${CONSULTAS.length - 1})"><i class="material-icons right">last_page</i></a></li>`;
@@ -646,11 +645,15 @@ const goTo = (index) => {
     return;
   }
   const data = JSON.parse(JSON.stringify(CONSULTAS[index]));
+  if (data._id === Consulta._id) {
+    return;
+  }
   let fechaHelper = data.fecha;
   fechaHelper = displayDate(fechaHelper);
   if (fechaHelper !== "Invalid date") {
     data.fecha = fechaHelper;
   }
+  
   R.mutate('Consulta', data);
   updateURL(Consulta);
   if (index === 0) {
