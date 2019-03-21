@@ -30,3 +30,16 @@ const normalizeDate = (displayedDate) => {
 const normalizeDateTime = (displayedDateTime) => {
   return moment(displayedDateTime, 'DD/MM/YYYY hh:mm:ss').toString(); 
 }
+
+const humanReadableDate = (futureDate) => {
+  const today = moment().startOf('day');
+  const tomorrow = moment().add(1, 'days').startOf('day');
+  if (futureDate.isSame(today, 'd')) {
+    return 'hoy';
+  } 
+  if (futureDate.isSame(tomorrow, 'd')) {
+    return 'mañana';
+  }
+  const diff = futureDate.diff(today, 'days');
+  return `en ${diff} días`;
+}

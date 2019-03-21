@@ -21,9 +21,7 @@ const collectionsCreator = async (params) => {
   };
 
   for (const consulta of consultas) {
-    const today = moment();
-    const future = moment(consulta.fechaProximaConsulta);
-    const when = humanReadableDate(future.diff(today, 'days'));
+    const when = humanReadableDate(moment(consulta.fechaProximaConsulta));
     wrapper.append(`
     <li class="collection-item avatar">
       <i class="material-icons blue circle">assignment</i>
@@ -33,16 +31,6 @@ const collectionsCreator = async (params) => {
     </li>`
     );
     
-  }
-}
-
-const humanReadableDate = (diff) => {
-  if (diff < 1) {
-    return 'hoy';
-  } else if (1 >= 24 && diff < 2) {
-    return 'mañana';
-  } else {
-    return `en ${diff} días`;
   }
 }
 
@@ -100,12 +88,12 @@ const historicoMensajesCreator = async () => {
       </li>`);
       continue;
     }
-    
+    const when = humanReadableDate(moment(oldMessage.fechaEnvio));
     wrapper.append(`
     <li class="collection-item avatar">
       <i data-tooltip="Presiona para enviar" onclick = "sendMessage({tipo: '${oldMessage.tipo}', _id: '${oldMessage._id}'})" data-position="left" class="material-icons circle tooltiped ${oldMessage.tipo === 'email'  ? 'blue">email' : 'green">call'}</i>
       <span class="title">${oldMessage.persona.apellido} ${oldMessage.persona.nombre}</span>
-      <p><label>${moment(oldMessage.fechaEnvio).fromNow()}</label></p>
+      <p><label>${when}</label></p>
       <a onclick = "cancelMessage({tipo: '${oldMessage.tipo}', _id: '${oldMessage._id}'})" data-tooltip="Presiona para cancelar" data-position="left" class="secondary-content tooltiped"><i class="material-icons grey-text">cancel</i></a>
     </li>`
     );
