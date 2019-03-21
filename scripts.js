@@ -23,7 +23,7 @@ const collectionsCreator = async (params) => {
   for (const consulta of consultas) {
     const today = moment();
     const future = moment(consulta.fechaProximaConsulta);
-    const when = humanReadableDate(today.diff(future, 'days'));
+    const when = humanReadableDate(future.diff(today, 'days'));
     wrapper.append(`
     <li class="collection-item avatar">
       <i class="material-icons blue circle">assignment</i>
@@ -85,12 +85,28 @@ const historicoMensajesCreator = async () => {
       continue;
     }
     oldMessage.tipo = oldMessage.subject ? 'email' : 'whatsapp';
+    let title = '';
+    if (oldMessage.persona && oldMessage.persona.apellido && oldMessage.persona.nombre) {
+      title = `${oldMessage.persona.apellido} ${oldMessage.persona.nombre}`
+    } else if (oldMessage.telefono) {
+      title = `${oldMessage.telefono}`
+    } else {
+      wrapper.append(`<li class="collection-item avatar">
+        <i class="material-icons circle">cancel</i>
+        <span class="title">El mensaje programado tiene un error</span>
+        <p><label>No se puede determinar el destinatario</label></p>
+        <p><label>Se recomienda cancelarlo y reprogramarlo</label></p>
+        <a onclick = "cancelMessage({tipo: '${oldMessage.tipo}', _id: '${oldMessage._id}'})" data-tooltip="Presiona para cancelar" data-position="left"  class="secondary-content tooltiped"><i class="material-icons grey-text">cancel</i></a>
+      </li>`);
+      continue;
+    }
+    
     wrapper.append(`
     <li class="collection-item avatar">
       <i data-tooltip="Presiona para enviar" onclick = "sendMessage({tipo: '${oldMessage.tipo}', _id: '${oldMessage._id}'})" data-position="left" class="material-icons circle tooltiped ${oldMessage.tipo === 'email'  ? 'blue">email' : 'green">call'}</i>
       <span class="title">${oldMessage.persona.apellido} ${oldMessage.persona.nombre}</span>
       <p><label>${moment(oldMessage.fechaEnvio).fromNow()}</label></p>
-      <a onclick = "cancelMessage({tipo: '${oldMessage.tipo}', _id: '${oldMessage._id}'})" class="secondary-content"><i data-tooltip="Presiona para cancelar" data-position="left" class="material-icons grey-text">cancel</i></a>
+      <a onclick = "cancelMessage({tipo: '${oldMessage.tipo}', _id: '${oldMessage._id}'})" data-tooltip="Presiona para cancelar" data-position="left" class="secondary-content tooltiped"><i class="material-icons grey-text">cancel</i></a>
     </li>`
     );
   }
