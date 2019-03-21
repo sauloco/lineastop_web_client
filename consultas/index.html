@@ -1,659 +1,683 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Línea Stop, historia clínica digital">
-    <meta name="keywords" content="Línea Stop, historia clínica, historia clinica, historia digital">
-    <meta name="author" content="RusticIT https://rusticit.com">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Línea Stop | Consultas</title>
-    <script src="/js/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script src="https://browser.sentry-cdn.com/4.4.2/bundle.min.js" crossorigin="anonymous"></script>
-    <script>
-        Sentry.init({
-            dsn: 'https://e3abd2577a644e5a84e1b4398d0f56f5@sentry.io/1363621'
-        });
-    </script>
-    <script src="/js/lodash.js"></script>
-    <script src="/js/cookies.js"></script>
-    <script src="/js/api.js"></script>
-    <script src="/js/common.js"></script>
-    <script src="/js/rustic.js"></script>
-    <script src="/js/date_helpers/date_utils.js"></script>
-    <script src="/export/finderService.js"></script>
-    <script src="/js/menulateral.js"></script>
-    <script src="/js/moment-with-locales.js"></script>
-    <script src="/js/marked.min.js"></script>
-    <script src="/js/w2ui/w2ui-1.5.rc1.js"></script>
-    <link rel="stylesheet" type="text/css" media="screen" href="/js/w2ui/w2ui-1.5.rc1.css" />
+	<link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
+	<meta charset="utf-8" />
+	<meta name="description" content="Línea Stop, historia clínica digital">
+	<meta name="keywords" content="Línea Stop, historia clínica, historia clinica, historia digital">
+	<meta name="author" content="RusticIT https://rusticit.com">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Línea Stop | Consultas</title>
+	<script src="/js/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous"></script>
+	<script src="https://browser.sentry-cdn.com/4.4.2/bundle.min.js" crossorigin="anonymous"></script>
+	<script>
+		Sentry.init({
+			dsn: 'https://e3abd2577a644e5a84e1b4398d0f56f5@sentry.io/1363621'
+		});
+	</script>
+	<script src="/js/lodash.js"></script>
+	<script src="/js/cookies.js"></script>
+	<script src="/js/api.js"></script>
+	<script src="/js/common.js"></script>
+	<script src="/js/rustic.js"></script>
+	<script src="/js/date_helpers/date_utils.js"></script>
+	<script src="/export/finderService.js"></script>
+	<script src="/js/menulateral.js"></script>
+	<script src="/js/moment-with-locales.js"></script>
+	<script src="/js/marked.min.js"></script>
+	<script src="/js/w2ui/w2ui-1.5.rc1.js"></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="/js/w2ui/w2ui-1.5.rc1.css" />
 
-    <link rel="stylesheet" href="/js/materialize/materialize.min.css">
-    <script src="/js/materialize/materialize.min.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="/js/materialize/materialize.min.css">
+	<script src="/js/materialize/materialize.min.js"></script>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <link rel="stylesheet" href="/css/global.css">
-    <script src="scripts.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="/css/global.css">
+	<script src="scripts.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-    <nav class="blue darken-4">
-        <div class="nav-wrapper">
-            <a href="#!" data-target="slide-out" class="sidenav-trigger show-on-large" class="brand-logo"><i class="material-icons">menu</i></a>
-            <a class="brand-logo"><i class="material-icons">smoke_free</i><span class="hide-on-med-and-down">Línea Stop
-                    | </span>Consultas</a>
-            <ul class="right">
-                <li><a id='userTooltip' class="tooltipped blue darken-4" data-position="bottom" data-tooltip=""><i
-                            class="material-icons">person</i></a></li>
-                <li><a id='logout' href=""> <i class="material-icons">exit_to_app</i></a></li>
-            </ul>
-        </div>
-    </nav>
+	<nav class="blue darken-4">
+		<div class="nav-wrapper">
+			<a href="#!" data-target="slide-out" class="sidenav-trigger show-on-large" class="brand-logo"><i
+					class="material-icons">menu</i></a>
+			<a class="brand-logo"><i class="material-icons">smoke_free</i><span class="hide-on-med-and-down">Línea Stop
+					| </span>Consultas</a>
+			<ul class="right">
+				<li><a id='userTooltip' class="tooltipped blue darken-4" data-position="bottom" data-tooltip=""><i
+							class="material-icons">person</i></a></li>
+				<li><a id='logout' href=""> <i class="material-icons">exit_to_app</i></a></li>
+			</ul>
+		</div>
+	</nav>
 
-    <ul id="slide-out" class="sidenav">
-        <li class="blue darken-4 "><a><i class="material-icons">smoke_free</i>Linea Stop</a></li>
-        <li><a href="/"><i class="material-icons">dashboard</i>Tablero</a></li>
-        <li class="active"><a><i class="material-icons">assignment</i>Consultas</a></li>
-        <li><a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a></li>
-        <li><a href="/personas"><i class="material-icons">people</i>Persona nueva</a></li>
-        <li><a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a></li>
-        <li><a><i class="material-icons">save_alt</i>Exportar información</a></li>
-        <li><a href="/export/?collection=personas&export=true">Persona</a></li>
-        <li><a href="/export/?collection=consultas&export=true">Consulta</a></li>
-        <li><a href="/export/?collection=users&export=true">Usuario</a></li>
-        <li><a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a></li>
-        <li><a href="/export/?collection=users"><i class="material-icons">find_in_page</i>Buscar usuarios</a></li>
-    </ul>
-    </div>
-    </nav>
+	<ul id="slide-out" class="sidenav">
+		<li class="blue darken-4 "><a><i class="material-icons">smoke_free</i>Linea Stop</a></li>
+		<li><a href="/"><i class="material-icons">dashboard</i>Tablero</a></li>
+		<li class="active"><a><i class="material-icons">assignment</i>Consultas</a></li>
+		<li><a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a></li>
+		<li><a href="/personas"><i class="material-icons">people</i>Persona nueva</a></li>
+		<li><a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a></li>
+		<li><a><i class="material-icons">save_alt</i>Exportar información</a></li>
+		<li><a href="/export/?collection=personas&export=true">Persona</a></li>
+		<li><a href="/export/?collection=consultas&export=true">Consulta</a></li>
+		<li><a href="/export/?collection=users&export=true">Usuario</a></li>
+		<li><a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a></li>
+		<li><a href="/export/?collection=users"><i class="material-icons">find_in_page</i>Buscar usuarios</a></li>
+	</ul>
+	</div>
+	</nav>
 
-    <ul id="slide-out" class="sidenav">
-        <li><a><i class="material-icons">smoke_free</i>Linea Stop</a></li>
-        <li><a href="/index.html"><i class="material-icons">dashboard</i>Tablero</a></li>
-        <li><a href="/consultas"><i class="material-icons">assignment</i>Consultas</a></li>
-        <li><a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a></li>
-        <li><a href="/personas"><i class="material-icons">people</i>Persona nueva</a></li>
-        <li><a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a></li>
-        <li><a><i class="material-icons">save_alt</i>Exportar información</a></li>
-        <li><a href="/export/?collection=personas&export=true">Persona</a></li>
-        <li><a href="/export/?collection=personas&export=true">Consulta</a></li>
-        <li><a href="/export/?collection=personas&export=true">Usuario</a></li>
-        <li><a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a></li>
-    </ul>
+	<ul id="slide-out" class="sidenav">
+		<li><a><i class="material-icons">smoke_free</i>Linea Stop</a></li>
+		<li><a href="/index.html"><i class="material-icons">dashboard</i>Tablero</a></li>
+		<li><a href="/consultas"><i class="material-icons">assignment</i>Consultas</a></li>
+		<li><a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a></li>
+		<li><a href="/personas"><i class="material-icons">people</i>Persona nueva</a></li>
+		<li><a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a></li>
+		<li><a><i class="material-icons">save_alt</i>Exportar información</a></li>
+		<li><a href="/export/?collection=personas&export=true">Persona</a></li>
+		<li><a href="/export/?collection=personas&export=true">Consulta</a></li>
+		<li><a href="/export/?collection=personas&export=true">Usuario</a></li>
+		<li><a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a></li>
+	</ul>
 
-    <div class="container">
-        <label>Información obligatoria de consulta</label>
-        <div class="card">
-            <div class="row valign-wrapper">
-                <div class="col s2 m1">
-                    <a id='finderLauncherPersonas' class="btn-small waves-effect waves-light blue darken-1 tooltipped"
-                        data-position="top" data-tooltip="Abrir el buscador avanzado de personas">
-                        <i class="material-icons">search</i>
-                    </a>
-                </div>
-                <div class="input-field col s7 m8">
-                    <input type="text" id="ingreseParaBuscar" class="autocomplete" autocomplete="off" autofill="false">
-                    <label for="ingreseParaBuscar" class="hide-on-med-and-down">Busque persona por apellido, nombre,
-                        teléfono o correo eléctronico</label>
-                    <label for="ingreseParaBuscar" class="hide-on-large-only">Buscador simple de personas</label>
-                </div>
-                <div class="input-field col s3 m3">
-                    <input id="fecha" class="datepicker" type="text">
-                    <label for="fecha" class="active">Fecha de consulta</label>
-                </div>
-            </div>
-        </div>
-        <div class="card blue lighten-5 navigator_wrapper">
-            <div class="row">
-                <div class="col s12 center">
-                    <label>Navegador de consultas</label>
-                </div>
-                <div class="col s12 center">
-                    <ul class="pagination">
-                    </ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 center">
-                    <div class="switch">
-                        <label>
-                            No
-                            <input type="checkbox" id="toggle_detalles_persona" checked>
-                            <span class="lever"></span>
-                            Mostrar detalles de persona
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div id="persona_details_wrapper" class="row">
-                <div class="col s12 center">
-                    <iframe id="persona_details" class="card white" src="/personas/?nav=false&id=" height="600px" width="100%"
-                        frameBorder="0"></iframe>
-                </div>
-            </div>
-            <div id="persona_details_wrapper_helper" class="row hide"></div>
-        </div>
-        <div class="wrapper">
-            <label>Síntomas clínicos</label>
-            <div class="card">
-                <div class="row"></div>
-                <div class="row">
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="tos">
-                                <span class="lever"></span>
-                                Tos
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="expectoracion">
-                                <span class="lever"></span>
-                                Expectoración
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="dolorCalambre">
-                                <span class="lever"></span>
-                                Dolores o calambres musculares
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="dolorPrecordial">
-                                <span class="lever"></span>
-                                Dolor precordial
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="dificultadRespiratoria">
-                                <span class="lever"></span>
-                                Dificultad respiratoria
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="sueno">
-                                <span class="lever"></span>
-                                Sueño
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="piel">
-                                <span class="lever"></span>
-                                Piel
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="olfato">
-                                <span class="lever"></span>
-                                Olfato
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="dientes">
-                                <span class="lever"></span>
-                                Dientes
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="gusto">
-                                <span class="lever"></span>
-                                Gusto
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="claudicacionMi">
-                                <span class="lever"></span>
-                                Claudicación MI
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="problemaPeso">
-                                <span class="lever"></span>
-                                Problemas con el peso
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row"></div>
-            </div>
-        </div>
-        <div class="wrapper">
-            <label>Tratamientos cognitivos</label>
-            <div class="card">
-                <div class="row"></div>
-                <div class="row">
-                    <div class="col s12 m6">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="tabaquismoEnfermedad">
-                                <span class="lever"></span>
-                                Tabaquismo es una enfermedad
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m6">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="tripleAdiccion">
-                                <span class="lever"></span>
-                                Que es la triple adicción
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m6">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="abandonoExperiencia">
-                                <span class="lever"></span>
-                                Cada abandono es una experiencia
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m6">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="controlApoyo">
-                                <span class="lever"></span>
-                                Control + apoyo telefónico
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m6">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="cambiarVida">
-                                <span class="lever"></span>
-                                Dejar de fumar es cambiar de vida
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m6">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="tratamientoFarmacologico">
-                                <span class="lever"></span>
-                                Tratamiento farmacológico si es necesario
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row"></div>
-            </div>
-        </div>
-        <div class="row"></div>
-        <div class="wrapper">
-            <label>Tratamiento conductual</label>
-            <div class="card">
-                <div class="row"></div>
-                <div class="row">
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="actividadManual">
-                                <span class="lever"></span>
-                                Actividad manual
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="tiempoLibre">
-                                <span class="lever"></span>
-                                Tiempo libre
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="carteleria">
-                                <span class="lever"></span>
-                                Cartelería
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="comprometerse">
-                                <span class="lever"></span>
-                                Comprometerse
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="corte">
-                                <span class="lever"></span>
-                                Corte de los cigarrillos
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="desayuno">
-                                <span class="lever"></span>
-                                Desayuno
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="actividadFisica">
-                                <span class="lever"></span>
-                                Actividad física
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="agua">
-                                <span class="lever"></span>
-                                Agua
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="chicles">
-                                <span class="lever"></span>
-                                Chicles sin azúcar
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="zanahoriaManzana">
-                                <span class="lever"></span>
-                                Zanahoria/Manzana
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="autoSinTabaco">
-                                <span class="lever"></span>
-                                Auto sin tabaco
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="casaSinTabaco">
-                                <span class="lever"></span>
-                                Casa sin tabaco
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="alimentacion">
-                                <span class="lever"></span>
-                                Alimentación
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="cepilladoDiente">
-                                <span class="lever"></span>
-                                Cepillado de dientes
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="banos">
-                                <span class="lever"></span>
-                                Baños
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="reuniones">
-                                <span class="lever"></span>
-                                Reuniones con fumadores
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="cambioMarca">
-                                <span class="lever"></span>
-                                Cambio de marca
-                            </label>
-                        </div>
-                    </div>
-                    <div class="input-field col s12 m4">
-                        <input id="otros" type="text">
-                        <label for="otros">Otros</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="wrapper">
-            <label>Conducta terapéutica</label>
-            <div class="card">
-                <div class="row"></div>
-                <div class="row">
-                    <div class="col s12 m2">
-                        <div class="switch">
-                            <label>
-                                <input type="checkbox" id="derivado">
-                                <span class="lever"></span>
-                                Derivado
-                            </label>
-                        </div>
-                    </div>
-                    <div id="medicoDerivadoDetails" class="input-field col s12 m10 hide">
-                        <input id="derivadoMedico" type="text">
-                        <label for="derivadoMedico">Nombre del médico derivado</label>
-                    </div>
-                </div>
-                <div class="row hide" id="notificacionAlMedicoDetails">
-                    <div class="input-field col s12 m10 offset-m2">
-                        <textarea id="derivadoNotificacion" class="materialize-textarea"></textarea>
-                        <label for="derivadoNotificacion">Notificación al médico</label>
-                    </div>
-                </div>
+	<div class="container">
+		<label>Información obligatoria de consulta</label>
+		<div class="card">
+			<div class="row valign-wrapper">
+				<div class="col s2 m1">
+					<a id='finderLauncherPersonas' class="btn-small waves-effect waves-light blue darken-1 tooltipped"
+						data-position="top" data-tooltip="Abrir el buscador avanzado de personas">
+						<i class="material-icons">search</i>
+					</a>
+				</div>
+				<div class="input-field col s7 m8">
+					<input type="text" id="ingreseParaBuscar" class="autocomplete" autocomplete="off" autofill="false">
+					<label for="ingreseParaBuscar" class="hide-on-med-and-down">Busque persona por apellido, nombre,
+						teléfono o correo eléctronico</label>
+					<label for="ingreseParaBuscar" class="hide-on-large-only">Buscador simple de personas</label>
+				</div>
+				<div class="input-field col s3 m3">
+					<input id="fecha" class="datepicker" type="text">
+					<label for="fecha" class="active">Fecha de consulta</label>
+				</div>
+			</div>
+		</div>
+		<div class="card blue lighten-5 navigator_wrapper">
+			<div class="row">
+				<div class="col s12 center">
+					<label>Navegador de consultas</label>
+				</div>
+				<div class="col s12 center">
+					<ul class="pagination">
+					</ul>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col s12 center">
+					<div class="switch">
+						<label>
+							No
+							<input type="checkbox" id="toggle_detalles_persona" checked>
+							<span class="lever"></span>
+							Mostrar detalles de persona
+						</label>
+					</div>
+				</div>
+			</div>
+			<div id="persona_details_wrapper" class="row">
+				<div class="col s12 center">
+					<iframe id="persona_details" class="card white" src="/personas/?nav=false&id=" height="600px"
+						width="100%" frameBorder="0"></iframe>
+				</div>
+			</div>
+			<div id="persona_details_wrapper_helper" class="row hide"></div>
+		</div>
+		<div class="wrapper">
+			<label>Síntomas clínicos</label>
+			<div class="card">
+				<div class="row"></div>
+				<div class="row">
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="tos">
+								<span class="lever"></span>
+								Tos
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="expectoracion">
+								<span class="lever"></span>
+								Expectoración
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="dolorCalambre">
+								<span class="lever"></span>
+								Dolores o calambres musculares
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="dolorPrecordial">
+								<span class="lever"></span>
+								Dolor precordial
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="dificultadRespiratoria">
+								<span class="lever"></span>
+								Dificultad respiratoria
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="sueno">
+								<span class="lever"></span>
+								Sueño
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="piel">
+								<span class="lever"></span>
+								Piel
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="olfato">
+								<span class="lever"></span>
+								Olfato
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="dientes">
+								<span class="lever"></span>
+								Dientes
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="gusto">
+								<span class="lever"></span>
+								Gusto
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="claudicacionMi">
+								<span class="lever"></span>
+								Claudicación MI
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="problemaPeso">
+								<span class="lever"></span>
+								Problemas con el peso
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row"></div>
+			</div>
+		</div>
+		<div class="wrapper">
+			<label>Tratamientos cognitivos</label>
+			<div class="card">
+				<div class="row"></div>
+				<div class="row">
+					<div class="col s12 m6">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="tabaquismoEnfermedad">
+								<span class="lever"></span>
+								Tabaquismo es una enfermedad
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m6">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="tripleAdiccion">
+								<span class="lever"></span>
+								Que es la triple adicción
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m6">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="abandonoExperiencia">
+								<span class="lever"></span>
+								Cada abandono es una experiencia
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m6">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="controlApoyo">
+								<span class="lever"></span>
+								Control + apoyo telefónico
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m6">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="cambiarVida">
+								<span class="lever"></span>
+								Dejar de fumar es cambiar de vida
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m6">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="tratamientoFarmacologico">
+								<span class="lever"></span>
+								Tratamiento farmacológico si es necesario
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row"></div>
+			</div>
+		</div>
+		<div class="row"></div>
+		<div class="wrapper">
+			<label>Tratamiento conductual</label>
+			<div class="card">
+				<div class="row"></div>
+				<div class="row">
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="actividadManual">
+								<span class="lever"></span>
+								Actividad manual
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="tiempoLibre">
+								<span class="lever"></span>
+								Tiempo libre
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="carteleria">
+								<span class="lever"></span>
+								Cartelería
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="comprometerse">
+								<span class="lever"></span>
+								Comprometerse
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="corte">
+								<span class="lever"></span>
+								Corte de los cigarrillos
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="desayuno">
+								<span class="lever"></span>
+								Desayuno
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="actividadFisica">
+								<span class="lever"></span>
+								Actividad física
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="agua">
+								<span class="lever"></span>
+								Agua
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="chicles">
+								<span class="lever"></span>
+								Chicles sin azúcar
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="zanahoriaManzana">
+								<span class="lever"></span>
+								Zanahoria/Manzana
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="autoSinTabaco">
+								<span class="lever"></span>
+								Auto sin tabaco
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="casaSinTabaco">
+								<span class="lever"></span>
+								Casa sin tabaco
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="alimentacion">
+								<span class="lever"></span>
+								Alimentación
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="cepilladoDiente">
+								<span class="lever"></span>
+								Cepillado de dientes
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="banos">
+								<span class="lever"></span>
+								Baños
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="reuniones">
+								<span class="lever"></span>
+								Reuniones con fumadores
+							</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="cambioMarca">
+								<span class="lever"></span>
+								Cambio de marca
+							</label>
+						</div>
+					</div>
+					<div class="input-field col s12 m4">
+						<input id="otros" type="text">
+						<label for="otros">Otros</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="wrapper">
+			<label>Conducta terapéutica</label>
+			<div class="card">
+				<div class="row"></div>
+				<div class="row">
+					<div class="col s12 m2">
+						<div class="switch">
+							<label>
+								<input type="checkbox" id="derivado">
+								<span class="lever"></span>
+								Derivado
+							</label>
+						</div>
+					</div>
+					<div id="medicoDerivadoDetails" class="input-field col s12 m10 hide">
+						<input id="derivadoMedico" type="text">
+						<label for="derivadoMedico">Nombre del médico derivado</label>
+					</div>
+				</div>
+				<div class="row hide" id="notificacionAlMedicoDetails">
+					<div class="input-field col s12 m10 offset-m2">
+						<textarea id="derivadoNotificacion" class="materialize-textarea"></textarea>
+						<label for="derivadoNotificacion">Notificación al médico</label>
+					</div>
+				</div>
 
-                <div class="row">
-                    <div class="col s12 m4">
-                        <div class="input-field">
-                            <input id="fechaAbandonoCompromiso" type="text" class="datepicker">
-                            <label for="fechaAbandonoCompromiso" class="active">Compromiso de abandono</label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="input-field">
-                            <input id="fechaAbandonoEfectiva" type="text" class="datepicker">
-                            <label for="fechaAbandonoEfectiva">Abandono efectivo</label>
-                        </div>
-                    </div>
-                    <div class="col s12 m4">
-                        <div class="input-field">
-                            <input id="fechaProximaConsulta" type="text" class="datepicker">
-                            <label for="fechaProximaConsulta">Próxima consulta</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12">
-                        <textarea id="observacion" class="materialize-textarea"></textarea>
-                        <label for="observacion">Observaciones generales</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="navigator_wrapper">
-            <label>Comunicación</label>
-            <div class="card">
+				<div class="row">
+					<div class="col s12 m4">
+						<div class="input-field">
+							<input id="fechaAbandonoCompromiso" type="text" class="datepicker">
+							<label for="fechaAbandonoCompromiso" class="active">Compromiso de abandono</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="input-field">
+							<input id="fechaAbandonoEfectiva" type="text" class="datepicker">
+							<label for="fechaAbandonoEfectiva">Abandono efectivo</label>
+						</div>
+					</div>
+					<div class="col s12 m4">
+						<div class="input-field">
+							<input id="fechaProximaConsulta" type="text" class="datepicker">
+							<label for="fechaProximaConsulta">Próxima consulta</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12">
+						<textarea id="observacion" class="materialize-textarea"></textarea>
+						<label for="observacion">Observaciones generales</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="navigator_wrapper">
+			<label>Comunicación</label>
+			<div class="card">
 
-                <div class="row">
-                    
-                    <div class="col s12 m3">
-                        <h6>Historial de mensajes</h6>
-                        <ul id="historicoMensajes" class="collapsible with-header">
-                        </ul>
-                    </div>
-                    <div class="col s12 m6">
-                        <div class="card">
-                            <div class="card-content">
-                                <div class="row">
-                                    <div class="col s12">
-                                        <label>
-                                            <input type="radio" id="tipoEmail" checked name="tipo" value='email'>
-                                            <span>Email</span>
-                                        </label>
-                                        <label>
-                                            <input type="radio" id="tipoWhatsapp" name="tipo" value='whatsapp'>
-                                            <span>Whatsapp</span>
-                                        </label>
-                                    </div>
-                                    <div class="col input-field s12 subject_wrapper">
-                                        <input id="subject" type="text">
-                                        <label for="subject">Asunto</label>
-                                    </div>
-                                    <div class="input-field col s12">
-                                        <textarea id="texto" class="materialize-textarea"></textarea>
-                                        <label for="texto">Mensaje</label>
-                                    </div>
-                                    <div class="col s12">
-                                        <a id = "preview" class="btn-flat waves-effect wave-orange"><i class="material-icons">visibility</i> Previsualizar mensaje</a>
-                                    </div>
-                                    <div class="input-field col s12">
-                                        <div class="switch">
-                                            <label>
-                                                Enviar ahora
-                                                <input type="checkbox" id="programarEnvio" checked>
-                                                <span class="lever"></span>
-                                                Programar envio
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col input-field s12 hide fechaEnvio_wrapper">
-                                        <input id="fechaEnvio" class="datepicker" type="text">
-                                        <label for="fechaEnvio">Fecha de envío</label>
-                                    </div>
-                                    <a id="enviar" class="btn-floating halfway-fab waves-effect waves-light blue tooltipped" data-tooltip="Enviar ahora" data-position="left"><i id = "enviarIcon" class="material-icons">send</i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col s12 m3">
-                        <ul id="plantillas" class="collection with-header">
-                            <li class="collection-header">
-                                <h6>Plantillas de mensajes</h6>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="row gallery blue lighten-5">
-                </div>
-            </div>
-        </div>
-        <div class="fixed-action-btn">
-            <a class="btn-floating btn-large blue darken-4 tooltipped" data-tooltip="Haga click para ver las acciones"
-                data-position="left">
-                <i class="large material-icons">add</i>
-            </a>
-            <ul>
-                <li><a id="history" class="btn-floating blue lighten-1 tooltipped" data-tooltip="Ver vista histórica"
-                        data-position="left"><i class="material-icons">grid_on</i></a></li>
-                <li><a id="guardar" class="btn-floating blue darken-2 tooltipped" data-tooltip="Guardar cambios manualmente"
-                        data-position="left"><i class="material-icons">save</i></a></li>
-            </ul>
-        </div>
-    </div>
+				<div class="row">
 
-    <!-- Modal Structures -->
-    <div id="buscadorPersonas" class="modal">
-        <div class="modal-content">
-            <h4>Búsqueda avanzada de personas</h4>
-            <div id="personas_grid" style="width: 100%;"></div>
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class=" modal-action modal-close waves-effect waves-light btn blue">Aceptar</a>
-        </div>
-    </div>
-    <div id="previewModal" class="modal">
-        <div class="container flow-text">
-        </div>        
-    </div>
-    <div id="preloader_modal" class="modal">
-        <div class="progress">
-            <div class="indeterminate"></div>
-        </div>
-    </div>
+					<div class="col s12 m3">
+						<h6>Historial de mensajes</h6>
+						<ul id="historicoMensajes" class="collapsible with-header">
+						</ul>
+					</div>
+					<div class="col s12 m6">
+						<div class="card">
+							<div class="card-content">
+								<div class="row">
+									<div class="col s12">
+										<label>
+											<input type="radio" id="tipoEmail" checked name="tipo" value='email'>
+											<span>Email</span>
+										</label>
+										<label>
+											<input type="radio" id="tipoWhatsapp" name="tipo" value='whatsapp'>
+											<span>Whatsapp</span>
+										</label>
+									</div>
+									<div class="col input-field s12 subject_wrapper">
+										<input id="subject" type="text">
+										<label for="subject">Asunto</label>
+									</div>
+									<div class="input-field col s12">
+										<textarea id="texto" class="materialize-textarea"></textarea>
+										<label for="texto">Mensaje</label>
+									</div>
+									<div class="col s12">
+										<a id="preview" class="btn-flat waves-effect wave-orange"><i
+												class="material-icons">visibility</i> Previsualizar mensaje</a>
+									</div>
+									<div class="input-field col s12">
+										<div class="switch">
+											<label>
+												Enviar ahora
+												<input type="checkbox" id="programarEnvio" checked>
+												<span class="lever"></span>
+												Programar envio
+											</label>
+										</div>
+									</div>
+									<div class="col input-field s12 hide fechaEnvio_wrapper">
+										<input id="fechaEnvio" class="datepicker" type="text">
+										<label for="fechaEnvio">Fecha de envío</label>
+									</div>
+									<a id="enviar"
+										class="btn-floating halfway-fab waves-effect waves-light blue tooltipped"
+										data-tooltip="Enviar ahora" data-position="left"><i id="enviarIcon"
+											class="material-icons">send</i></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col s12 m3">
+						<ul id="plantillas" class="collection with-header">
+							<li class="collection-header">
+								<h6>Plantillas de mensajes</h6>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="row gallery blue lighten-5">
+				</div>
+			</div>
+		</div>
+		<div class="fixed-action-btn">
+			<a class="btn-floating btn-large blue darken-4 tooltipped" data-tooltip="Haga click para ver las acciones"
+				data-position="left">
+				<i class="large material-icons">add</i>
+			</a>
+			<ul>
+				<li><a id="history" class="btn-floating blue lighten-1 tooltipped" data-tooltip="Ver vista histórica"
+						data-position="left"><i class="material-icons">grid_on</i></a></li>
+				<li><a id="guardar" class="btn-floating blue darken-2 tooltipped"
+						data-tooltip="Guardar cambios manualmente" data-position="left"><i
+							class="material-icons">save</i></a></li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- Modal Structures -->
+	<div id="buscadorPersonas" class="modal">
+		<div class="modal-content">
+			<h4>Búsqueda avanzada de personas</h4>
+			<div id="personas_grid" style="width: 100%;"></div>
+		</div>
+		<div class="modal-footer">
+			<a href="#!" class=" modal-action modal-close waves-effect waves-light btn blue">Aceptar</a>
+		</div>
+	</div>
+	<div id="previewModal" class="modal">
+		<div class="container flow-text">
+		</div>
+	</div>
+	<div id="preloader_modal" class="modal">
+		<div class="progress">
+			<div class="indeterminate"></div>
+		</div>
+	</div>
 
 </body>
 

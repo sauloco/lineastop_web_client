@@ -1,73 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Línea Stop, historia clínica digital">
-    <meta name="keywords" content="Línea Stop, historia clínica, historia clinica, historia digital">
-    <meta name="author" content="RusticIT https://rusticit.com">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Iniciar sesión | Línea Stop</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="/js/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous">
-    </script>
-    <script src="https://browser.sentry-cdn.com/4.4.2/bundle.min.js" crossorigin="anonymous"></script>
-    <script>
-        Sentry.init({
-            dsn: 'https://e3abd2577a644e5a84e1b4398d0f56f5@sentry.io/1363621'
-        });
-    </script>
-    <script src="/js/cookies.js"></script>
-    <script src="/js/api.js"></script>
-    <script src="/js/common.js"></script>
-    <script src="scripts.js"></script>
-    <link rel="stylesheet" href="/js/materialize/materialize.min.css">
-    <script src="/js/materialize/materialize.min.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
+	<meta charset="utf-8" />
+	<meta name="description" content="Línea Stop, historia clínica digital">
+	<meta name="keywords" content="Línea Stop, historia clínica, historia clinica, historia digital">
+	<meta name="author" content="RusticIT https://rusticit.com">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Iniciar sesión | Línea Stop</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="/js/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous">
+	</script>
+	<script src="https://browser.sentry-cdn.com/4.4.2/bundle.min.js" crossorigin="anonymous"></script>
+	<script>
+		Sentry.init({
+			dsn: 'https://e3abd2577a644e5a84e1b4398d0f56f5@sentry.io/1363621'
+		});
+	</script>
+	<script src="/js/cookies.js"></script>
+	<script src="/js/api.js"></script>
+	<script src="/js/common.js"></script>
+	<script src="scripts.js"></script>
+	<link rel="stylesheet" href="/js/materialize/materialize.min.css">
+	<script src="/js/materialize/materialize.min.js"></script>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col s12 m12 l12 center">
-                <h1>Bienvenido a Línea Stop</h1>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col s6 offset-s3">
-                <form id=formulario>
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input id="email" type="email" class="validate">
-                            <label for="email">Correo electrónico</label>
-                        </div>
-                        <div class="input-field col s12">
-                            <input id="password" type="password">
-                            <label for="password">Contraseña</label>
-                        </div>
-                    </div>
-                </form>
-                <div class="row">
-                    <div class="col s12">
-                        <a id="iniciar" class="waves-effect waves-light btn blue" disabled><i class="material-icons left">lock_open</i>Iniciar
-                            sesión</a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12">
-                        <a id="registrar" class="waves-effect waves-light btn blue lighten-1"><i class="material-icons left">account_circle</i>Registrarse</a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12">
-                        <a id="olvidar" class="waves-effect waves-blue btn-flat"><i class="material-icons left">info</i>
-                            Olvidé mi contraseña</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="container">
+		<div class="row">
+			<div class="col s12 m12 l12 center">
+				<h1>Bienvenido a Línea Stop</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s6 offset-s3">
+				<form id=formulario>
+					<div class="row">
+						<div class="input-field col s12">
+							<input id="email" type="email" class="validate">
+							<label for="email">Correo electrónico</label>
+						</div>
+						<div class="input-field col s12">
+							<input id="password" type="password">
+							<label for="password">Contraseña</label>
+						</div>
+					</div>
+				</form>
+				<div class="row">
+					<div class="col s12">
+						<a id="iniciar" class="waves-effect waves-light btn blue" disabled><i class="material-icons left">lock_open</i>Iniciar
+							sesión</a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12">
+						<a id="registrar" class="waves-effect waves-light btn blue lighten-1"><i class="material-icons left">account_circle</i>Registrarse</a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12">
+						<a id="olvidar" class="waves-effect waves-blue btn-flat"><i class="material-icons left">info</i>
+							Olvidé mi contraseña</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 
