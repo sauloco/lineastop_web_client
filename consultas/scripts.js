@@ -648,12 +648,9 @@ const goTo = (index) => {
   if (data._id === Consulta._id) {
     return;
   }
-  let fechaHelper = data.fecha;
-  fechaHelper = displayDate(fechaHelper);
-  if (fechaHelper !== "Invalid date") {
-    data.fecha = fechaHelper;
+  if (data.fecha.indexOf('/') === -1) {
+    data.fecha = displayDate(data.fecha);
   }
-  
   R.mutate('Consulta', data);
   updateURL(Consulta);
   if (index === 0) {
@@ -952,9 +949,9 @@ const sendEmailLater = async () => {
       error: data.error
     });
   }
-  const humanReadableDate = moment(normalizeDateTime(Mensaje.fechaEnvio)).from(moment());
+  const when = humanReadableDate(moment(Mensaje.fechaEnvio, DATE_FORMAT_ES));
   M.toast({
-    html: `Te recordaré enviar este correo electrónico ${humanReadableDate}.`
+    html: `Te recordaré enviar este correo electrónico ${when}.`
   });
   R.mutate('Mensaje', defaultMensaje);
 }
@@ -991,9 +988,9 @@ const sendWhatsappLater = async () => {
       error: data.error
     });
   }
-  const humanReadableDate = moment(normalizeDateTime(Mensaje.fechaEnvio)).from(moment());
+  const when = humanReadableDate(moment(Mensaje.fechaEnvio, DATE_FORMAT_ES));
   M.toast({
-    html: `Te recordaré enviar este mensaje de Whatsapp ${humanReadableDate}.`
+    html: `Te recordaré enviar este mensaje de Whatsapp ${when}.`
   });
   R.mutate('Mensaje', defaultMensaje);
 }
