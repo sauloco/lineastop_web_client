@@ -153,10 +153,10 @@ const sendEmail = async (_id) => {
   }
   params = {
     to: data.email,
-    from: `${getCookie('username')} <no.responder@lineastop.com>`,
+    from: `Linea Stop <no.responder@lineastop.net>`,
     html: marked(data.texto),
     subject: data.subject,
-    replyTo: `${getCookie('email')}`
+    replyTo: `lineastop@gmail.com`
   };
   data = await fetchData({endpoint: api.email.send, params});
   if (data.error) {

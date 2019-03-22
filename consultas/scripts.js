@@ -821,10 +821,10 @@ const sendEmail = async () => {
 
   let params = {
     to: Persona.email,
-    from: `${getCookie('username')} <no.responder@lineastop.com>`,
+    from: `Linea Stop <no.responder@lineastop.net>`,
     html: marked(Mensaje.texto),
     subject: Mensaje.subject,
-    replyTo: `${getCookie('email')}`
+    replyTo: `lineastop@gmail.com`
   };
   let data = await fetchData({
     endpoint: api.email.send,
