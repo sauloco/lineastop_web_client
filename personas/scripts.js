@@ -51,22 +51,19 @@ $(document).ready(() =>{
   $('#guardar').click(savePersonaWithToast);
   initializeDatepicker();
   initializeDatepicker({
-    yearRange: [1930, 2018]
+    yearRange: [1930, 2029]
   }, '#nacimiento');
 
   // por usar Materialize
   const modelCallback = () => {
-      M.updateTextFields();
-      $('select').formSelect();
-      M.textareaAutoResize($('textarea'));
-      $('.fixed-action-btn').floatingActionButton();
-      moment.locale('es');
-      if (Persona.apellido && Persona.nombre) {
-        savePersonaSilently();
-
-      }
-      
-      
+    M.updateTextFields();
+    $('select').formSelect();
+    M.textareaAutoResize($('textarea'));
+    $('.fixed-action-btn').floatingActionButton();
+    moment.locale('es');
+    if (Persona.apellido && Persona.nombre) {
+      savePersonaSilently();
+    }
   };
  
 
@@ -74,35 +71,28 @@ $(document).ready(() =>{
   R.s.add({model: 'Persona', callback: modelCallback}); 
 
   R.s.add({model: 'Persona', key: 'nacimiento', callback: ({prevModel, model}) => {
+    if (!model.nacimiento) {
+      return;
+    }
     let hoy = moment();
-    let unit = 'years';
-
-    let difference = moment(model.nacimiento).isValid() && moment(hoy).isValid()?
-      moment(hoy).diff(model.nacimiento, unit) : '';
-      if (moment(model.nacimiento) .isAfter (moment(hoy))) {
+      if (moment(model.nacimiento, DATE_FORMAT_ES).isAfter(moment(hoy))) {
         M.toast({html: 'La fecha de nacimiento deber ser anterior a la fecha actual.'});
         R.mutate('Persona', {nacimiento: prevModel.nacimiento});
         return;
       }
-      /* if (moment(model.nacimiento) .isBefore (moment(hoy))&& difference<=18){
-        M.toast({html: 'El paciente debe ser mayor de edad, verifique la fecha de nacimiento.'})
-        R.mutate('Persona', {nacimiento: prevModel.nacimiento});
-        return;
-      
-      }; */
-      R.mutate('Persona', {edad: `${moment(model.nacimiento).fromNow(true)}`})
+      R.mutate('Persona', {edad: `${moment(model.nacimiento, DATE_FORMAT_ES).fromNow(true)}`})
     }});
   
   R.s.add({model: 'Persona', key: 'primerConsulta', callback: ({prevModel, model}) => {
+    if (!model.primerConsulta) {
+      return;
+    }
     const hoy = moment();
-    let unit = 'years';
-    let difference = moment(model.primerConsulta).isValid() && moment(hoy).isValid() ?
-      moment(hoy).diff(model.primerConsulta, unit) : '';
-      if (moment(model.primerConsulta) .isAfter (moment(hoy)) || difference<0){
-        M.toast({html: 'La fecha de Primera consulta no puede ser posterior a la fecha actual.'})
-        return;
-      }
-      R.mutate('Persona', {hace: `${difference} año${difference === 1 ? '' : 's'}`});
+    if (moment(model.primerConsulta, DATE_FORMAT_ES).isAfter(moment(hoy))){
+      M.toast({html: 'La fecha de primera consulta no puede ser posterior a la fecha actual.'})
+      return;
+    }
+    R.mutate('Persona', {hace: `${moment(model.primerConsulta, DATE_FORMAT_ES).fromNow(true)}`})
   }});
   
   const calculaImc = (pesoKg, alturaCm) => { 
