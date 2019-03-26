@@ -41,6 +41,8 @@ let Persona = {
   asociaCon: '', 
   observacion:'', 
   imc:'',
+  sexo: '',
+  telefonoFijo: ''
 };
 
 $(document).ready(() =>{

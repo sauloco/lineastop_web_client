@@ -47,4 +47,10 @@ const emptyCookies = () => {
         day: 0,
         force: true
       });
+      setCookie({
+        name: 'id',
+        value: '',
+        day: 0,
+        force: true
+      });
 };
