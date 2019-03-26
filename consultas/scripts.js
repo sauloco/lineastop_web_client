@@ -1108,7 +1108,7 @@ const historicoMensajesCreator = async (persona, force) => {
         <div class="collapsible-body">${oldMessage.texto ? marked(oldMessage.texto) : ''}</div>
       </li>`);
   }
-  $('.collapsible-body > p > img').addClass('responsive-img');
+  $('.collapsible-body img').addClass('responsive-img');
 
   if (data.length) {
     $('.collapsible').collapsible();
