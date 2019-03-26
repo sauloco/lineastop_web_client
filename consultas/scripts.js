@@ -119,7 +119,7 @@ $(document).ready(async () => {
       prevModel,
       model
     }) => {
-      if (model.ingreseParaBuscar) {
+      if (model.ingreseParaBuscar && PERSONAS[model.ingreseParaBuscar]) {
         R.mutate('Consulta', {
           'persona': PERSONAS[model.ingreseParaBuscar]
         });
@@ -130,6 +130,8 @@ $(document).ready(async () => {
           telefono: '',
           email: ''
         });
+        R.mutate('Consulta', defaultConsulta);
+        CONSULTAS = [];
       }
       toggleDetails(prevModel, model);
     }
@@ -171,57 +173,57 @@ $(document).ready(async () => {
     }
   });
 
-  R.s.add({
-    model: 'Consulta',
-    key: 'fechaAbandonoCompromiso',
-    callback: ({
-      prevModel,
-      model
-    }) => {
-      const hoy = moment();
-      if (moment(model.fechaAbandonoCompromiso, DATE_FORMAT_ES).isBefore(moment(model.fecha, DATE_FORMAT_ES))) {
-        M.toast({
-          html: 'La fecha de compromiso no debe ser anterior a la fecha de la consulta.'
-        });
-        if (prevModel._id === model._id) {
-          R.mutate('Consulta', {
-            'fechaAbandonoCompromiso': prevModel.fechaAbandonoCompromiso
-          });
-        } else {
-          R.mutate('Consulta', {
-            'fechaAbandonoCompromiso': ''
-          });
-        }
-        return;
-      }
-    }
-  });
+  // R.s.add({
+  //   model: 'Consulta',
+  //   key: 'fechaAbandonoCompromiso',
+  //   callback: ({
+  //     prevModel,
+  //     model
+  //   }) => {
+  //     const hoy = moment();
+  //     if (moment(model.fechaAbandonoCompromiso, DATE_FORMAT_ES).isBefore(moment(model.fecha, DATE_FORMAT_ES))) {
+  //       M.toast({
+  //         html: 'La fecha de compromiso no debe ser anterior a la fecha de la consulta.'
+  //       });
+  //       if (prevModel._id === model._id) {
+  //         R.mutate('Consulta', {
+  //           'fechaAbandonoCompromiso': prevModel.fechaAbandonoCompromiso
+  //         });
+  //       } else {
+  //         R.mutate('Consulta', {
+  //           'fechaAbandonoCompromiso': ''
+  //         });
+  //       }
+  //       return;
+  //     }
+  //   }
+  // });
 
-  R.s.add({
-    model: 'Consulta',
-    key: 'fechaAbandonoEfectiva',
-    callback: ({
-      prevModel,
-      model
-    }) => {
-      const hoy = moment();
-      if (moment(model.fechaAbandonoEfectiva, DATE_FORMAT_ES).isAfter(moment(model.fecha, DATE_FORMAT_ES))) {
-        M.toast({
-          html: 'La fecha de abandono efectivo no debe ser posterior a la fecha de la consulta.'
-        });
-        if (prevModel._id === model._id) {
-          R.mutate('Consulta', {
-            'fechaAbandonoEfectiva': prevModel.fechaAbandonoEfectiva
-          });
-        } else {
-          R.mutate('Consulta', {
-            'fechaAbandonoEfectiva': ''
-          });
-        }
-        return;
-      }
-    }
-  });
+  // R.s.add({
+  //   model: 'Consulta',
+  //   key: 'fechaAbandonoEfectiva',
+  //   callback: ({
+  //     prevModel,
+  //     model
+  //   }) => {
+  //     const hoy = moment();
+  //     if (moment(model.fechaAbandonoEfectiva, DATE_FORMAT_ES).isAfter(moment(model.fecha, DATE_FORMAT_ES))) {
+  //       M.toast({
+  //         html: 'La fecha de abandono efectivo no debe ser posterior a la fecha de la consulta.'
+  //       });
+  //       if (prevModel._id === model._id) {
+  //         R.mutate('Consulta', {
+  //           'fechaAbandonoEfectiva': prevModel.fechaAbandonoEfectiva
+  //         });
+  //       } else {
+  //         R.mutate('Consulta', {
+  //           'fechaAbandonoEfectiva': ''
+  //         });
+  //       }
+  //       return;
+  //     }
+  //   }
+  // });
 
   R.s.add({
     model: 'Consulta',
@@ -451,9 +453,9 @@ const saveConsulta = async (silent) => {
   let result = false;
   if (!Consulta._id) {
     delete params['_id'];
-    result = createConsulta(params);
+    result = await createConsulta(params);
   } else {
-    result = updateConsulta(params);
+    result = await updateConsulta(params);
   }
   if (result.toString() === 'true') {
     if (CONSULTAS.length) {
@@ -480,7 +482,20 @@ const createConsulta = async (params) => {
       error: data
     });
   }
-  CONSULTAS.push(data);
+  // CONSULTAS.push(data);
+
+  data.fecha = displayDate(data.fecha);
+  if (data.fechaAbandonoCompromiso) {
+    data.fechaAbandonoCompromiso = displayDate(data.fechaAbandonoCompromiso);
+  }
+  if (data.fechaAbandonoEfectiva) {
+    data.fechaAbandonoEfectiva = displayDate(data.fechaAbandonoEfectiva);
+  }
+  if (data.fechaProximaConsulta) {
+    data.fechaProximaConsulta = displayDate(data.fechaProximaConsulta);
+  }
+
+  actualizarCacheConsultas(data);
   navigatorCreator();
   galleryCreator();
   // carouselCreator();
@@ -634,10 +649,31 @@ const navigatorCreator = async () => {
 }
 
 const goToNew = () => {
-  defaultConsulta.ingreseParaBuscar = Consulta.ingreseParaBuscar;
-  defaultConsulta.persona = Consulta.persona;
-  R.mutate('Consulta', defaultConsulta);
-  updateURL(Consulta);
+  let newConsulta = {};
+  if (CONSULTAS.length) {
+    newConsulta = R.clone(CONSULTAS[CONSULTAS.length - 1]);
+    newConsulta.fecha = defaultConsulta.fecha;
+    newConsulta.derivado = defaultConsulta.derivado;
+    newConsulta.derivadoMedico = defaultConsulta.derivadoMedico;
+    newConsulta.derivadoNotificacion = defaultConsulta.derivadoNotificacion;
+    newConsulta.fechaProximaConsulta = defaultConsulta.fechaProximaConsulta;
+    newConsulta.observacion = defaultConsulta.observacion;
+    newConsulta._id = defaultConsulta._id;
+    if (newConsulta.createdAt) {
+      delete newConsulta['createdAt'];
+    }
+    if (newConsulta.updatedAt) {
+      delete newConsulta['updatedAt'];
+    }
+    if (newConsulta.__v) {
+      delete newConsulta['__v'];
+    }
+  } else {
+    newConsulta = R.clone(defaultConsulta);
+  }
+
+  R.mutate('Consulta', newConsulta);
+  updateURL(Consulta);  
 }
 
 const goTo = (index) => {
@@ -648,12 +684,9 @@ const goTo = (index) => {
   if (data._id === Consulta._id) {
     return;
   }
-  let fechaHelper = data.fecha;
-  fechaHelper = displayDate(fechaHelper);
-  if (fechaHelper !== "Invalid date") {
-    data.fecha = fechaHelper;
+  if (data.fecha.indexOf('/') === -1) {
+    data.fecha = displayDate(data.fecha);
   }
-  
   R.mutate('Consulta', data);
   updateURL(Consulta);
   if (index === 0) {
@@ -824,10 +857,10 @@ const sendEmail = async () => {
 
   let params = {
     to: Persona.email,
-    from: `${getCookie('username')} <no.responder@lineastop.com>`,
+    from: `Linea Stop <no.responder@lineastop.net>`,
     html: marked(Mensaje.texto),
     subject: Mensaje.subject,
-    replyTo: `${getCookie('email')}`
+    replyTo: `lineastop@gmail.com`
   };
   let data = await fetchData({
     endpoint: api.email.send,
@@ -952,9 +985,9 @@ const sendEmailLater = async () => {
       error: data.error
     });
   }
-  const humanReadableDate = moment(normalizeDateTime(Mensaje.fechaEnvio)).from(moment());
+  const when = humanReadableDate(moment(Mensaje.fechaEnvio, DATE_FORMAT_ES));
   M.toast({
-    html: `Te recordaré enviar este correo electrónico ${humanReadableDate}.`
+    html: `Te recordaré enviar este correo electrónico ${when}.`
   });
   R.mutate('Mensaje', defaultMensaje);
 }
@@ -991,21 +1024,22 @@ const sendWhatsappLater = async () => {
       error: data.error
     });
   }
-  const humanReadableDate = moment(normalizeDateTime(Mensaje.fechaEnvio)).from(moment());
+  const when = humanReadableDate(moment(Mensaje.fechaEnvio, DATE_FORMAT_ES));
   M.toast({
-    html: `Te recordaré enviar este mensaje de Whatsapp ${humanReadableDate}.`
+    html: `Te recordaré enviar este mensaje de Whatsapp ${when}.`
   });
   R.mutate('Mensaje', defaultMensaje);
 }
 
 const actualizarCacheConsultas = (model) => {
   for (const index in CONSULTAS) {
-    consulta = CONSULTAS[index];
+    const consulta = CONSULTAS[index];
     if (consulta._id === model._id) {
-      CONSULTAS[index] = model;
+      CONSULTAS[index] = R.clone(model);
       return;
     }
   }
+  CONSULTAS.push(model);
 }
 
 const historicoMensajesCreator = async (persona, force) => {
