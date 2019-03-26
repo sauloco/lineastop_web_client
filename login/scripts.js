@@ -57,6 +57,12 @@ const iniciarSesion = () => {
                 day: 2,
                 force: true
             });
+            setCookie({
+                name: 'id',
+                value: data.user._id,
+                day: 2,
+                force: true
+            });
             validarToken();
         })
         .catch(error => api.common.errorHandler({
