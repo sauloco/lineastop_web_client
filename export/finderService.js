@@ -280,7 +280,8 @@ const validExports = {
       { "field": "fechaProximaConsulta", "caption": "F. Prox", "size": "2%", "sortable": true},
       { "field": "observacion", "caption": "Observacion", "size": "2%", "sortable": true},
       { "field": "createdAt", "caption": "F. Creacion", "size": "2%", "sortable": true},
-      { "field": "updatedAt", "caption": "F. Actualiz", "size": "2%", "sortable": true}     
+      { "field": "updatedAt", "caption": "F. Actualiz", "size": "2%", "sortable": true},     
+      { "field": "persona._id", "caption": "Id de Persona", "size": "2%", "sortable": true},
     ]
   }
 }

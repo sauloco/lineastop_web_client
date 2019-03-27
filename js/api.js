@@ -1,3 +1,17 @@
+const addCreationUser = ({params}) => {
+  if (!params.createdBy) {
+    params.createdBy = getCookie('id');
+  }  
+  return true;
+}
+
+const addUpdatingUser = ({params}) => {
+  if (!params.updatedBy) {
+    params.updatedBy = getCookie('id');
+  }  
+  return true;
+}
+
 /** Cuando no se especifica qué hacer en el error, se puede usar este controlador.
  * 
  * @param {object | string} error - objeto con atributo message o string.
@@ -57,6 +71,8 @@ const getPromise = ({endpoint, params, token}) => {
   const development = 'http://localhost:1337';
   const BASE_URI = production;
   let {location, method, url_params} = endpoint;
+
+  
   
   if (location.split('')[0] !== '/'){
     location = `/${location}`;
@@ -129,6 +145,19 @@ const getPromise = ({endpoint, params, token}) => {
  */
 
 const fetchData = async ({endpoint, params, token, controlError}) => {
+  const {middlewareActions} = endpoint;
+  
+  if (middlewareActions) {
+    const addedToQueue = addToMiddlewareQueue(middlewareActions);
+    if (!addedToQueue) {
+      return api.common.errorHandler({endpoint, error: 'Ocurrió un error inesperado colocando en cola los preprocesos de la petición.'});
+    }
+    const retorno = await runMiddlewareQueue({endpoint, params, token});
+    if (!retorno || retorno.error) {
+      return api.common.errorHandler({endpoint, error: retorno.error || 'Ocurrió un error inesperado antes de procesar la petición al servidor.'});
+    }
+  }
+  
   let response = await getPromise({endpoint, params, token});
   try {
     if ((response.status >= 200 && response.status < 300) || !controlError)  {
@@ -165,12 +194,14 @@ const api = {
     },
     create: {
       method: 'POST',
-      location: 'personas/'
+      location: 'personas/',
+      middlewareActions: [addCreationUser, addUpdatingUser]
     },
     update: {
       method: 'PUT',
       location: 'personas',
       url_params: [':_id'],
+      middlewareActions: [addUpdatingUser]
     }
   },
   consultas: {
@@ -183,12 +214,14 @@ const api = {
     },
     create: {
       method: 'POST',
-      location: 'consultas/'
+      location: 'consultas/',
+      middlewareActions: [addCreationUser, addUpdatingUser]
     },
     update: {
       method: 'PUT',
       location: 'consultas',
       url_params: [':_id'],
+      middlewareActions: [addUpdatingUser]
     },
     findBy: {
       location: 'consultas',
@@ -209,12 +242,14 @@ const api = {
     },
     create: {
       method: 'POST',
-      location: 'emails'
+      location: 'emails',
+      middlewareActions: [addCreationUser, addUpdatingUser]
     },
     update: {
       method: 'PUT',
       location: 'emails',
       url_params: [':_id'],
+      middlewareActions: [addUpdatingUser]
     },
     findBy: {
       location: 'emails'
@@ -223,12 +258,14 @@ const api = {
   whatsapps: {
     create: {
       method: 'POST',
-      location: 'whatsapps'
+      location: 'whatsapps',
+      middlewareActions: [addCreationUser, addUpdatingUser]
     },
     update: {
       method: 'PUT',
       location: 'whatsapps',
       url_params: [':_id'],
+      middlewareActions: [addUpdatingUser]
     },
     findBy: {
       location: 'whatsapps'
@@ -318,4 +355,34 @@ const api = {
       }
     }
   }
+}
+
+let middlewareActions = [];
+
+const runMiddlewareQueue = async ({endpoint, params, token}) => {
+  for (const action of middlewareActions) {
+    const response = await action({endpoint, params, token});
+    if (!response || response.error) {
+      return response;
+    }
+  }
+  return true;
+}
+
+const addToMiddlewareQueue = (action) => {
+  if (typeof action === 'object' && Array.isArray(action)) {
+    for (const eachAction of action){
+      const retorno = addToMiddlewareQueue(eachAction);
+      if (!retorno) {
+        return retorno;
+      }
+    }
+    return true;
+  }
+  if (typeof action !== 'function') {
+    console.error(`Action ${action.toString()} isn't a function`);
+    return false;
+  }
+  middlewareActions.push(action);
+  return true;
 }
