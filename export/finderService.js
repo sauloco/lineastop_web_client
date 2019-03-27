@@ -89,7 +89,7 @@ const initFinder = async (collection, preloader_modal_selector) => {
 
 const loadObject = async (location, w2uiDataGrid) => {
   endpoint = api[location]['all'];
-  const data = await fetchData({
+  let data = await fetchData({
     endpoint
   });
   if (data.error) {
@@ -97,6 +97,11 @@ const loadObject = async (location, w2uiDataGrid) => {
     return w2uiDataGrid;
   }
   let i = 0;
+  
+  if (validExports[location]['preloader']){
+    data = validExports[location]['preloader'](data);
+  }
+  
   for (let obj of data) {
     if (typeof obj === 'object') {
       obj.recid = ++i;
@@ -176,6 +181,28 @@ const toCamelCase = (value) => {
   return value.split('').map((v, i) => i === 0 ? v.toUpperCase() : v).join('');
 }
 
+const preloaderConsultas = (data) => {
+  for (let consulta of data) {
+    consulta = cloneObjectInParent(consulta, 'persona');
+    consulta = cloneObjectInParent(consulta, 'createdBy');
+    consulta = cloneObjectInParent(consulta, 'updatedBy');
+  }
+  return data;
+}
+
+const cloneObjectInParent = (parent, keyName) => {
+  if (!parent[keyName] || typeof parent[keyName] !== 'object') {
+    return parent;
+  }
+  const keys = Object.keys(parent[keyName])
+  const prefix = `${keyName}_`;
+  for (const key of keys) {
+    parent[`${prefix}${key}`] = parent[keyName][key];
+  }
+  delete parent[keyName];
+  return parent;
+}
+
 
 const validExports = {
   "personas": {
@@ -224,6 +251,7 @@ const validExports = {
   },
   "consultas": {
     "displayName": "Consultas",
+    "preloader": preloaderConsultas,
     "searches": [
       { "field": "fecha", "caption": "Fecha", "type": "text"},
       { "field": "tos", "caption": "Nombre", "type": "boolean" },
@@ -238,8 +266,8 @@ const validExports = {
     "columns": [
       { "field": "_id", "caption": "id", "size": "0%", "hidden": true}, 
       { "field": "fecha", "caption": "Fecha", "size": "10%", "type": "date", "format": "DD/MM/YYYY", "sortable": true},
-      { "field": "persona.apellido", "caption": "Apellido", "size": "10%", "sortable": true},
-      { "field": "persona.nombre", "caption": "Nombre", "size": "10%", "sortable": true},
+      { "field": "persona_apellido", "caption": "Apellido", "size": "10%", "sortable": true},
+      { "field": "persona_nombre", "caption": "Nombre", "size": "10%", "sortable": true},
       { "field": "tos", "caption": "Tos", "size": "2%", "sortable": true, "render": "toggle"},
       { "field": "dolorCalambre", "caption": "Calambre", "size": "2%", "sortable": true},
       { "field": "expectoracion", "caption": "Expectoración", "size": "2%", "sortable": true},
@@ -280,8 +308,7 @@ const validExports = {
       { "field": "fechaProximaConsulta", "caption": "F. Prox", "size": "2%", "sortable": true},
       { "field": "observacion", "caption": "Observacion", "size": "2%", "sortable": true},
       { "field": "createdAt", "caption": "F. Creacion", "size": "2%", "sortable": true},
-      { "field": "updatedAt", "caption": "F. Actualiz", "size": "2%", "sortable": true},     
-      { "field": "persona._id", "caption": "Id de Persona", "size": "2%", "sortable": true},
+      { "field": "updatedAt", "caption": "F. Actualiz", "size": "2%", "sortable": true},
     ]
   }
 }
