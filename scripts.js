@@ -19,7 +19,9 @@ const collectionsCreator = async (params) => {
       <span class="title">No hay personas a contactar en los próximos días</span>
     </li>`);
   };
-
+  if (consultas.length > 1) {
+    consultas = consultas.sort((a, b) => a.fechaProximaConsulta.localeCompare(b.fechaProximaConsulta)).reverse();
+  }
   for (const consulta of consultas) {
     const when = humanReadableDate(moment(consulta.fechaProximaConsulta));
     wrapper.append(`
@@ -64,7 +66,7 @@ const historicoMensajesCreator = async () => {
     return;
   }
   if (data.length > 1) {
-    data = data.sort((a, b) => a.fechaEnvio.localeCompare(b.fechaEnvio));
+    data = data.sort((a, b) => a.fechaEnvio.localeCompare(b.fechaEnvio)).reverse();
   }
   // renderizar
   for (const idx in data) {
