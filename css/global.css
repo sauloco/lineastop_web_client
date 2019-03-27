@@ -19,3 +19,8 @@
   width: 80% !important;
   height: 90% !important;
 }
+
+#scrollHistorico {
+  max-height : 370px;
+  overflow: auto;
+}
