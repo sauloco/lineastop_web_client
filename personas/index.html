@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -55,7 +55,8 @@
 <body>
     <nav class="blue darken-4">
         <div class="nav-wrapper">
-            <a href="#!" data-target="slide-out" class="sidenav-trigger show-on-large" class="brand-logo"><i class="material-icons">menu</i></a>
+            <a href="#!" data-target="slide-out" class="sidenav-trigger show-on-large" class="brand-logo"><i
+                    class="material-icons">menu</i></a>
             <a class="brand-logo"><i class="material-icons">smoke_free</i><span class="hide-on-med-and-down">Línea Stop
                     | </span>Personas</a>
             <ul class="right">
@@ -67,18 +68,18 @@
     </nav>
 
     <ul id="slide-out" class="sidenav">
-        <li class = "blue darken-4 "><a><i class="material-icons">smoke_free</i>Linea Stop</a></li>
+        <li class="blue darken-4 "><a><i class="material-icons">smoke_free</i>Linea Stop</a></li>
         <li><a href="/"><i class="material-icons">dashboard</i>Tablero</a></li>
-        <li><a href="/consultas"><i class="material-icons">assignment</i>Consultas</a></li>    
-        <li><a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a></li>    
-        <li class="active"><a><i class="material-icons">people</i>Persona nueva</a></li>    
-        <li><a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a></li>    
-        <li><a><i class="material-icons">save_alt</i>Exportar información</a></li>    
-        <li><a href="/export/?collection=personas&export=true">Persona</a></li>    
-        <li><a href="/export/?collection=consultas&export=true">Consulta</a></li>    
-        <li><a href="/export/?collection=users&export=true">Usuario</a></li>    
+        <li><a href="/consultas"><i class="material-icons">assignment</i>Consultas</a></li>
+        <li><a href="/export/?collection=consultas"><i class="material-icons">search</i>Buscar consultas</a></li>
+        <li class="active"><a><i class="material-icons">people</i>Persona nueva</a></li>
+        <li><a href="/export/?collection=personas"><i class="material-icons">find_in_page</i>Buscar personas</a></li>
+        <li><a><i class="material-icons">save_alt</i>Exportar información</a></li>
+        <li><a href="/export/?collection=personas&export=true">Persona</a></li>
+        <li><a href="/export/?collection=consultas&export=true">Consulta</a></li>
+        <li><a href="/export/?collection=users&export=true">Usuario</a></li>
         <li><a href="/usuarios"><i class="material-icons">supervised_user_circle</i>Perfiles de usuario</a></li>
-        <li><a href="/export/?collection=users"><i class="material-icons">find_in_page</i>Buscar usuarios</a></li>    
+        <li><a href="/export/?collection=users"><i class="material-icons">find_in_page</i>Buscar usuarios</a></li>
     </ul>
     <div class="container">
         <label>Datos personales y afiliatorios</label>
@@ -130,8 +131,35 @@
                     <label for="ciudad">Ciudad</label>
                 </div>
                 <div class="input-field col s6 m3">
-                    <input id="provincia" type="text">
-                    <label for="provincia">Provincia</label>
+                    <select id = "provincia">
+                        <option value="Buenos Aires">Buenos Aires</option>
+                        <option value="Capital Federal">Capital Federal</option>
+                        <option value="Catamarca">Catamarca</option>
+                        <option value="Chaco">Chaco</option>
+                        <option value="Chubut">Chubut</option>
+                        <option value="Cordoba">Córdoba</option>
+                        <option value="Corrientes">Corrientes</option>
+                        <option value="Entre Ríos">Entre Ríos</option>
+                        <option value="Formosa">Formosa</option>
+                        <option value="Jujuy">Jujuy</option>
+                        <option value="La Pampa">La Pampa</option>
+                        <option value="La Rioja">La Rioja</option>
+                        <option value="Mendoza">Mendoza</option>
+                        <option value="Misiones">Misiones</option>
+                        <option value="Neuquén">Neuquén</option>
+                        <option value="Río Negro">Río Negro</option>
+                        <option value="Salta">Salta</option>
+                        <option value="San Juan">San Juan</option>
+                        <option value="San Luis">San Luis</option>
+                        <option value="Santa Cruz">Santa Cruz</option>
+                        <option value="Santa Fe">Santa Fe</option>
+                        <option value="Santiago del Estero">Santiago del Estero</option>
+                        <option value="Tierra del Fuego">Tierra del Fuego, Antártida e Islas del Atlántico Sur</option>
+                        <option value="Tucumán">Tucumán</option>
+                        <option value="">Desconocida</option>
+                        <option value="Exterior">Exterior</option>
+                    </select>
+                    <label>Provincia</label>
                 </div>
             </div>
             <div class="row">
@@ -144,11 +172,11 @@
                     <label for="edad">Edad</label>
                 </div>
                 <div class="input-field col s4 m1">
-                    <input id="pesoKg" type="text" placeholder = "kg">
+                    <input id="pesoKg" type="text" placeholder="kg">
                     <label for="pesoKg">Peso</label>
                 </div>
                 <div class="input-field col s4 m1">
-                    <input id="alturaCm" type="text" placeholder = "cm">
+                    <input id="alturaCm" type="text" placeholder="cm">
                     <label for="alturaCm">Altura</label>
                 </div>
                 <div class="input-field col s4 m1">
@@ -191,7 +219,8 @@
                     <div id="antecedentesPatologicosDetails" class="row hide">
                         <div class="input-field col s6 m10">
                             <textarea id="descripcionAntecedentesPatologicos" class="materialize-textarea"></textarea>
-                            <label for="descripcionAntecedentesPatologicos">Observaciones de antecedentes patológicos</label>
+                            <label for="descripcionAntecedentesPatologicos">Observaciones de antecedentes
+                                patológicos</label>
                         </div>
                     </div>
                 </div>
@@ -317,19 +346,22 @@
                         </div>
                         <div class="col s4 m3">
                             <label>
-                                <input name="abandonoDuracion" id="abandonoDuracion" type="radio" value="menos de 6 meses" />
+                                <input name="abandonoDuracion" id="abandonoDuracion" type="radio"
+                                    value="menos de 6 meses" />
                                 <span>Menos de 6 meses</span>
                             </label>
                         </div>
                         <div class="col s4 m3">
                             <label>
-                                <input name="abandonoDuracion" id="abandonoDuracion" type="radio" value="7 a 12 meses" />
+                                <input name="abandonoDuracion" id="abandonoDuracion" type="radio"
+                                    value="7 a 12 meses" />
                                 <span>7 a 12 meses</span>
                             </label>
                         </div>
                         <div class="col s4 m3">
                             <label>
-                                <input name="abandonoDuracion" id="abandonoDuracion" type="radio" value="más de un año" />
+                                <input name="abandonoDuracion" id="abandonoDuracion" type="radio"
+                                    value="más de un año" />
                                 <span>mas de un año</span>
                             </label>
                         </div>
@@ -340,13 +372,15 @@
                         </div>
                         <div class="col s4 m3">
                             <label>
-                                <input name="tratamientoRecibido" id="tratamientoRecibidoMed" type="radio" value="medicamento" />
+                                <input name="tratamientoRecibido" id="tratamientoRecibidoMed" type="radio"
+                                    value="medicamento" />
                                 <span>Medicamento</span>
                             </label>
                         </div>
                         <div class="col s4 m3">
                             <label>
-                                <input name="tratamientoRecibido" id="tratamientoRecibidoNone" type="radio" value="ninguno" />
+                                <input name="tratamientoRecibido" id="tratamientoRecibidoNone" type="radio"
+                                    value="ninguno" />
                                 <span>Ninguno</span>
                             </label>
                         </div>
@@ -487,7 +521,7 @@
         <a id="guardar" class="btn-floating btn-large waves-effect waves-light blue darken-4">
             <i class="material-icons">save</i></a>
     </div>
-    
+
 </body>
 
 </html>
