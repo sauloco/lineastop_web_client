@@ -55,7 +55,8 @@ $(document).ready(() =>{
   initializeDatepicker({
     yearRange: [1930, 2029]
   }, '#nacimiento');
-
+  $('select').formSelect();
+  
   // por usar Materialize
   const modelCallback = () => {
     M.updateTextFields();

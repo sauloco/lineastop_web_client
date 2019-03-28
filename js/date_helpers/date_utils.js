@@ -13,6 +13,9 @@ const initializeDatepicker = async (options, selector) => {
   if (!options.format) {
     options.format = DATE_FORMAT_ES.toLowerCase()
   }
+  if (options.showClearBtn === undefined) {
+    options.showClearBtn = true;
+  }
   const response = await fetch('/js/date_helpers/datepicker_i18n_ES.json');
   options.i18n = await response.json();
 
