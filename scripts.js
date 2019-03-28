@@ -19,7 +19,9 @@ const collectionsCreator = async (params) => {
       <span class="title">No hay personas a contactar en los próximos días</span>
     </li>`);
   };
-
+  if (consultas.length > 1) {
+    consultas = consultas.sort((a, b) => a.fechaProximaConsulta.localeCompare(b.fechaProximaConsulta));
+  }
   for (const consulta of consultas) {
     const when = humanReadableDate(moment(consulta.fechaProximaConsulta));
     wrapper.append(`
