@@ -9,7 +9,11 @@ const collectionsCreator = async (params) => {
   if (consultas.error) {
     return api.common.errorHandler({endpoint: api.consultas.all, consultas});
   }
-  consultas = consultas.filter(v => v.fechaProximaConsulta && moment(v.fechaProximaConsulta).isAfter(moment()) && moment(v.fechaProximaConsulta).isBefore(moment().add(7, 'days')));
+  consultas = consultas.filter(v => 
+    v.fechaProximaConsulta 
+    && moment(v.fechaProximaConsulta).isSameOrAfter(initOfToday()) 
+    && moment(v.fechaProximaConsulta).isSameOrBefore(moment().add(7, 'days').endOf('day'))
+  );
   const wrapper = $('#aContactar');
   $(wrapper).html('');
   if (!consultas.length) {
