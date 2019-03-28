@@ -46,3 +46,7 @@ const humanReadableDate = (futureDate) => {
   const diff = futureDate.diff(today, 'days');
   return `en ${diff} días`;
 }
+
+const initOfToday = () => {
+  return moment().startOf('day');
+}
