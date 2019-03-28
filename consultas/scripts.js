@@ -533,7 +533,7 @@ const getAllPersonas = async () => {
   }
   
   const data = [];
-  for (persona of personas) {
+  for (const persona of personas) {
     data[`${persona.apellido} ${persona.nombre} (${persona.telefono}. ${persona.email})`] = null;
     PERSONAS[`${persona.apellido} ${persona.nombre} (${persona.telefono}. ${persona.email})`] = persona._id;
   }

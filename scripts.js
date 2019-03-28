@@ -20,7 +20,7 @@ const collectionsCreator = async (params) => {
     </li>`);
   };
   if (consultas.length > 1) {
-    consultas = consultas.sort((a, b) => a.fechaProximaConsulta.localeCompare(b.fechaProximaConsulta)).reverse();
+    consultas = consultas.sort((a, b) => a.fechaProximaConsulta.localeCompare(b.fechaProximaConsulta));
   }
   for (const consulta of consultas) {
     const when = humanReadableDate(moment(consulta.fechaProximaConsulta));
@@ -66,7 +66,7 @@ const historicoMensajesCreator = async () => {
     return;
   }
   if (data.length > 1) {
-    data = data.sort((a, b) => a.fechaEnvio.localeCompare(b.fechaEnvio)).reverse();
+    data = data.sort((a, b) => a.fechaEnvio.localeCompare(b.fechaEnvio));
   }
   // renderizar
   for (const idx in data) {
