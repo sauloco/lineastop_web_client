@@ -165,7 +165,7 @@ const fetchData = async ({endpoint, params, token, controlError}) => {
       return response;
     }
     return api.common.errorHandler({endpoint, error: response});
-  } catch {
+  } catch (e) {
     return api.common.errorHandler({endpoint, error: response});
   }  
 }
