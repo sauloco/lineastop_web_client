@@ -520,8 +520,18 @@ const updateConsulta = async (params) => {
 
 const getAllPersonas = async () => {
   PERSONAS = [];
+  let length = await fetchData({
+    endpoint: api.personas.count
+  });
+  if (length.error) {
+    length = DEFAULT_LIMIT;
+  }
+  const params = {
+    '_limit': length,
+  };
   const personas = await fetchData({
-    endpoint: api.personas.all
+    endpoint: api.personas.all,
+    params
   });
   if (personas.error) {
     api.common.errorHandler({
