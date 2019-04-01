@@ -19,7 +19,7 @@ const tablesCreator = async (params) => {
   });
 
   if(CONSULTAS.error){
-    return api.common.errorHandler({endpoint: api.consultas.all, error: CONSULTAS.error})
+    return api.common.errorHandler({endpoint: api.consultas.findBy, error: CONSULTAS.error})
   };
 
   if(!CONSULTAS.length){
