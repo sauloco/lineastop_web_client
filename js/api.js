@@ -1,3 +1,5 @@
+const DEFAULT_LIMIT = Number.MAX_SAFE_INTEGER;
+
 const addCreationUser = ({params}) => {
   if (!params.createdBy) {
     params.createdBy = getCookie('id');
@@ -70,10 +72,8 @@ const getPromise = ({endpoint, params, token}) => {
   const staging = 'https://stag-lineastop.herokuapp.com';
   const development = 'http://localhost:1337';
   const BASE_URI = production;
-  let {location, method, url_params} = endpoint;
 
-  
-  
+  let {location, method, url_params, contentType} = endpoint;
   if (location.split('')[0] !== '/'){
     location = `/${location}`;
   }
@@ -82,16 +82,20 @@ const getPromise = ({endpoint, params, token}) => {
   if (!method) {
     method = 'GET';
   }
-  
+  if (!contentType) {
+    contentType = 'application/json'
+  }  
   
   let requestInit = {
     method: method,
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': contentType,
     }
   };
   
-  if (params) {
+  params = params || {};
+  
+  if (params || method === 'GET') {
     
     switch (method) {
       case 'GET': 
@@ -103,7 +107,12 @@ const getPromise = ({endpoint, params, token}) => {
           }
         } else {
           location += '?';
-          for (const key of Object.keys(params)) {
+          let keys = Object.keys(params);
+          if (!keys.length || !params['_limit']) {
+            params['_limit'] = DEFAULT_LIMIT;
+            keys = Object.keys(params);
+          }
+          for (const key of keys) {
             location += `${key}=${encodeURIComponent(params[key])}&`;
           }
           location = location.substr(0, location.length-1);
@@ -145,7 +154,11 @@ const getPromise = ({endpoint, params, token}) => {
  */
 
 const fetchData = async ({endpoint, params, token, controlError}) => {
-  const {middlewareActions} = endpoint;
+  const {middlewareActions, overrideDefaultAction} = endpoint;
+
+  if (overrideDefaultAction && typeof overrideDefaultAction === 'function') {
+    return await overrideDefaultAction({endpoint, params, token, controlError});
+  }
   
   if (middlewareActions) {
     const addedToQueue = addToMiddlewareQueue(middlewareActions);
@@ -165,7 +178,7 @@ const fetchData = async ({endpoint, params, token, controlError}) => {
       return response;
     }
     return api.common.errorHandler({endpoint, error: response});
-  } catch {
+  } catch (e) {
     return api.common.errorHandler({endpoint, error: response});
   }  
 }
@@ -186,7 +199,10 @@ const api = {
   },
   personas: {
     all: {
-      location: 'personas/'
+      location: 'personas/',
+    },
+    count: {
+      location: 'personas/count',
     },
     get: {
       location: 'personas',
@@ -370,6 +386,36 @@ const runMiddlewareQueue = async ({endpoint, params, token}) => {
 }
 
 const addToMiddlewareQueue = (action) => {
+  if (typeof action === 'object' && Array.isArray(action)) {
+    for (const eachAction of action){
+      const retorno = addToMiddlewareQueue(eachAction);
+      if (!retorno) {
+        return retorno;
+      }
+    }
+    return true;
+  }
+  if (typeof action !== 'function') {
+    console.error(`Action ${action.toString()} isn't a function`);
+    return false;
+  }
+  middlewareActions.push(action);
+  return true;
+}
+
+let preprocessActions = [];
+
+const runPreprocessQueue = async ({endpoint, params, token}) => {
+  for (const action of middlewareActions) {
+    const response = await action({endpoint, params, token});
+    if (!response || response.error) {
+      return response;
+    }
+  }
+  return true;
+}
+
+const addToPreprocessQueue = (action) => {
   if (typeof action === 'object' && Array.isArray(action)) {
     for (const eachAction of action){
       const retorno = addToMiddlewareQueue(eachAction);

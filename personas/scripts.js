@@ -41,7 +41,7 @@ let Persona = {
   asociaCon: '', 
   observacion:'', 
   imc:'',
-  sexo: '',
+  sexo: 'm',
   telefonoFijo: ''
 };
 
