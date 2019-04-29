@@ -42,8 +42,16 @@ let Persona = {
   observacion:'', 
   imc:'',
   sexo: 'm',
-  telefonoFijo: ''
+  telefonoFijo: '',
+  diabetes: false,
+  hta: false,
+  epoc: false,
+  sobrepeso: false,
+  obesidad: false,
+  internaciones: false
 };
+
+let defaultPersona = R.clone(Persona);
 
 $(document).ready(() =>{
 
@@ -51,18 +59,18 @@ $(document).ready(() =>{
 
   
   $('#guardar').click(savePersonaWithToast);
+  $('#delete').click(deletePersonaWithToast);
   initializeDatepicker();
   initializeDatepicker({
     yearRange: [1930, 2029]
   }, '#nacimiento');
   $('select').formSelect();
-  
+  $('.fixed-action-btn').floatingActionButton();
   // por usar Materialize
   const modelCallback = () => {
     M.updateTextFields();
     $('select').formSelect();
     M.textareaAutoResize($('textarea'));
-    $('.fixed-action-btn').floatingActionButton();
     moment.locale('es');
     if (Persona.apellido && Persona.nombre) {
       savePersonaSilently();
@@ -164,7 +172,7 @@ $(document).ready(() =>{
         
       }
 
-      updateURL(model);
+      // updateURL(model);
       
       if(data.nacimiento){
         data.nacimiento = displayDate(data.nacimiento); // moment(new Date(data.nacimiento)).format('DD/MM/YYYY');
@@ -174,6 +182,8 @@ $(document).ready(() =>{
       }       
       R.mutate('Persona', data);
     }
+    updateURL(model)
+    
   }});
 
   // Inicialización
@@ -198,6 +208,10 @@ $(document).ready(() =>{
 
 
 const updateURL = (model) => {
+  if (!model._id) {
+    window.history.replaceState( {} , 'personas/', '/personas/');
+    return;
+  }
   let currentId, mode;
   if (location.href.indexOf('?') >= 0) {
     mode = 'add';
@@ -234,6 +248,54 @@ const savePersonaWithToast = () => {
   return savePersona(false);
 }
 
+const delay = async (ms) => {
+  return function(){
+		return new Promise(function(resolve, reject){
+			setTimeout(function(){
+				resolve();
+			}, ms)
+		});
+	};
+}
+
+const deletePersonaWithToast = async () => {
+  if (!Persona._id) {
+    M.toast({html:'No hay ninguna persona cargada como para ser borrada.'});
+    return false;
+  }
+  const params = {persona: Persona._id};
+  const data = await fetchData({endpoint: api.consultas.findBy, params});
+  if (data.error) {
+    return api.common.errorHandler({endpoint: api.consultas.findBy, error: data});
+  }
+  let message = `¿Está seguro que desea eliminar los datos de ${Persona.nombre} ${Persona.apellido}?`;
+  if (data.length) {
+    const singular = ` Se ha encontrado 1 consulta asociada a esta persona, será eliminada también si confirma la operación.`;
+    message += data.length === 1 ? singular : ` Se han encontrado ${data.length} consultas asociadas a esta persona, serán eliminadas también si confirma la operación.`;
+  }
+  if (confirm(message)) {
+    let errorIds = [];
+    for (consulta of data) {
+      const data2 = await deleteConsulta(consulta._id);
+      if (!data2.toString() === 'true') {
+        errorIds.push(data._id);
+      }
+    }
+    if (errorIds.length) {
+      M.toast({html: `Se produjo un error eliminando las consultas de ${Persona.nombre} ${Persona.apellido}. Consulte con el administrador del sistema.`});
+      return false;
+    }
+    const data3 = await deletePersona(Persona._id);
+    if (!data3.toString() === 'true') {
+      M.toast({html: `Se produjo un error eliminando los datos personales de ${Persona.nombre} ${Persona.apellido}. Consulte con el administrador del sistema.`});
+      return false;
+    }
+    M.toast({html: `Los datos de la persona han sido eliminados correctamente.`});
+    R.mutate('Persona', defaultPersona);
+    return true;
+  }
+}
+
 const savePersona = async (silent) => {
 
   const params = R.clone(Persona);
@@ -253,10 +315,12 @@ const savePersona = async (silent) => {
 
   let result = false;
   if (Persona._id) {
-    result = updatePersona(params);
+    result = await updatePersona(params);
   } else {
+    initPreloader('#preloader_modal');
     delete params['_id'];
-    result = createPersona(params);
+    result = await createPersona(params);
+    stopPreloader();
   }
   if (result.toString() === 'true') {
     if (!silent) {
@@ -283,3 +347,22 @@ const updatePersona = async (params) => {
   }
   return true;
 }
+
+const deletePersona = async (_id) => {
+  const params = {_id}
+  const data = await fetchData({endpoint: api.personas.delete, params});
+  if (data.error) {
+    return api.common.errorHandler({endpoint: api.personas.delete, error: data});
+  }
+  return true;
+}
+
+const deleteConsulta = async (_id) => {
+  const params = {_id}
+  const data = await fetchData({endpoint: api.consultas.delete, params});
+  if (data.error) {
+    return api.common.errorHandler({endpoint: api.consultas.delete, error: data});
+  }
+  return true;
+}
+
