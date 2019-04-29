@@ -218,6 +218,11 @@ const api = {
       location: 'personas',
       url_params: [':_id'],
       middlewareActions: [addUpdatingUser]
+    },
+    delete: {
+      method: 'DELETE',
+      location: 'personas',
+      url_params: [':_id'],
     }
   },
   consultas: {
@@ -242,6 +247,11 @@ const api = {
     findBy: {
       location: 'consultas',
     },
+    delete: {
+      method: 'DELETE',
+      location: 'consultas',
+      url_params: [':_id']
+    }
   },
   plantillaMensaje: {
     findBy: {
