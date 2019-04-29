@@ -43,6 +43,7 @@
     <script src="scripts.js"></script>
     <script src="/js/menulateral.js"></script>
     <script src="/js/moment-with-locales.js"></script>
+    <script src="/export/finderService.js"></script>
 
     <link rel="stylesheet" href="/js/materialize/materialize.min.css">
     <script src="/js/materialize/materialize.min.js"></script>
@@ -193,7 +194,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col s6">
+                <div class="col s12">
                     <div class="switch">
                         <label>
                             No
@@ -203,6 +204,74 @@
                         </label>
                     </div>
                 </div>
+            </div>
+            <div class="row" id = "antecedentesPatologicosDetails">
+                <div class="col s5 offset-s1 m3 offset-m1">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="diabetes">
+                            <span class="lever"></span>
+                            Diabetes
+                        </label>
+                    </div>
+                </div>
+                <div class="col s6 m4">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="hta">
+                            <span class="lever"></span>
+                            HTA
+                        </label>
+                    </div>
+                </div>
+                <div class="col s5 offset-s1 m4">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="epoc">
+                            <span class="lever"></span>
+                            EPOC
+                        </label>
+                    </div>
+                </div>
+                <div class="col s6 m3 offset-m1">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="sobrepeso">
+                            <span class="lever"></span>
+                            Sobrepeso
+                        </label>
+                    </div>
+                </div>
+                <div class="col s5 offset-s1 m4">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="obesidad">
+                            <span class="lever"></span>
+                            Obesidad
+                        </label>
+                    </div>
+                </div>
+                <div class="col s6 m4">
+                    <div class="switch">
+                        <label>
+                            No
+                            <input type="checkbox" id="internaciones">
+                            <span class="lever"></span>
+                            Internaciones
+                        </label>
+                    </div>
+                </div>
+                <div class="input-field col s11 offset-s1 m8 offset-m1">
+                    <textarea id="descripcionAntecedentesPatologicos" class="materialize-textarea"></textarea>
+                    <label for="descripcionAntecedentesPatologicos">Observaciones de antecedentes patológicos</label>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col s6">
                     <div class="switch">
                         <label>
@@ -211,17 +280,6 @@
                             <span class="lever"></span>
                             Recibe medicamentos
                         </label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <div id="antecedentesPatologicosDetails" class="row hide">
-                        <div class="input-field col s6 m10">
-                            <textarea id="descripcionAntecedentesPatologicos" class="materialize-textarea"></textarea>
-                            <label for="descripcionAntecedentesPatologicos">Observaciones de antecedentes
-                                patológicos</label>
-                        </div>
                     </div>
                 </div>
                 <div class="col s6">
@@ -233,6 +291,7 @@
                     </div>
                 </div>
             </div>
+            <div class="row"></div>
         </div>
         <label>Historia del tabaquismo</label>
         <div class="card">
@@ -518,10 +577,24 @@
         </div>
     </div>
     <div class="fixed-action-btn">
-        <a id="guardar" class="btn-floating btn-large waves-effect waves-light blue darken-4">
-            <i class="material-icons">save</i></a>
+        <a class="btn-floating btn-large blue darken-4 tooltipped" data-tooltip="Haga click para ver las acciones"
+            data-position="left">
+            <i class="large material-icons">add</i>
+        </a>
+        <ul>
+            <li><a id="delete" class="btn-floating blue lighten-1 tooltipped" data-tooltip="Eliminar los datos de la persona"
+                    data-position="left"><i class="material-icons">delete_forever</i></a></li>
+            <li><a id="guardar" class="btn-floating blue darken-2 tooltipped" data-tooltip="Guardar cambios manualmente" data-position="left">
+                    <i class="material-icons">save</i>
+                </a>
+            </li>
+        </ul>
     </div>
-
+    <div id="preloader_modal" class="modal">
+		<div class="progress">
+			<div class="indeterminate"></div>
+		</div>
+	</div>
 </body>
 
 </html>
