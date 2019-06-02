@@ -1,5 +1,3 @@
-
-
 /** Exports as a service: Para generar buscadores al vuelo sin iframes 
  * Paso 1. Crear un modal con div#{{collection}}_grid en el html que va a llamar al buscador
  * Paso 2. Crear un modal que funcione como preloader con el siguiente formato:
@@ -16,7 +14,6 @@ let MODAL_INSTANCES,
   FINDER_INSTANCES = [],
   currentCollection,
   exportButton = true;
-
 
 const initPreloader = (selector) => {
   if (!MODAL_INSTANCES) {
@@ -37,7 +34,7 @@ const initFinder = async (collection, preloader_modal_selector) => {
   if (FINDER_INSTANCES.indexOf(`${collection}_grid`) >= 0) {
     return;
   }
-
+  moment.locale('es');
   initPreloader(preloader_modal_selector);
 
   currentCollection = collection || new URLSearchParams(window.location.search).get('collection');
@@ -101,7 +98,6 @@ const loadObject = async (location, w2uiDataGrid) => {
   if (validExports[location]['preloader']){
     data = validExports[location]['preloader'](data);
   }
-  
   for (let obj of data) {
     if (typeof obj === 'object') {
       obj.recid = ++i;
@@ -117,17 +113,6 @@ const calculateHeight = ($grid) => {
 
 const exportData = () => {
   const gridName = `${currentCollection}_grid`
-  // const grid = w2ui[gridName];
-  // let records = [];
-  // if (grid.getSelection().length === 0 || grid.getSelection().length === 1) {
-  //   records = grid.records;
-  // } else {
-  //   for (const index of grid.getSelection()) {
-  //     for (const record of grid.records) {
-  //       if (record.recid === index) records.push(record);
-  //     }
-  //   }
-  // }
   recordsToExcel(gridName);
 }
 
@@ -136,45 +121,33 @@ const recordsToExcel = (gridName) => {
     M.toast({html: 'No hay registros para exportar.'});
     return;
   }
-  w2ui[gridName].exportData(w2ui[gridName].getSelection().length > 1 ? w2ui[gridName].getSelection().map(v => w2ui[gridName].records.filter(v1 => v1.recid === v)[0]) : w2ui[gridName].records, "xls", true);
+  let records = w2ui[gridName].getSelection().length > 1 ? w2ui[gridName].getSelection().map(v => w2ui[gridName].records.filter(v1 => v1.recid === v)[0]) : w2ui[gridName].records;
+  records = normalizeRecords(records)
+  w2ui[gridName].exportData(records, "xls", true);
 }
 
-// const recordsToExcel = (records) => {
-//   let table = $("<table/>");
-//   let thead = $("<thead/>");
-//   let tbody = $("<tbody/>");
-//   let th = $("<tr/>");
+const normalizeRecords = (records) => {
+  let baseKeys = Object.keys(records[0]);
+  for (const line of records) {
+    const currentKeys = Object.keys(line);
+    if (currentKeys.length !== baseKeys.length) {
+      for (const currentKey of currentKeys) {
+        if (baseKeys.indexOf(currentKey) === -1) {
+         baseKeys.push(currentKey)
+        }
+      }
+    }
+  }
 
-//   let headerLabels = []
-//   $.each(records, function (index, value) {
-//     let tr = $("<tr/>")
-//     $.each(value, function (label, cell) {
-//       if (label === "recid") {
-//         return
-//       }
+  for  (const rec of records) {
+    for (const key of baseKeys) {
+      rec[key] = rec[key] || '';
+    }
+  }
+  return records;
+}
 
-//       //Header
-//       if ($.inArray(label, headerLabels) == -1) {
-//         headerLabels.push(label)
-//         th.append("<th>" + label.trim() + "</th>")
-//       }
-
-//       //Content
-//       tr.append("<td>" + cell + "</td>")
-//     })
-//     tbody.append(tr)
-//   })
-//   thead.append(th)
-//   table.append(thead)
-//   table.append(tbody)
-//   const filename = `Linea Stop - ${toCamelCase(currentCollection)}.xls`;
-//   $(table).table2excel({
-//     // exclude CSS class
-//     exclude: ".noExl",
-//     name: "Worksheet Name",
-//     filename
-//   });
-// }
+const doNothing = () => {}; // for readability only.
 
 const toCamelCase = (value) => {
   if (typeof value !== "string") return false;
@@ -182,12 +155,25 @@ const toCamelCase = (value) => {
 }
 
 const preloaderConsultas = (data) => {
-  for (let consulta of data) {
-    consulta = cloneObjectInParent(consulta, 'persona');
-    consulta = cloneObjectInParent(consulta, 'createdBy');
-    consulta = cloneObjectInParent(consulta, 'updatedBy');
+  let personasBuffer = {};
+  let finalData = [];
+  for (let consulta of data.reverse()) {
+    if (consulta.persona && consulta.persona._id && !personasBuffer[consulta.persona._id]) {
+      personasBuffer[consulta.persona._id] = true;
+      consulta.persona = onLoadPersona(consulta.persona);
+      consulta = cloneObjectInParent(consulta, 'persona');
+      consulta.creadoPor = consulta.createdBy ? consulta.createdBy.username : '';
+      consulta.modificadoPor = consulta.updatedBy ? consulta.updatedBy.username : '';
+      consulta.fecha = new Date(consulta.fecha).toLocaleDateString('es-AR', {timezone: 'GMT-3'});
+      consulta.fechaProximaConsulta = consulta.fechaProximaConsulta ? new Date(consulta.fechaProximaConsulta).toLocaleDateString('es-AR', {timezone: 'GMT-3'}) : '';
+      delete consulta['0'];
+      delete consulta['__v'];
+      delete consulta['createdBy'];
+      delete consulta['updatedBy'];
+      finalData.push(consulta);
+    }
   }
-  return data;
+  return finalData.reverse();
 }
 
 const cloneObjectInParent = (parent, keyName) => {
@@ -197,16 +183,41 @@ const cloneObjectInParent = (parent, keyName) => {
   const keys = Object.keys(parent[keyName])
   const prefix = `${keyName}_`;
   for (const key of keys) {
-    parent[`${prefix}${key}`] = parent[keyName][key];
+    if (typeof parent[keyName][key] !== 'object') {
+      parent[`${prefix}${key}`] = parent[keyName][key];
+    }
   }
   delete parent[keyName];
   return parent;
 }
 
+const onLoadPersona = (data) => {
+  if (Array.isArray(data)) {
+    for (let rec of data) {
+      rec = cleanUpPersona(rec);
+    }
+  } else {
+    data = cleanUpPersona(data)
+  }
+  return data;
+}
+
+const cleanUpPersona = (rec) => {
+  rec.edad = rec.nacimiento ? moment(rec.nacimiento).fromNow(true) : '';
+  rec.imc = rec.pesoKg && rec.alturaCm ? rec.pesoKg / Math.pow(rec.alturaCm/100,2) : '';
+  rec.creadoPor = rec.createdBy && rec.createdBy.username ? rec.createdBy.username : '';
+  rec.modificadoPor = rec.updatedBy && rec.updatedBy.username ? rec.updatedBy.username : '';
+  delete rec['0'];
+  delete rec['__v'];
+  delete rec['createdBy'];
+  delete rec['updatedBy'];
+  return rec;
+}
 
 const validExports = {
   "personas": {
     "displayName": "Personas",
+    "preloader": onLoadPersona,
     "searches": [
       { "field": "apellido", "caption": "Apellido", "type": "text" },
       { "field": "nombre", "caption": "Nombre", "type": "text" },
@@ -224,8 +235,7 @@ const validExports = {
       { "field": "nombre", "caption": "Nombre", "size": "20%", "sortable": true},
       { "field": "email", "caption": "Email", "size": "20%", "sortable": true},
       { "field": "telefono", "caption": "Teléfono", "size": "10%", "sortable": true},
-      { "field": "primerConsulta", "caption": "Primer consulta", "type": "date", "format": "DD/MM/YYYY", "size": "20%", "sortable": true},
-      { "field": "primerConsulta", "caption": "Hace", "size": "10%", "render": "age", "sortable": true}
+      { "field": "primerConsulta", "caption": "Primer consulta", "type": "date", "format": "DD/MM/YYYY", "size": "20%", "sortable": true}
     ]
   },
   "users": {
