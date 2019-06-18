@@ -51,6 +51,7 @@ let Consulta = {
   fechaAbandonoCompromiso: '',
   fechaAbandonoEfectiva: '',
   fechaProximaConsulta: '',
+  horaProximaConsulta: '',
   observacion: '',
   persona: ''
 };
@@ -76,7 +77,8 @@ let defaultConsulta = JSON.parse(JSON.stringify(Consulta));
 $(document).ready(async () => {
   $('select').formSelect();
   $('#guardar').click(saveConsultaVerbosely);
-  initializeDatepicker();
+  await initializeDatepicker();
+  await initializeTimepicker();
   await getAllPersonas();
   $('#finderLauncherPersonas').click(openFinderPersonas);
   $('.fixed-action-btn').floatingActionButton();
@@ -232,7 +234,6 @@ $(document).ready(async () => {
       prevModel,
       model
     }) => {
-      const hoy = moment();
       if (moment(model.fechaProximaConsulta, DATE_FORMAT_ES).isBefore(moment(model.fecha, DATE_FORMAT_ES))) {
         M.toast({
           html: 'La fecha de próxima consulta no puede ser anterior a la fecha de la consulta.'
@@ -243,7 +244,8 @@ $(document).ready(async () => {
           });
         } else {
           R.mutate('Consulta', {
-            'fechaProximaConsulta': ''
+            'fechaProximaConsulta': '',
+            'horaProximaConsulta': ''
           });
         }
 
