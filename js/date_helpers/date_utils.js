@@ -22,6 +22,24 @@ const initializeDatepicker = async (options, selector) => {
   $(selector).datepicker(options);
 }
 
+const initializeTimepicker = async (options, selector) => {
+  selector = selector || '.timepicker';
+  options = options || {};
+  if (options.twelveHour === undefined) {
+    options.twelveHour = false;
+  }
+  if (options.showClearBtn === undefined) {
+    options.showClearBtn = true;
+  }
+  options.i18n = {
+    "cancel": "Cancelar",
+    "clear": "Borrar",
+    "done": "Aceptar"
+  };
+
+  $(selector).timepicker(options);
+}
+
 const displayDate = (normalizedDate) => {
   return moment(new Date(normalizedDate)).format('DD/MM/YYYY');
 };
