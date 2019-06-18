@@ -9,9 +9,10 @@ const collectionsCreator = async (params) => {
   if (consultas.error) {
     return api.common.errorHandler({endpoint: api.consultas.all, consultas});
   }
+  
   consultas = consultas.filter(v => 
     v.fechaProximaConsulta 
-    && moment(v.fechaProximaConsulta).isSameOrAfter(initOfToday()) 
+    && moment(v.fechaProximaConsulta).isSameOrAfter(initOfToday().subtract(2, 'days')) 
     && moment(v.fechaProximaConsulta).isSameOrBefore(moment().add(7, 'days').endOf('day'))
   );
   const wrapper = $('#aContactar');
@@ -27,7 +28,10 @@ const collectionsCreator = async (params) => {
     consultas = consultas.sort((a, b) => a.fechaProximaConsulta.localeCompare(b.fechaProximaConsulta));
   }
   for (const consulta of consultas) {
-    const when = humanReadableDate(moment(consulta.fechaProximaConsulta));
+    let when = humanReadableDate(moment(consulta.fechaProximaConsulta));
+    if (when === 'hoy' && consulta.horaProximaConsulta && consulta.horaProximaConsulta !== '00:00') {
+      when += ` ${consulta.horaProximaConsulta} hs`;
+    }
     wrapper.append(`
     <li class="collection-item avatar">
       <i class="material-icons blue circle">assignment</i>
