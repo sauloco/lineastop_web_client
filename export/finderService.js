@@ -157,7 +157,11 @@ const toCamelCase = (value) => {
 const preloaderConsultas = (data) => {
   let personasBuffer = {};
   let finalData = [];
-  for (let consulta of data.reverse()) {
+  data = data
+    .filter(v => v.persona)
+    .sort((a, b) => a.persona._id > b.persona._id)
+    .reverse()
+  for (let consulta of data) {
     if (consulta.persona && consulta.persona._id && !personasBuffer[consulta.persona._id]) {
       personasBuffer[consulta.persona._id] = true;
       consulta.persona = onLoadPersona(consulta.persona);
