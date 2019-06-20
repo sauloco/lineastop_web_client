@@ -52,16 +52,23 @@ const normalizeDateTime = (displayedDateTime) => {
   return moment(displayedDateTime, 'DD/MM/YYYY hh:mm:ss').toString(); 
 }
 
-const humanReadableDate = (futureDate) => {
+const humanReadableDate = (date) => {
   const today = moment().startOf('day');
   const tomorrow = moment().add(1, 'days').startOf('day');
-  if (futureDate.isSame(today, 'd')) {
+  const yesterday = moment().subtract(1, 'days').startOf('day');
+  if (date.isSame(today, 'd')) {
     return 'hoy';
   } 
-  if (futureDate.isSame(tomorrow, 'd')) {
+  if (date.isSame(tomorrow, 'd')) {
     return 'mañana';
   }
-  const diff = futureDate.diff(today, 'days');
+  if (date.isSame(yesterday, 'd')) {
+    return 'ayer';
+  }
+  const diff = date.diff(today, 'days');
+  if (diff < 0) {
+    return `hace ${diff * -1} días`;
+  }
   return `en ${diff} días`;
 }
 

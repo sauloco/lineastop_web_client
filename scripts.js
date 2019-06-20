@@ -9,12 +9,31 @@ const collectionsCreator = async (params) => {
   if (consultas.error) {
     return api.common.errorHandler({endpoint: api.consultas.all, consultas});
   }
+
+  let personasBuffer = {};
+  let finalData = [];
+  consultas = consultas // todas las consultas en el orden que se guardaron
+    .filter(v => v.persona) // me quedo solo con las que tienen una persona asociada
+    .sort((a, b) => a.persona._id > b.persona._id) // ordeno por personas
+    .reverse() // lo doy vuelta para que las ultimas consultas de cada persona queden primeras 
+    .map(consulta => { // usando memoization saco solo la primera consulta de cada persona, como esta al reves es la ultima
+      if (consulta.persona && consulta.persona._id && !personasBuffer[consulta.persona._id]) {
+        personasBuffer[consulta.persona._id] = true;
+        delete consulta['persona_id'];
+        finalData.push(consulta);
+      }
+    });
+
+  consultas = finalData
+    .reverse() // lo doy vuelta para que queden en el orden que van
+    .filter(v => // filtro solo las que van desde anteayer hasta dentro de 1 semana
+      v.fechaProximaConsulta 
+      && moment(v.fechaProximaConsulta).isSameOrAfter(initOfToday().subtract(2, 'days')) 
+      && moment(v.fechaProximaConsulta).isSameOrBefore(moment().add(7, 'days').endOf('day'))
+    );
   
-  consultas = consultas.filter(v => 
-    v.fechaProximaConsulta 
-    && moment(v.fechaProximaConsulta).isSameOrAfter(initOfToday().subtract(2, 'days')) 
-    && moment(v.fechaProximaConsulta).isSameOrBefore(moment().add(7, 'days').endOf('day'))
-  );
+  
+
   const wrapper = $('#aContactar');
   $(wrapper).html('');
   if (!consultas.length) {
@@ -29,14 +48,14 @@ const collectionsCreator = async (params) => {
   }
   for (const consulta of consultas) {
     let when = humanReadableDate(moment(consulta.fechaProximaConsulta));
-    if (when === 'hoy' && consulta.horaProximaConsulta && consulta.horaProximaConsulta !== '00:00') {
+    if ((when === 'hoy'|| when === 'mañana') && consulta.horaProximaConsulta && consulta.horaProximaConsulta !== '00:00') {
       when += ` ${consulta.horaProximaConsulta} hs`;
     }
     wrapper.append(`
     <li class="collection-item avatar">
       <i class="material-icons blue circle">assignment</i>
       <span class="title">${consulta.persona.apellido} ${consulta.persona.nombre}</span>
-      <p><label>Contactar ${when}</label></p>
+      <p><label>${when.startsWith('hace') || when.startsWith('ayer') ? 'Pendiente de contacto' : 'Contactar'} ${when}</label></p>
       <a href="/consultas/?id=${consulta._id}" class="secondary-content"><i data-tooltip="Presiona para ir a la consulta" data-position="left" class="material-icons grey-text tooltiped">chevron_right</i></a>
     </li>`
     );
