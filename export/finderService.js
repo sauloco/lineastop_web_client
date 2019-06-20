@@ -160,16 +160,26 @@ const preloaderConsultas = (data) => {
   data = data
     .filter(v => v.persona)
     .sort((a, b) => a.persona._id > b.persona._id)
-    .reverse()
+    .reverse();
   for (let consulta of data) {
     if (consulta.persona && consulta.persona._id && !personasBuffer[consulta.persona._id]) {
       personasBuffer[consulta.persona._id] = true;
       consulta.persona = onLoadPersona(consulta.persona);
       consulta = cloneObjectInParent(consulta, 'persona');
-      consulta.creadoPor = consulta.createdBy ? consulta.createdBy.username : '';
-      consulta.modificadoPor = consulta.updatedBy ? consulta.updatedBy.username : '';
-      consulta.fecha = new Date(consulta.fecha).toLocaleDateString('es-AR', {timezone: 'GMT-3'});
-      consulta.fechaProximaConsulta = consulta.fechaProximaConsulta ? new Date(consulta.fechaProximaConsulta).toLocaleDateString('es-AR', {timezone: 'GMT-3'}) : '';
+
+      consulta.creadoPor                = consulta.createdBy ? consulta.createdBy.username : '';
+      consulta.modificadoPor            = consulta.updatedBy ? consulta.updatedBy.username : '';
+      consulta.fecha                    = new Date(consulta.fecha).toLocaleDateString('es-AR', {timezone: 'GMT-3'});
+      consulta.fechaProximaConsulta     = consulta.fechaProximaConsulta ? new Date(consulta.fechaProximaConsulta).toLocaleDateString('es-AR', {timezone: 'GMT-3'}) : '';
+      consulta.fechaAbandonoCompromiso  = consulta.fechaAbandonoCompromiso ? new Date(consulta.fechaAbandonoCompromiso).toLocaleDateString('es-AR', {timezone: 'GMT-3'}) : '';
+      consulta.fechaAbandonoEfectiva    = consulta.fechaAbandonoEfectiva ? new Date(consulta.fechaAbandonoEfectiva).toLocaleDateString('es-AR', {timezone: 'GMT-3'}) : '';
+      consulta.createdAt                = consulta.createdAt ? new Date(consulta.createdAt).toLocaleDateString('es-AR', {timezone: 'GMT-3'}) : '';
+      consulta.updatedAt                = consulta.updatedAt ? new Date(consulta.updatedAt).toLocaleDateString('es-AR', {timezone: 'GMT-3'}) : '';
+      consulta.persona_primerConsulta   = consulta.persona_primerConsulta ? new Date(consulta.persona_primerConsulta).toLocaleDateString('es-AR', {timezone: 'GMT-3'}) : '';
+      consulta.persona_nacimiento       = consulta.persona_nacimiento ? new Date(consulta.persona_nacimiento).toLocaleDateString('es-AR', {timezone: 'GMT-3'}) : '';
+      consulta.persona_createdAt        = consulta.persona_createdAt ? new Date(consulta.persona_createdAt).toLocaleDateString('es-AR', {timezone: 'GMT-3'}) : '';
+      consulta.persona_updatedAt        = consulta.persona_updatedAt ? new Date(consulta.persona_updatedAt).toLocaleDateString('es-AR', {timezone: 'GMT-3'}) : '';
+    
       delete consulta['0'];
       delete consulta['__v'];
       delete consulta['createdBy'];
@@ -319,7 +329,7 @@ const onLoadPersona = (data) => {
 
 const cleanUpPersona = (rec) => {
   rec.edad = rec.nacimiento ? moment(rec.nacimiento).fromNow(true) : '';
-  rec.imc = rec.pesoKg && rec.alturaCm ? rec.pesoKg / Math.pow(rec.alturaCm/100,2) : '';
+  rec.imc = (rec.pesoKg && rec.alturaCm ? rec.pesoKg / Math.pow(rec.alturaCm/100,2) : '').toString().split('.').join(',');
   rec.creadoPor = rec.createdBy && rec.createdBy.username ? rec.createdBy.username : '';
   rec.modificadoPor = rec.updatedBy && rec.updatedBy.username ? rec.updatedBy.username : '';
   delete rec['0'];
