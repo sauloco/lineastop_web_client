@@ -31,6 +31,13 @@ const stopPreloader = () => {
 };
 
 const initFinder = async (collection, preloader_modal_selector) => {
+  let data, exportIt;
+  if (collection && typeof collection === 'object') {
+    data = collection.data;
+    exportIt = collection.export ? collection.export.toString() : 'false';
+    collection = collection.pattern;
+  }
+
   if (FINDER_INSTANCES.indexOf(`${collection}_grid`) >= 0) {
     return;
   }
@@ -38,13 +45,8 @@ const initFinder = async (collection, preloader_modal_selector) => {
   initPreloader(preloader_modal_selector);
 
   currentCollection = collection || new URLSearchParams(window.location.search).get('collection');
-  exportButton = new URLSearchParams(window.location.search).get('export');
+  exportButton = exportIt || new URLSearchParams(window.location.search).get('export');
 
-  if (exportButton === "true") {
-    $(".export").click(exportData);
-  } else {
-    $(".export").addClass("hide");
-  }
 
 
   if (!validExports[currentCollection]) {
@@ -57,8 +59,23 @@ const initFinder = async (collection, preloader_modal_selector) => {
   let gridName = `${currentCollection}_grid`;
   const defaultGridName = `_grid`;
   $(`#${defaultGridName}`).attr('id', gridName);
-
   $(`#${gridName}`).height(calculateHeight($(`#${gridName}`)));
+  $(`#${gridName}`).removeClass('w2ui-reset w2ui-grid')
+
+  if (exportButton === "true") {
+    
+    if (!$('.export').length) {
+      $(`<div class="fixed-action-btn export" style = "z-index: 100000000;">
+        <a id="export" class="btn-floating btn-large red">
+          <i class="large material-icons">save_alt</i>
+        </a>
+      </div>`).insertAfter('.modal')
+    }
+    $(".export").click(exportData);
+  } else {
+    $(".export").addClass("hide");
+  }
+
 
   let w2uiDataGrid = {
     name: gridName,
@@ -76,35 +93,57 @@ const initFinder = async (collection, preloader_modal_selector) => {
     columns: validExports[currentCollection].columns,
     records: [],
   };
-  w2uiDataGrid = await loadObject(currentCollection, w2uiDataGrid);
-  $(`#${gridName}`).w2grid(w2uiDataGrid);
+  
+  const records = await loadObject(currentCollection, data);
+
+  if (w2ui[gridName]) {
+    w2ui[gridName].clear();
+    w2ui[gridName].add(records);
+  } else {
+    w2uiDataGrid.records = records;
+    $(`#${gridName}`).w2grid(w2uiDataGrid);
+  }
+  
   w2ui[gridName].render();
   w2ui[gridName].refresh();
+  console.log('post', w2ui[gridName].records);
   FINDER_INSTANCES.push(gridName);
   stopPreloader(preloader_modal_selector);
+
 }
 
-const loadObject = async (location, w2uiDataGrid) => {
-  endpoint = api[location]['all'];
-  let data = await fetchData({
-    endpoint
-  });
-  if (data.error) {
-    api.common.errorHandler({endpoint, data});
-    return w2uiDataGrid;
+const showExport = () => {
+  $(".export").removeClass("hide");
+}
+
+const hideExport = () => {
+  $(".export").addClass("hide");
+  FINDER_INSTANCES = [];
+}
+
+const loadObject = async (location, data) => {
+  if (!data) {
+    endpoint = api[location]['all'];
+    data = await fetchData({
+      endpoint
+    });
+    if (data.error) {
+      api.common.errorHandler({endpoint, data});
+      return w2uiDataGrid;
+    }
   }
-  let i = 0;
-  
   if (validExports[location]['preloader']){
     data = validExports[location]['preloader'](data);
   }
+  let i = 0;
+  let records = []
   for (let obj of data) {
     if (typeof obj === 'object') {
       obj.recid = ++i;
-      w2uiDataGrid.records.push(obj);
+      records.push(obj);
     }
   }
-  return w2uiDataGrid;
+  return records;
 }
 
 const calculateHeight = ($grid) => {
@@ -236,6 +275,7 @@ const fixColumns = (consulta) => {
     fechaAbandonoCompromiso: consulta.fechaAbandonoCompromiso || '',
     fechaAbandonoEfectiva: consulta.fechaAbandonoEfectiva || '',
     fechaProximaConsulta: consulta.fechaProximaConsulta || '',
+    horaProximaConsulta: consulta.horaProximaConsulta || '',
     observacion: consulta.observacion || '',
     _id: consulta._id || '',
     createdAt: consulta.createdAt || '',
@@ -388,62 +428,25 @@ const validExports = {
     "displayName": "Consultas",
     "preloader": preloaderConsultas,
     "searches": [
-      { "field": "fecha", "caption": "Fecha", "type": "text"},
-      { "field": "tos", "caption": "Nombre", "type": "boolean" },
-      { "field": "dolorCalambre", "caption": "Email", "type": "text"},
-      { "field": "expectoracion", "caption": "Teléfono", "type": "int" },
-      { "field": "dolorPrecordial", "caption": "Teléfono", "type": "int" },
-      { "field": "dificultadRespiratoria", "caption": "Teléfono", "type": "int" },
-      { "field": "sueno", "caption": "Teléfono", "type": "int" },
-      { "field": "piel", "caption": "Teléfono", "type": "int" },
+      { "field": "persona_apellido", "caption": "Apellido", "type": "text"},
+      { "field": "persona_nombre", "caption": "Nombre", "type": "text"},
+      { "field": "fecha", "caption": "Fecha", "type": "date"},
       { "field": "_id", "caption": "ID ", "type": "text" }
     ],
     "columns": [
       { "field": "_id", "caption": "id", "size": "0%", "hidden": true}, 
-      { "field": "fecha", "caption": "Fecha", "size": "10%", "type": "date", "format": "DD/MM/YYYY", "sortable": true},
+      { "field": "fecha", "caption": "Fecha utl. consulta", "size": "10%", "sortable": true, "type": "date", "format": "DD/MM/YYYY",
+        "render": (record) => {
+          return `<a href = "/consultas/?id=${record._id}">${record.fecha}</a>`;
+        }
+      },
       { "field": "persona_apellido", "caption": "Apellido", "size": "10%", "sortable": true},
       { "field": "persona_nombre", "caption": "Nombre", "size": "10%", "sortable": true},
-      { "field": "tos", "caption": "Tos", "size": "2%", "sortable": true, "render": "toggle"},
-      { "field": "dolorCalambre", "caption": "Calambre", "size": "2%", "sortable": true},
-      { "field": "expectoracion", "caption": "Expectoración", "size": "2%", "sortable": true},
-      { "field": "dolorPrecordial", "caption": "Dolor Precordial", "size": "2%", "sortable": true},
-      { "field": "dificultadRespiratoria", "caption": "Dif. Resp.", "size": "2%", "sortable": true},
-      { "field": "sueno", "caption": "Sueño", "size": "2%", "sortable": true},
-      { "field": "piel", "caption": "Piel", "size": "2%", "sortable": true},
-      { "field": "olfato", "caption": "Olfato", "size": "2%", "sortable": true},
-      { "field": "dientes", "caption": "Dientes", "size": "2%", "sortable": true},
-      { "field": "gusto", "caption": "Gusto", "size": "2%", "sortable": true},
-      { "field": "claudicacionMi", "caption": "Clau. MI", "size": "2%", "sortable": true},
-      { "field": "problemaPeso", "caption": "Prob. Peso", "size": "2%", "sortable": true},
-      { "field": "tratamientoFarmacologico", "caption": "Tratam. Farm.", "size": "2%", "sortable": true},
-      { "field": "cambiarVida", "caption": "Cambiar vida", "size": "2%", "sortable": true},
-      { "field": "actividadManual", "caption": "Act. manual", "size": "2%", "sortable": true},
-      { "field": "tiempoLibre", "caption": "Tiempo libre", "size": "2%", "sortable": true},
-      { "field": "carteleria", "caption": "Carteleria", "size": "2%", "sortable": true},
-      { "field": "compromerterse", "caption": "Comprometerse", "size": "2%", "sortable": true},
-      { "field": "corte", "caption": "Corte", "size": "2%", "sortable": true},
-      { "field": "desayuno", "caption": "Desayuno", "size": "2%", "sortable": true},
-      { "field": "actividadFisica", "caption": "Act. Física", "size": "2%", "sortable": true},
-      { "field": "agua", "caption": "Agua", "size": "2%", "sortable": true},
-      { "field": "chicles", "caption": "Chicles", "size": "2%", "sortable": true},
-      { "field": "zanahoriaManzana", "caption": "Zan.Manz.", "size": "2%", "sortable": true},
-      { "field": "autoSinTabaco", "caption": "Auto sin", "size": "2%", "sortable": true},
-      { "field": "casaSinTabaco", "caption": "Casa sin", "size": "2%", "sortable": true},
-      { "field": "alimentacion", "caption": "Alimentacion", "size": "2%", "sortable": true},
-      { "field": "cepilladoDiente", "caption": "Cepillado Diente", "size": "2%", "sortable": true},
-      { "field": "banos", "caption": "Baños", "size": "2%", "sortable": true},
-      { "field": "reuniones", "caption": "Reuniones", "size": "2%", "sortable": true},
-      { "field": "cambioMarca", "caption": "Cambio marca", "size": "2%", "sortable": true},
-      { "field": "otros", "caption": "Otros", "size": "2%", "sortable": true},
-      { "field": "derivado", "caption": "Derivado", "size": "2%", "sortable": true},
-      { "field": "derivadoMedico", "caption": "Der. Medico", "size": "2%", "sortable": true},
-      { "field": "derivadoNotificacion", "caption": "Der. Notificacion", "size": "2%", "sortable": true},
-      { "field": "fechaAbandonoCompromiso", "caption": "F. Compromiso", "size": "2%", "sortable": true},
-      { "field": "fechaAbandonoEfectiva", "caption": "F. Efectiva", "size": "2%", "sortable": true},
-      { "field": "fechaProximaConsulta", "caption": "F. Prox", "size": "2%", "sortable": true},
-      { "field": "observacion", "caption": "Observacion", "size": "2%", "sortable": true},
-      { "field": "createdAt", "caption": "F. Creacion", "size": "2%", "sortable": true},
-      { "field": "updatedAt", "caption": "F. Actualiz", "size": "2%", "sortable": true},
+      { "field": "persona_nacimiento", "caption": "Fecha de nacimiento", "size": "10%", "sortable": true, "type": "date", "format": "DD/MM/YYYY"},
+      { "field": "fechaAbandonoEfectiva", "caption": "Fecha de abandono", "size": "10%", "sortable": true, "type": "date", "format": "DD/MM/YYYY"},
+      { "field": "fechaAbandonoCompromiso", "caption": "Fecha de compromiso", "size": "10%", "sortable": true, "type": "date", "format": "DD/MM/YYYY"},
+      { "field": "fechaProximaConsulta", "caption": "Fecha próx. consulta", "size": "10%", "sortable": true, "type": "date", "format": "DD/MM/YYYY"},
+      { "field": "horaProximaConsulta", "caption": "Hora próx. consulta", "size": "10%", "sortable": false}
     ]
   }
 }

@@ -39,13 +39,18 @@
 	<script src="/js/api.js"></script>
 	<script src="/js/common.js"></script>
 	<script src="scripts.js"></script>
+	<script src="/js/lodash.js"></script>
 	<script src="/js/menulateral.js"></script>
 	<script src="/js/moment-with-locales.js"></script>
 	<script src="/js/date_helpers/date_utils.js"></script>
 	<script src="/js/marked.min.js"></script>
 	<link rel="stylesheet" href="/js/materialize/materialize.min.css">
 	<script src="/js/materialize/materialize.min.js"></script>
+	<script src="/export/finderService.js"></script>
+	<script src="/js/w2ui/w2ui-1.5.rc1.js"></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="/js/w2ui/w2ui-1.5.rc1.css" />
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="./css/global.css" rel="stylesheet">
 </head>
 
 <body>
@@ -79,16 +84,75 @@
 	</ul>
 	<div class="container">
 		<div class="row">
+			<div class="col s12">
+				<h5>Resúmenes disponibles</h5>
+			</div>
+			<div class="col s12 m6 l3">
+				<div id = "abandonaron" class="card blue darken-1 hoverable">
+					<div class="card-content white-text">
+						<span class="card-title">Abandonaron en <strong>...</strong></span>
+						<h1 class = 'center'>...<i class = "material-icons large" style = 'line-height: 1em'>trending_flat</i></h1>
+					</div>
+					<div class="card-action">
+						<a href="#">Ver detalle</a>
+					</div>
+				</div>
+			</div>
+			<div class="col s12 m6 l3">
+				<div id = "comprometidos" class="card blue darken-2 hoverable">
+					<div class="card-content white-text">
+						<span class="card-title activator">Compromisos para <strong>...</strong></span>
+						<h1 class = 'center'>...<i class = "material-icons large" style = 'line-height: 1em'>trending_flat</i></h1>
+					</div>
+					<div class="card-action">
+						<a href="#">Ver detalle</a>
+					</div>
+				</div>
+			</div>
+			<div class="col s12 m6 l3">
+				<div id = "cumpleanos" class="card blue darken-3 hoverable">
+					<div class="card-content white-text">
+						<span class="card-title activator">Cumpleaños en <strong>...</strong></span>
+						<h1 class = 'center'>...</h1>
+						
+					</div>
+					<div class="card-action white-text">
+						<a href="#">Ver detalle</a>
+					</div>
+				</div>
+			</div>
+			<div class="col s12 m6 l3">
+				<div id = "cumplemes" class="card blue darken-4 hoverable">
+					<div class="card-content white-text">
+						<span class="card-title activator">Cumple mes <strong>hoy</strong></span>
+						<h1 class = 'center'>...</h1>
+					</div>
+					<div class="card-action">
+						<a href="#">Ver detalle</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
 			<div class="col s12 m6">
 				<h5>Personas a contactar esta semana</h5>
-				<ul id="aContactar" class="collection">
+				<ul id="aContactar" class="collection" style = "max-height: 40vh; overflow: auto;">
 				</ul>
 			</div>
 			<div class="col s12 m6">
 				<h5>Mensajes programados para enviar</h5>
-				<ul id="historicoMensajes" class="collection">
+				<ul id="historicoMensajes" class="collection" style = "max-height: 30vh; overflow: auto;">
 				</ul>
 			</div>
+		</div>
+	</div>
+	
+	<div id="details_modal" class="modal">
+		<div id="consultas_grid" style="width: 100%; height: calc(100vh - 85px);"></div>
+	</div>
+	<div id="preloader_modal" class="modal">
+		<div class="progress">
+			<div class="indeterminate"></div>
 		</div>
 	</div>
 </body>
