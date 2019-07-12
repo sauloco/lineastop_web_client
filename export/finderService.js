@@ -63,15 +63,14 @@ const initFinder = async (collection, preloader_modal_selector) => {
   $(`#${gridName}`).removeClass('w2ui-reset w2ui-grid')
 
   if (exportButton === "true") {
-    
     if (!$('.export').length) {
       $(`<div class="fixed-action-btn export" style = "z-index: 100000000;">
         <a id="export" class="btn-floating btn-large red">
           <i class="large material-icons">save_alt</i>
         </a>
       </div>`).insertAfter('.modal')
+      $(".export").click(exportData);
     }
-    $(".export").click(exportData);
   } else {
     $(".export").addClass("hide");
   }
