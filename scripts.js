@@ -1,15 +1,31 @@
 $(document).ready(() => {
-  collectionsCreator();
-  historicoMensajesCreator();
   moment.locale('es');
+  getConsultas();
+  historicoMensajesCreator();
+  
 })
 
-const collectionsCreator = async (params) => {
-  let consultas = await fetchData({endpoint: api.consultas.all});
+let CONSULTAS = [];
+let ABANDONED = [];
+let COMMITED = [];
+let BIRTHDAYS = [];
+let MONTHVERSARIES = []
+
+const getConsultas = async () => {
+  const consultas = await fetchData({endpoint: api.consultas.all});
   if (consultas.error) {
     return api.common.errorHandler({endpoint: api.consultas.all, consultas});
   }
+  CONSULTAS = consultas;
+  const filteredPerPerson = filterPerPerson(consultas);
+  contactPeopleListCreator(filteredPerPerson);
+  loadAbandon(filteredPerPerson);
+  loadCommitted(filteredPerPerson);
+  loadBirthday(filteredPerPerson);
+  loadMonthversary(filteredPerPerson);
+}
 
+const filterPerPerson = (consultas) => {
   let personasBuffer = {};
   let finalData = [];
   consultas = consultas // todas las consultas en el orden que se guardaron
@@ -23,17 +39,18 @@ const collectionsCreator = async (params) => {
         finalData.push(consulta);
       }
     });
+  return finalData.reverse() // lo doy vuelta para que queden en el orden que van
+}
 
-  consultas = finalData
-    .reverse() // lo doy vuelta para que queden en el orden que van
+const contactPeopleListCreator = async (consultas) => {
+
+  consultas = consultas
     .filter(v => // filtro solo las que van desde anteayer hasta dentro de 1 semana
       v.fechaProximaConsulta 
       && moment(v.fechaProximaConsulta).isSameOrAfter(initOfToday().subtract(2, 'days')) 
       && moment(v.fechaProximaConsulta).isSameOrBefore(moment().add(7, 'days').endOf('day'))
     );
   
-  
-
   const wrapper = $('#aContactar');
   $(wrapper).html('');
   if (!consultas.length) {
@@ -59,7 +76,6 @@ const collectionsCreator = async (params) => {
       <a href="/consultas/?id=${consulta._id}" class="secondary-content"><i data-tooltip="Presiona para ir a la consulta" data-position="left" class="material-icons grey-text tooltiped">chevron_right</i></a>
     </li>`
     );
-    
   }
 }
 
@@ -225,4 +241,108 @@ const cancelEmail = async (_id) => {
   }
   M.toast({html: 'El correo electrónico se ha cancelado.'});
   historicoMensajesCreator();
+}
+
+const loadAbandon = (consultas) => {
+  consultas = _.cloneDeep(consultas);
+  document.querySelector('#abandonaron > div > span > strong').innerHTML = moment().subtract(1, 'months').format("MMMM");
+  const preConsultas = consultas
+  .filter(v => 
+    v.fechaAbandonoEfectiva
+    && moment(v.fechaAbandonoEfectiva).month() === moment().subtract(2, 'months').month()
+  );
+  consultas = consultas
+  .filter(v => 
+    v.fechaAbandonoEfectiva
+    && moment(v.fechaAbandonoEfectiva).month() === moment().subtract(1, 'months').month()
+  );
+  const difference = consultas.length - preConsultas.length;
+  let icon = `trending_flat`;
+  let color = `white`;
+  if (difference) {
+    icon = `trending_${difference < 0 ? 'down' : 'up'}`;
+    color = `${difference < 0 ? 'red' : 'green'}`;
+  }
+  document.querySelector('#abandonaron > div > h1').innerHTML = `${consultas.length}<i class = "material-icons ${color}-text medium tooltipped" data-tooltip = "${difference < 0 ? difference * -1 + " menos" : difference + " más"} que ${moment().subtract(2, 'months').format('MMMM')}" data-position = "bottom">${icon}</i>`;
+  document.querySelector('#abandonaron > div > a').addEventListener('click', seeAbandonedDetails);
+  ABANDONED = consultas;
+  $('.tooltipped').tooltip();
+
+}
+
+const loadCommitted = (consultas) => {
+  consultas = _.cloneDeep(consultas);
+  document.querySelector('#comprometidos > div > span > strong').innerHTML = moment().format("MMMM");
+  const preConsultas = consultas
+  .filter(v => 
+    v.fechaAbandonoCompromiso
+    && moment(v.fechaAbandonoCompromiso).month() === moment().subtract(1, 'months').month()
+  );
+  consultas = consultas
+  .filter(v => 
+    v.fechaAbandonoCompromiso
+    && moment(v.fechaAbandonoCompromiso).month() === moment().month()
+  );
+  const difference = consultas.length - preConsultas.length;
+  let icon = `trending_flat`;
+  let color = `white`;
+  if (difference) {
+    icon = `trending_${difference < 0 ? 'down' : 'up'}`;
+    color = `${difference < 0 ? 'red' : 'green'}`;
+  }
+  document.querySelector('#comprometidos > div > h1').innerHTML = `${consultas.length}<i class = "material-icons ${color}-text medium tooltipped" data-tooltip = "${difference < 0 ? difference * -1 + " menos" : difference + " más"} que ${moment().subtract(1, 'months').format('MMMM')}" data-position = "bottom">${icon}</i>`;
+  document.querySelector('#comprometidos > div > a').addEventListener('click', seeCommitedDetails);
+  COMMITED = consultas;
+  $('.tooltipped').tooltip();
+}
+
+const seeCommitedDetails = () => {
+  seeDetails(COMMITED);
+}
+
+const seeAbandonedDetails = () => {
+  seeDetails(ABANDONED);
+}
+const seeBirthdaysDetails = () => {
+  seeDetails(BIRTHDAYS);
+}
+const seeMonthversaiesDetails = () => {
+  seeDetails(MONTHVERSARIES);
+}
+
+const seeDetails = async (data) => {
+  await initFinder({pattern: 'consultas', data: _.cloneDeep(data), export: true}, '#preloader_modal');
+  
+  M.Modal.init(document.querySelector('#details_modal'), {
+    onOpenEnd: showExport,
+    onCloseStart: hideExport
+  });
+  const modal = M.Modal.getInstance(document.querySelector('#details_modal'));
+  modal.open();
+
+}
+
+const loadBirthday = (consultas) => {
+  consultas = _.cloneDeep(consultas);
+  document.querySelector('#cumpleanos > div > span > strong').innerHTML = moment().format("MMMM");
+  consultas = consultas
+  .filter(v => 
+    v.persona.nacimiento
+    && moment(v.persona.nacimiento).month() === moment().month()
+  );
+  document.querySelector('#cumpleanos > div > h1').innerHTML = consultas.length;
+  document.querySelector('#cumpleanos > div > a').addEventListener('click', seeBirthdaysDetails);
+  BIRTHDAYS = consultas;
+}
+
+const loadMonthversary = (consultas) => {
+  consultas = _.cloneDeep(consultas);
+  consultas = consultas
+  .filter(v => 
+    v.fechaAbandonoEfectiva
+    && moment(v.fechaAbandonoEfectiva).date() === moment().date()
+  );
+  document.querySelector('#cumplemes > div > h1').innerHTML = consultas.length;
+  document.querySelector('#cumplemes > div > a').addEventListener('click', seeMonthversaiesDetails);
+  MONTHVERSARIES = consultas;
 }

@@ -54,9 +54,6 @@ let Persona = {
 let defaultPersona = R.clone(Persona);
 
 $(document).ready(() =>{
-
-  // M.FormSelect.init(document.querySelectorAll('select'), {});
-
   
   $('#guardar').click(savePersonaWithToast);
   $('#delete').click(deletePersonaWithToast);
