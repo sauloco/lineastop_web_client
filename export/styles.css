@@ -1,0 +1,7 @@
+#export {
+  opacity: 0.5;
+}
+
+#export:hover {
+  opacity: 1;
+}

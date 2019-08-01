@@ -69,8 +69,8 @@ const initFinder = async (collection, preloader_modal_selector) => {
           <i class="large material-icons">save_alt</i>
         </a>
       </div>`).insertAfter('.modal')
-      $(".export").click(exportData);
     }
+    $(".export").click(exportData);
   } else {
     $(".export").addClass("hide");
   }
@@ -87,7 +87,7 @@ const initFinder = async (collection, preloader_modal_selector) => {
       searchAll: false,
     },
     multiSearch: true,
-    // multiSelect: true,
+    multiSelect: true,
     searches: validExports[currentCollection].searches,
     columns: validExports[currentCollection].columns,
     records: [],
