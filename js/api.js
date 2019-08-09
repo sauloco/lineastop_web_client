@@ -1,5 +1,17 @@
 const DEFAULT_LIMIT = Number.MAX_SAFE_INTEGER;
 
+const API_production = 'https://hcdigital.herokuapp.com';
+const API_staging = 'https://stag-lineastop.herokuapp.com';
+const API_development = 'http://localhost:1337';
+
+const BASE_URI = API_development;
+
+if (BASE_URI === API_production) {
+  Sentry.init({
+    dsn: 'https://e3abd2577a644e5a84e1b4398d0f56f5@sentry.io/1363621'
+  });
+}
+
 const addCreationUser = ({params}) => {
   if (!params.createdBy) {
     params.createdBy = getCookie('id');
@@ -68,10 +80,7 @@ const apiDefaultErrorController = ({endpoint, error}) => {
 
 const getPromise = ({endpoint, params, token}) => {
   
-  const production = 'https://hcdigital.herokuapp.com';
-  const staging = 'https://stag-lineastop.herokuapp.com';
-  const development = 'http://localhost:1337';
-  const BASE_URI = production;
+  
 
   let {location, method, url_params, contentType} = endpoint;
   if (location.split('')[0] !== '/'){

@@ -105,7 +105,6 @@ const initFinder = async (collection, preloader_modal_selector) => {
   
   w2ui[gridName].render();
   w2ui[gridName].refresh();
-  console.log('post', w2ui[gridName].records);
   FINDER_INSTANCES.push(gridName);
   stopPreloader(preloader_modal_selector);
 
