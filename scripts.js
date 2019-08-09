@@ -19,7 +19,7 @@ const getConsultas = async () => {
     return api.common.errorHandler({endpoint: api.consultas.all, consultas});
   }
   CONSULTAS = consultas;
-  const response = await fetch('http://worldtimeapi.org/api/timezone/America/Argentina/Buenos_Aires');
+  const response = await fetch('https://worldtimeapi.org/api/timezone/America/Argentina/Buenos_Aires');
   const safeDate = await response.json();
   const safeDateTime = moment(safeDate.datetime);
   const filteredPerPerson = filterPerPerson(consultas);
