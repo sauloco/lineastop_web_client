@@ -186,8 +186,12 @@ const fetchData = async ({endpoint, params, token, controlError}) => {
       response = await response.json();
       return response;
     }
+    if (response.status === 500) {
+      console.error({response});
+    }
     return api.common.errorHandler({endpoint, error: response});
   } catch (e) {
+    console.error({response, e});
     return api.common.errorHandler({endpoint, error: response});
   }  
 }
