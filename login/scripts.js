@@ -27,48 +27,42 @@ const iniciarSesion = () => {
         password: $('#password').val()
     }
 
-    getPromise({
+    const data = fetchData({
+        endpoint: api.auth.local.login,
+        params
+    });
+
+    if (data.error) {
+        return api.common.errorHandler({
             endpoint: api.auth.local.login,
-            params
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                return api.common.errorHandler({
-                    endpoint: api.auth.local.login,
-                    error: data
-                });
-            }
-            setCookie({
-                name: 'jwt',
-                value: data.jwt,
-                day: 2,
-                force: true
-            });
-            setCookie({
-                name: 'username',
-                value: data.user.username,
-                day: 2,
-                force: true
-            });
-            setCookie({
-                name: 'email',
-                value: data.user.email,
-                day: 2,
-                force: true
-            });
-            setCookie({
-                name: 'id',
-                value: data.user._id,
-                day: 2,
-                force: true
-            });
-            validarToken();
-        })
-        .catch(error => api.common.errorHandler({
-            endpoint: api.auth.local.login,
-            error
-        }));
+            error: data
+        });
+    }
+    setCookie({
+        name: 'jwt',
+        value: data.jwt,
+        day: 2,
+        force: true
+    });
+    setCookie({
+        name: 'username',
+        value: data.user.username,
+        day: 2,
+        force: true
+    });
+    setCookie({
+        name: 'email',
+        value: data.user.email,
+        day: 2,
+        force: true
+    });
+    setCookie({
+        name: 'id',
+        value: data.user._id,
+        day: 2,
+        force: true
+    });
+    validarToken();
 };
 
 const registrarUsuario = () => {

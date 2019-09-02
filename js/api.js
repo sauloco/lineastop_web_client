@@ -4,12 +4,20 @@ const API_production = 'https://hcdigital.herokuapp.com';
 const API_staging = 'https://stag-lineastop.herokuapp.com';
 const API_development = 'http://localhost:1337';
 
-const BASE_URI = API_production;
+const BASE_URI = API_staging;
+
+
 
 if (BASE_URI === API_production) {
-  Sentry.init({
-    dsn: 'https://e3abd2577a644e5a84e1b4398d0f56f5@sentry.io/1363621'
-  });
+  let sentryScript = document.createElement('script');
+  sentryScript.setAttribute('src',"https://browser.sentry-cdn.com/4.4.2/bundle.min.js");
+  sentryScript.setAttribute('crossorigin', 'anonymous');
+  document.head.appendChild(sentryScript);
+  sentryScript.onload(() => {
+    Sentry.init({
+      dsn: 'https://e3abd2577a644e5a84e1b4398d0f56f5@sentry.io/1363621'
+    });
+  })
 }
 
 const addCreationUser = ({params}) => {
@@ -179,9 +187,9 @@ const fetchData = async ({endpoint, params, token, controlError}) => {
       return api.common.errorHandler({endpoint, error: retorno.error || 'Ocurrió un error inesperado antes de procesar la petición al servidor.'});
     }
   }
-  
-  let response = await getPromise({endpoint, params, token});
+  let response = {};
   try {
+    response = await getPromise({endpoint, params, token});
     if ((response.status >= 200 && response.status < 300) || !controlError)  {
       response = await response.json();
       return response;
@@ -191,7 +199,13 @@ const fetchData = async ({endpoint, params, token, controlError}) => {
     }
     return api.common.errorHandler({endpoint, error: response});
   } catch (e) {
-    console.error({response, e});
+    if (e.message === 'Failed to fetch') {
+      response = {
+        statusCode: 503,
+        error: true,
+        message: 'El servidor se encuentra temporalmente desactivado.'
+      }
+    }
     return api.common.errorHandler({endpoint, error: response});
   }  
 }
@@ -206,6 +220,7 @@ const api = {
       405: 'El tipo de solicitud es inválida.',
       410: 'El recurso solicitado ya no está disponible.',
       500: 'Ocurrió un error inesperado en nuestros servidores, ya se le ha notificado a nuestros desarrolladores del inconveniente.',
+      503: 'El servidor se encuentra en modo de mantenimiento en este momento.',
       default: 'Ocurrió un error inesperado, ya se le ha notificado a los desarrolladores del inconveniente.',
     },
     errorHandler: apiDefaultErrorController,
