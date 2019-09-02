@@ -20,14 +20,14 @@ const activaIniciar = () => {
     $('#iniciar').attr('disabled', false);
 }
 
-const iniciarSesion = () => {
+const iniciarSesion = async () => {
 
     const params = {
         identifier: $('#email').val(),
         password: $('#password').val()
     }
 
-    const data = fetchData({
+    const data = await fetchData({
         endpoint: api.auth.local.login,
         params
     });
