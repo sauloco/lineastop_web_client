@@ -4,20 +4,18 @@ const API_production = 'https://hcdigital.herokuapp.com';
 const API_staging = 'https://stag-lineastop.herokuapp.com';
 const API_development = 'http://localhost:1337';
 
-const BASE_URI = API_staging;
-
-
+const BASE_URI = API_production;
 
 if (BASE_URI === API_production) {
   let sentryScript = document.createElement('script');
   sentryScript.setAttribute('src',"https://browser.sentry-cdn.com/4.4.2/bundle.min.js");
   sentryScript.setAttribute('crossorigin', 'anonymous');
   document.head.appendChild(sentryScript);
-  sentryScript.onload(() => {
+  sentryScript.onload = () => {
     Sentry.init({
       dsn: 'https://e3abd2577a644e5a84e1b4398d0f56f5@sentry.io/1363621'
     });
-  })
+  }
 }
 
 const addCreationUser = ({params}) => {
