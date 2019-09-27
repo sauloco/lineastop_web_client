@@ -19,9 +19,19 @@ const getConsultas = async () => {
     return api.common.errorHandler({endpoint: api.consultas.all, consultas});
   }
   CONSULTAS = consultas;
-  const response = await fetch('https://worldtimeapi.org/api/timezone/America/Argentina/Buenos_Aires');
-  const safeDate = await response.json();
-  const safeDateTime = moment(safeDate.datetime);
+  let safeDate, safeDateTime;
+  const timeServerURI = 'https://worldtimeapi.org/api/timezone/America/Argentina/Buenos_Aires';
+  try {
+    const response = await fetch(timeServerURI);
+    safeDate = await response.json();
+    safeDateTime = moment(safeDate.datetime);
+  } catch (e) {
+    safeDateTime = moment();
+    console.warn(`Response not found from ${timeServerURI}, unsafe date got from the client.`);
+    M.toast({html: 'Ocurrió un error conectando con el servidor de horario, asegúrese que el horario de su dispositivo sea correcto antes de continuar.'});
+  }
+  
+  
   const filteredPerPerson = filterPerPerson(consultas);
   contactPeopleListCreator(filteredPerPerson);
   loadAbandon(filteredPerPerson, safeDateTime);
