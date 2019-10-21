@@ -4,7 +4,7 @@ const API_production = 'https://hcdigital.herokuapp.com';
 const API_staging = 'https://stag-lineastop.herokuapp.com';
 const API_development = 'http://localhost:1337';
 
-const BASE_URI = API_production;
+const BASE_URI = API_staging;
 
 if (BASE_URI === API_production) {
   let sentryScript = document.createElement('script');
@@ -249,6 +249,31 @@ const api = {
       method: 'DELETE',
       location: 'personas',
       url_params: [':_id'],
+    }
+  },
+  mensajes: {
+    all: {
+      location: 'mensajes/',
+    },
+    count: {
+      location: 'mensajes/count',
+    },
+    get: {
+      location: 'mensajes',
+      url_params: [':_id']
+    },
+    create: {
+      method: 'POST',
+      location: 'mensajes',
+      middlewareActions: [addCreationUser, addUpdatingUser]
+    },
+    delete: {
+      method: 'DELETE',
+      location: 'mensajes',
+      url_params: [':_id']
+    },
+    findBy: {
+      location: 'mensajes',
     }
   },
   consultas: {

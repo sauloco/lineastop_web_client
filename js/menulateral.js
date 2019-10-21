@@ -7,8 +7,7 @@ $(document).ready(() => {
 const iniciarNavBar = async () => {
   const response = await fetchData({
     endpoint: api.users.me
-
-  })
+  });
   $('#userTooltip').attr('data-tooltip', response.username);
 }
 
