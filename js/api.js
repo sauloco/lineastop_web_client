@@ -85,9 +85,6 @@ const apiDefaultErrorController = ({endpoint, error}) => {
  */
 
 const getPromise = ({endpoint, params, token}) => {
-  
-  
-
   let {location, method, url_params, contentType} = endpoint;
   if (location.split('')[0] !== '/'){
     location = `/${location}`;
@@ -249,6 +246,31 @@ const api = {
       method: 'DELETE',
       location: 'personas',
       url_params: [':_id'],
+    }
+  },
+  anonimos: {
+    all: {
+      location: 'anonimos/'
+    },
+    count: {
+      location: 'anonimos/count',
+    },
+    get: {
+      location: 'anonimos',
+      url_params: [':_id']
+    },
+    create: {
+      method: 'POST',
+      location: 'anonimos',
+      middlewareActions: [addCreationUser, addUpdatingUser]
+    },
+    delete: {
+      method: 'DELETE',
+      location: 'anonimos',
+      url_params: [':_id']
+    },
+    findBy: {
+      location: 'anonimos',
     }
   },
   mensajes: {
