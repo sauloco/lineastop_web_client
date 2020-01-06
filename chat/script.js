@@ -81,7 +81,7 @@ function getNombreDeAnonimo(anonimo) {
     ? `${anonimo.persona.apellido} ${anonimo.persona.nombre}`
     : anonimo.user
     ? anonimo.user.username
-    : anonimo.pseudonimo;
+    : (anonimo.pseudonimo || anonimo.id);
 }
 
 async function getAllAnonimos() {
@@ -210,7 +210,6 @@ async function cargarHistorial(elemento) {
     endpoint: api.mensajes.findBy,
     params: {
       sender: elemento.id, // string, id usuario seleccionado en la barra lateral
-      target: miAnonimo._id // string, id del usuario que tiene iniciada la sesión
     }
   });
   const mensajes = mensajesEnviados.concat(mensajesRecibidos);
@@ -229,7 +228,7 @@ async function cargarHistorial(elemento) {
   if (mensajes.length) {
     document.querySelector(".message-wrapper").innerHTML = ``;
     for (const mensaje of mensajes) {
-      if (mensaje.sender._id === miAnonimo._id) {
+      if (mensaje.target && mensaje.target._id === elemento.id) {
         await renderSentMessage(mensaje);
       } else {
         await renderReceivedMessage(mensaje);

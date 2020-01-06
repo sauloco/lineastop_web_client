@@ -271,6 +271,7 @@ const loadAbandon = (consultas, date) => {
   .filter(v => 
     v.fechaAbandonoEfectiva
     && moment(v.fechaAbandonoEfectiva).month() === moment(date).subtract(1, 'months').month()
+    && moment(v.fechaAbandonoEfectiva).year() === moment(date).subtract(1, 'months').year()
   );
   const difference = consultas.length - preConsultas.length;
   let icon = `trending_flat`;
@@ -296,6 +297,7 @@ const loadCommitted = (consultas, date) => {
   .filter(v => 
     v.fechaAbandonoCompromiso
     && moment(v.fechaAbandonoCompromiso).month() === moment(date).subtract(1, 'months').month()
+    && moment(v.fechaAbandonoCompromiso).year() === moment(date).subtract(1, 'months').year()
   );
   consultas = consultas
   .filter(v => 

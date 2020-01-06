@@ -84,7 +84,10 @@ async function getNewMessages(cb) {
   const newMessages = await fetchData({
     endpoint: api.mensajes.findBy,
     params: {
-      target: miAnonimo._id,
+      sender_ne: miAnonimo._id,
+      sender_null: false,
+      target_null: true,
+      seen_at_null: true,
       _id_nin: alreadyNotified,
     }
   });
@@ -107,15 +110,16 @@ async function getNewMessages(cb) {
         return 0;
       });
       for (const message of notifyMessages) {
-        
-        if (currentId && currentId === message.sender._id) {
-          renderReceivedMessage(message);
-        } else {
-          if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(message.sender._id.split("")[0])) {
-            selector = `#\\3${message.sender._id.split("")[0]} ${message.sender._id.substring(1, message.sender._id.length)}`;
+        if (message.sender) {
+          if (currentId && currentId === message.sender._id) {
+            renderReceivedMessage(message);
+          } else {
+            if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(message.sender._id.split("")[0])) {
+              selector = `#\\3${message.sender._id.split("")[0]} ${message.sender._id.substring(1, message.sender._id.length)}`;
+            }
+            document.querySelector(selector).classList.add('hasMessages');
+            alreadyNotified.push(message._id);
           }
-          document.querySelector(selector).classList.add('hasMessages');
-          alreadyNotified.push(message._id);
         }
       }
     } else {
@@ -124,7 +128,7 @@ async function getNewMessages(cb) {
       if (notifyMessages.length === 1) {
         body = `Tienes un nuevo mensaje de ${notifyMessages[0].sender_default_name}`;
       } else {
-        const senders = notifyMessages.map(v => v.sender.pseudonimo).filter((v,i,a) => a.indexOf(v,i+1)<0);
+        const senders = notifyMessages.filter(v => v.sender).map(v => v.sender.pseudonimo ? v.sender.pseudonimo : v.sender.id).filter((v,i,a) => a.indexOf(v,i+1)<0);
         if (senders.length === 1) {
           from = senders[0];
         }
@@ -149,14 +153,14 @@ async function getNewMessages(cb) {
         }
       }
       const options = {
-          onclick,
-          icon: `${location.host}/favicon-16x16.png`,
-          body,
-          data: {
-            url: `${location.host}/chat`,
-            to: notifyMessages[0].sender._id
-          }
+        onclick,
+        icon: `${location.host}/favicon-16x16.png`,
+        body,
+        data: {
+          url: `${location.host}/chat`,
+          to: notifyMessages[0].sender ? notifyMessages[0].sender._id : ''
         }
+      }
       
       
       for (const mensaje of notifyMessages) {
