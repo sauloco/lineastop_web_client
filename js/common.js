@@ -85,13 +85,12 @@ async function getNewMessages(cb) {
     endpoint: api.mensajes.findBy,
     params: {
       sender_ne: miAnonimo._id,
-      sender_null: false,
       target_null: true,
       seen_at_null: true,
       _id_nin: alreadyNotified,
     }
   });
-  const notifyMessages = newMessages.filter(m => !m.seen_at);
+  const notifyMessages = newMessages.filter(m => !m.seen_at && m.sender !== null);
   if (notifyMessages.length) {
     if (location.href.indexOf("chat") >= 0) {
       if (!anonimosLoaded) {

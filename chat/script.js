@@ -202,7 +202,7 @@ async function cargarHistorial(elemento) {
   const mensajesEnviados = await fetchData({
     endpoint: api.mensajes.findBy,
     params: {
-      sender: miAnonimo._id, // string, id del usuario que tiene iniciada la sesión
+      // sender: miAnonimo._id, // string, id del usuario que tiene iniciada la sesión
       target: elemento.id // string, id usuario seleccionado en la barra lateral
     }
   });
@@ -287,7 +287,7 @@ async function renderSentMessage(mensaje, startSeenListener = true) {
 
   let mensajehtml = `<div class="col s10 offset-s2" id= "${_id}">
                   <div class="card-panel light-blue lighten-4">
-                    <div class="name">Tu</div>
+                    <div class="name">${sender._id === miAnonimo._id ? 'Tú' : (sender_default_name || sender.pseudonimo)}</div>
                     <div class="mensaje">${body}</div>
                     <div class= "estatus">
                       <time datetime = "${fecha}" title="${displayDateTime(
