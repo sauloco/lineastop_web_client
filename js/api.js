@@ -4,7 +4,7 @@ const API_production = 'https://hcdigital.herokuapp.com';
 const API_staging = 'https://stag-lineastop.herokuapp.com';
 const API_development = 'http://localhost:1337';
 
-const BASE_URI = API_staging;
+const BASE_URI = API_production;
 
 if (BASE_URI === API_production) {
   let sentryScript = document.createElement('script');
