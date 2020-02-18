@@ -1,4 +1,10 @@
 const DATE_FORMAT_ES = 'DD/MM/YYYY';
+let timeUpdater;
+
+if (moment) {
+  moment.locale('es');
+}
+
 
 /**
  * Por defecto inicializa todos los datepickers en español y con el formato adecuado
@@ -44,6 +50,10 @@ const displayDate = (normalizedDate) => {
   return moment(new Date(normalizedDate)).format('DD/MM/YYYY');
 };
 
+const displayDateTime = (normalizedDate) => {
+  return moment(new Date(normalizedDate)).format('DD/MM/YYYY hh:mm:ss');
+};
+
 const normalizeDate = (displayedDate) => {
   return moment(displayedDate, 'DD/MM/YYYY').toString(); 
 }
@@ -75,3 +85,17 @@ const humanReadableDate = (date) => {
 const initOfToday = () => {
   return moment().startOf('day');
 }
+
+function updateRelativeTimes() {
+  const times = document.querySelectorAll('time');
+  for (const time of times) {
+    time.innerHTML = moment(time.getAttribute('datetime')).fromNow();
+  }
+}
+
+function startTimeUpdater() {
+  if (document.querySelectorAll('time').length) {
+    timeUpdater = setInterval(updateRelativeTimes, 60 * 1000);
+  }
+}
+startTimeUpdater();

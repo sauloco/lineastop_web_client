@@ -4,7 +4,7 @@ const API_production = 'https://hcdigital.herokuapp.com';
 const API_staging = 'https://stag-lineastop.herokuapp.com';
 const API_development = 'http://localhost:1337';
 
-const BASE_URI = API_production;
+const BASE_URI = API_staging;
 
 if (BASE_URI === API_production) {
   let sentryScript = document.createElement('script');
@@ -85,9 +85,6 @@ const apiDefaultErrorController = ({endpoint, error}) => {
  */
 
 const getPromise = ({endpoint, params, token}) => {
-  
-  
-
   let {location, method, url_params, contentType} = endpoint;
   if (location.split('')[0] !== '/'){
     location = `/${location}`;
@@ -128,7 +125,16 @@ const getPromise = ({endpoint, params, token}) => {
             keys = Object.keys(params);
           }
           for (const key of keys) {
-            location += `${key}=${encodeURIComponent(params[key])}&`;
+            if (key.endsWith('_in') || key.endsWith('_nin')) {
+              const values = params[key];
+              if (values.length) {
+                for (const value of params[key]) {
+                  location += `${key}=${encodeURIComponent(value)}&`;
+                }
+              }
+            } else {
+              location += `${key}=${encodeURIComponent(params[key])}&`;
+            }
           }
           location = location.substr(0, location.length-1);
         }
@@ -249,6 +255,62 @@ const api = {
       method: 'DELETE',
       location: 'personas',
       url_params: [':_id'],
+    }
+  },
+  anonimos: {
+    all: {
+      location: 'anonimos/'
+    },
+    count: {
+      location: 'anonimos/count',
+    },
+    get: {
+      location: 'anonimos',
+      url_params: [':_id']
+    },
+    create: {
+      method: 'POST',
+      location: 'anonimos',
+      middlewareActions: [addCreationUser, addUpdatingUser]
+    },
+    delete: {
+      method: 'DELETE',
+      location: 'anonimos',
+      url_params: [':_id']
+    },
+    findBy: {
+      location: 'anonimos',
+    }
+  },
+  mensajes: {
+    all: {
+      location: 'mensajes/',
+    },
+    count: {
+      location: 'mensajes/count',
+    },
+    get: {
+      location: 'mensajes',
+      url_params: [':_id']
+    },
+    create: {
+      method: 'POST',
+      location: 'mensajes',
+      middlewareActions: [addCreationUser, addUpdatingUser]
+    },
+    update: {
+      method: 'PUT',
+      location: 'mensajes',
+      url_params: [':_id'],
+      middlewareActions: [addUpdatingUser]
+    },
+    delete: {
+      method: 'DELETE',
+      location: 'mensajes',
+      url_params: [':_id']
+    },
+    findBy: {
+      location: 'mensajes',
     }
   },
   consultas: {

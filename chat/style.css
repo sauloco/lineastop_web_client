@@ -5,6 +5,11 @@ body{
     height: calc(100vh - 64px);
     margin-bottom: 0;
 }
+.panel-izquierda{
+    position: relative;
+    height: 100%;
+    overflow: auto;
+}
 .panel-derecha{
     position: relative;
     height: 100%;
@@ -12,6 +17,7 @@ body{
 }
 .titulo{
     padding: 15px !important;
+    font-weight: 700;
 }
 .no-margin{
     margin: 0;
@@ -41,4 +47,16 @@ body{
     height: 100%;
     position: absolute;
     padding-top: 1.5rem;
+}
+.icon-position {
+    float: right;
+    line-height: 1em;
+    font-size: 0.8em;
+}
+.name {
+    font-weight: 200;
+    color: #747272;
+}
+.hasMessages {
+    font-weight: 700 !important;
 }
