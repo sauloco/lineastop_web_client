@@ -152,9 +152,9 @@ $(document).ready(() =>{
   
   R.s.add({model: 'Persona', key: 'convivienteFuma', callback: ({prevModel, model}) => {
     if (model.convivienteFuma) {
-      $('#convivienteQuienFuma').removeClass('hide');
+      $('#convivienteQuienFumaWrapper').removeClass('hide');
     } else {
-      $('#convivienteQuienFuma').addClass('hide');
+      $('#convivienteQuienFumaWrapper').addClass('hide');
     }
   }});
   
