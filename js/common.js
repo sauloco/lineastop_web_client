@@ -57,7 +57,7 @@ const emptyCookies = () => {
 
 let yo;
 let miAnonimo;
-document.addEventListener("DOMContentLoaded", startMessagesListener);
+// document.addEventListener("DOMContentLoaded", startMessagesListener);
 let alreadyNotified = [];
 
 let messagesListener;
