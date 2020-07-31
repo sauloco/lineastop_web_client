@@ -60,3 +60,22 @@ body{
 .hasMessages {
     font-weight: 700 !important;
 }
+.imageChat {
+    max-height: 300px;
+    object-fit: contain;
+
+}
+.card-image {
+    text-align: center;
+    background-color: black;
+    cursor: pointer;
+}
+
+.fullscreenImage {
+    height: 58vh;
+    background-color: black;
+
+}
+.modal-content {
+    text-align: center;
+}

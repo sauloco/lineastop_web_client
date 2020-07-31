@@ -1,6 +1,13 @@
 document.querySelector("#button-enviar").addEventListener("click", enviar);
 document.querySelector("#textarea1").addEventListener("keyup", onEnter);
 document.addEventListener("DOMContentLoaded", getAllAnonimos);
+document.addEventListener("DOMContentLoaded", initModal);
+
+
+function initModal() {
+  const elems = document.querySelectorAll('.modal');
+  const instances = M.Modal.init(elems, {});
+}
 
 let currentTargetAnonimo;
 
@@ -13,6 +20,16 @@ function onEnter(event) {
     event.preventDefault();
     enviar();
   }
+}
+
+function openModal(target) {
+  const modalEl = document.querySelector('#imageVisor');
+  const imageEl = modalEl.querySelector('img');
+  const originEl = target.querySelector('img');
+  imageEl.src = originEl.src;
+
+  const modal = M.Modal.getInstance(modalEl);
+  modal.open();
 }
 
 async function enviar() {
@@ -246,6 +263,7 @@ async function cargarHistorial(elemento) {
   if (!timeUpdater) {
     startTimeUpdater();
   }
+  
 }
 
 async function renderSentMessage(mensaje, startSeenListener = true) {
@@ -264,7 +282,8 @@ async function renderSentMessage(mensaje, startSeenListener = true) {
     sender,
     target,
     response,
-    attachments
+    attachments,
+    image
   } = mensaje;
   let fecha = moment(created_at).toISOString();
   let readableDate = moment(created_at).fromNow();
@@ -275,7 +294,7 @@ async function renderSentMessage(mensaje, startSeenListener = true) {
     readableDate = moment(sent_at).fromNow();
     icon = "done";
   }
-  clase = "";
+  let clase = "";
   if (seen_at) {
     clase = "blue-text";
     icon = "done_all";
@@ -284,21 +303,26 @@ async function renderSentMessage(mensaje, startSeenListener = true) {
       addSeenListener(_id);
     }
   }
+  const imageHTML = `<div class="card-image" onClick = "openModal(this)">
+                      <img class="imageChat" src = "data:image/png;charset=utf-8;base64,${image}"/>
+                    </div>`;
 
-  let mensajehtml = `<div class="col s10 offset-s2" id= "${_id}">
+  let mensajehtml = `<div class = "row">
+                <div class="col s10 m8 l6 offset-s2 offset-m4 offset-l6" id= "${_id}">
+                  <div class="name">${sender._id === miAnonimo._id ? 'Tú' : (sender_default_name || sender.pseudonimo)}</div>                
+                  ${!!image ? imageHTML : ''}
                   <div class="card-panel light-blue lighten-4">
-                    <div class="name">${sender._id === miAnonimo._id ? 'Tú' : (sender_default_name || sender.pseudonimo)}</div>
                     <div class="mensaje">${body}</div>
                     <div class= "estatus">
-                      <time datetime = "${fecha}" title="${displayDateTime(
-    fecha
-  )}">${readableDate}</time>
+                      <time datetime = "${fecha}" title="${displayDateTime(fecha)}">${readableDate}</time>
                       <i class="material-icons tiny ${clase}">${icon}</i>
                     </div>
                   </div>
+                </div>
               </div>`;
   document.querySelector(".message-wrapper").innerHTML += mensajehtml;
   document.querySelector('.message-wrapper').scrollTop = document.querySelector('.message-wrapper').scrollHeight;
+  
 }
 
 async function renderReceivedMessage(mensaje) {
@@ -313,7 +337,8 @@ async function renderReceivedMessage(mensaje) {
     sender,
     target,
     response,
-    attachments
+    attachments,
+    image
   } = mensaje;
   let fecha = moment(created_at).toISOString();
   let readableDate = moment(created_at).fromNow();
@@ -335,17 +360,24 @@ async function renderReceivedMessage(mensaje) {
       name = `${currentTargetAnonimo.persona.apellido} ${currentTargetAnonimo.persona.nombre}`;
     }
   }
+  const imageHTML = `<div class="card-image"  onClick = "openModal(this)">
+                      <img class="imageChat" src = "data:image/png;charset=utf-8;base64,${image}"/>
+                    </div>`;
 
-  let mensajehtml = `<div class="col s10" id= "${_id}">
-                  <div class="card-panel white">
-                    <div class="name">${name}</div>
-                    <div class="mensaje">${body}</div>
-                    <div class= "estatus">
-                      <time datetime = "${fecha}" title="${displayDateTime(
-    fecha
-  )}">${readableDate}</time>
+  let mensajehtml = `<div class = "row">
+                <div class="col s10 m8 l6" id= "${_id}">
+                    <div class="card-panel white">
+                  <div class="name">${name}</div>
+                    ${!!image ? imageHTML : ''}
+                    <div class="card-content">
+                      
+                      <div class="mensaje">${body}</div>
+                      <div class= "estatus">
+                        <time datetime = "${fecha}" title="${displayDateTime(fecha)}">${readableDate}</time>
+                      </div>
                     </div>
                   </div>
+                </div>
               </div>`;
   document.querySelector(".message-wrapper").innerHTML += mensajehtml;
   document.querySelector('.message-wrapper').scrollTop = document.querySelector('.message-wrapper').scrollHeight;
