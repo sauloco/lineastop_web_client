@@ -14,7 +14,7 @@ let BIRTHDAYS = [];
 let MONTHVERSARIES = []
 
 const getConsultas = async () => {
-  const consultas = await fetchData({endpoint: api.consultas.all});
+  const consultas = await fetchData({endpoint: api.consultas.all, params: {_sort: "fecha:asc"}});
   if (consultas.error) {
     return api.common.errorHandler({endpoint: api.consultas.all, consultas});
   }
@@ -27,7 +27,7 @@ const getConsultas = async () => {
     safeDateTime = moment(safeDate.datetime);
   } catch (e) {
     safeDateTime = moment();
-    console.warn(`Response not found from ${timeServerURI}, unsafe date got from the client.`);
+    console.warn(`Response not found from ${timeServerURI}, unsafe date got from the client.`, e.message);
     M.toast({html: 'Ocurrió un error conectando con el servidor de horario, asegúrese que el horario de su dispositivo sea correcto antes de continuar.'});
   }
   

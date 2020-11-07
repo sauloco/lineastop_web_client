@@ -1,5 +1,6 @@
 body{
     height: 100vh;
+    overflow: hidden;
 }
 .wrapper{
     height: calc(100vh - 64px);
@@ -23,7 +24,7 @@ body{
     margin: 0;
 }
 .message-wrapper{
-    height: calc(100% - 140px);
+    height: calc(100vh - 180px);
     overflow: auto;
     padding-bottom: 20px;
 }

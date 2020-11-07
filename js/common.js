@@ -57,20 +57,34 @@ const emptyCookies = () => {
 
 let yo;
 let miAnonimo;
-// document.addEventListener("DOMContentLoaded", startMessagesListener);
+document.addEventListener("DOMContentLoaded", startMessagesListener);
 let alreadyNotified = [];
 
 let messagesListener;
-function startMessagesListener() {
-  messagesListener = setInterval(getNewMessages, 5 * 1000);
-}
-
-async function getNewMessages(cb) {
+async function startMessagesListener() {
   if (!yo) {
     yo = await fetchData({
       endpoint: api.users.me
     });
+    if (!yo || yo.error) {
+      return false;
+    }
   }
+  
+  messagesListener = setInterval(getNewMessages, 5 * 1000);
+}
+
+async function getNewMessages() {
+  
+  if (!yo) {
+    yo = await fetchData({
+      endpoint: api.users.me
+    });
+    if (yo.statusCode !== 200) {
+      return false;
+    }
+  }
+
   if (!miAnonimo) {
     const misAnonimos = await fetchData({
       endpoint: api.anonimos.findBy,
@@ -113,10 +127,21 @@ async function getNewMessages(cb) {
           if (currentId && currentId === message.sender._id) {
             renderReceivedMessage(message);
           } else {
+            let selector = message.sender._id;
             if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(message.sender._id.split("")[0])) {
               selector = `#\\3${message.sender._id.split("")[0]} ${message.sender._id.substring(1, message.sender._id.length)}`;
             }
-            document.querySelector(selector).classList.add('hasMessages');
+            let anonItem = document.querySelector(selector);
+            if (!anonItem) {
+              createNewAnonItem(message.sender);  
+              anonItem = document.querySelector(selector);
+            }
+            const anonWrapper = anonItem.parentNode;
+            anonItem.classList.add('hasMessages');
+            if (anonWrapper.children.length) { 
+              anonWrapper.insertBefore(anonItem, anonWrapper.children[0]);
+            }
+            
             alreadyNotified.push(message._id);
           }
         }
@@ -172,7 +197,7 @@ async function getNewMessages(cb) {
       if (Notification.permission === "granted") {
         sendNotification(title, options);
       } else {
-        Notification.requestPermission().then(function(permission) {
+        Notification.requestPermission().then(function() {
           sendNotification(title, options);
         });
       }

@@ -25,7 +25,7 @@ function onEnter(event) {
 function openModal(target) {
   const modalEl = document.querySelector('#imageVisor');
   const imageEl = modalEl.querySelector('img');
-  const originEl = target.querySelector('img');
+  const originEl = target.tagName === 'IMG' ? target : target.querySelector('img');
   imageEl.src = originEl.src;
 
   const modal = M.Modal.getInstance(modalEl);
@@ -98,10 +98,11 @@ function getNombreDeAnonimo(anonimo) {
     ? `${anonimo.persona.apellido} ${anonimo.persona.nombre}`
     : anonimo.user
     ? anonimo.user.username
-    : (anonimo.pseudonimo || anonimo.id);
+    : (anonimo.pseudonimo || `zz_${ anonimo.id }`);
 }
 
 async function getAllAnonimos() {
+  showLoader();
   let length = await fetchData({
     endpoint: api.anonimos.count
   });
@@ -135,6 +136,7 @@ async function getAllAnonimos() {
       endpoint: api.anonimos.all,
       anonimos
     });
+    document.querySelector(".message-wrapper").innerHTML = '';
     return;
   }
 
@@ -151,10 +153,9 @@ async function getAllAnonimos() {
     }
     return 0;
   });
+  
   for (const anonimo of anonimos) {
-    const fullname = getNombreDeAnonimo(anonimo);
-    let anonimohtml = `<a id="${anonimo._id}" href="#!" class="collection-item" onclick="cargarHistorial(this)" >${fullname}</a>`;
-    document.querySelector(".collection").innerHTML += anonimohtml;
+    createNewAnonItem(anonimo);
   }
 
   const url = new URL(location.href);
@@ -173,6 +174,22 @@ async function getAllAnonimos() {
     cargarHistorial(document.querySelector(selector));
   }
   anonimosLoaded = true;
+  document.querySelector(".message-wrapper").innerHTML = '';
+}
+function createNewAnonItem(anonimo) {
+  const fullname = getNombreDeAnonimo(anonimo).split('zz_').join('');
+  const imagen = anonimo.imagen
+    ? `<img src="data:image/png;charset=utf-8;base64,${decodeURIComponent(anonimo.imagen)}" alt="${fullname}" title="${fullname}" onClick = "clickImage(this)" class="circle" width="50px" height = "50px"></img>`
+    : '';
+  const anonimohtml = `<li id = "${anonimo._id}" class="collection-item avatar" onclick="cargarHistorial(this)">
+      ${imagen}
+      <span class="title">${fullname}</span>
+    </li>`;
+  document.querySelector(".collection").innerHTML += anonimohtml;
+}
+
+function clickImage(target) {
+  openModal(target);
 }
 
 async function cargarHistorial(elemento) {
@@ -187,10 +204,7 @@ async function cargarHistorial(elemento) {
   elemento.classList.remove('hasMessages');
   document.querySelector("#textarea1").setAttribute("disabled", "disabled");
   document.querySelector("#button-enviar").classList.add("disabled");
-  const loader = `  <div class="progress">
-                          <div class="indeterminate"></div>
-                      </div>`;
-  document.querySelector(".message-wrapper").innerHTML = loader;
+  showLoader();
 
   document.querySelector(
     ".titulo"
@@ -266,6 +280,13 @@ async function cargarHistorial(elemento) {
   
 }
 
+function showLoader() {
+  const loader = `  <div class="progress">
+                          <div class="indeterminate"></div>
+                      </div>`;
+  document.querySelector(".message-wrapper").innerHTML = loader;
+}
+
 async function renderSentMessage(mensaje, startSeenListener = true) {
   const noMessage = document.querySelector(".no-message");
   if (noMessage) {
@@ -308,7 +329,7 @@ async function renderSentMessage(mensaje, startSeenListener = true) {
                     </div>`;
 
   let mensajehtml = `<div class = "row">
-                <div class="col s10 m8 l6 offset-s2 offset-m4 offset-l6" id= "${_id}">
+                <div class="col s10 m8 l6 offset-s2 offset-m4 offset-l5" id= "${_id}">
                   <div class="name">${sender._id === miAnonimo._id ? 'Tú' : (sender_default_name || sender.pseudonimo)}</div>                
                   ${!!image ? imageHTML : ''}
                   <div class="card-panel light-blue lighten-4">
@@ -365,7 +386,7 @@ async function renderReceivedMessage(mensaje) {
                     </div>`;
 
   let mensajehtml = `<div class = "row">
-                <div class="col s10 m8 l6" id= "${_id}">
+                <div class="col s10 m8 l6 offset-l1" id= "${_id}">
                     <div class="card-panel white">
                   <div class="name">${name}</div>
                     ${!!image ? imageHTML : ''}
@@ -384,6 +405,7 @@ async function renderReceivedMessage(mensaje) {
 }
 
 async function setSeen(mensaje) {
+  debugger
   const seenMessage = await fetchData({
     endpoint: api.mensajes.update,
     params: { _id: mensaje._id, seen_at: normalizeDate(new Date()) }
