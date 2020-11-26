@@ -68,7 +68,7 @@ async function enviar() {
       temp_id: fecha.getTime(),
       body,
       created_at: normalizeDateTime(fechaTexto),
-      sender_default_name: yo.username,
+      sender_default_name: miAnonimo.pseudonimo || yo.username,
       target_default_name: document.querySelector(".titulo").innerHTML, //nombre recibe
       sent_at: normalizeDateTime(fechaTexto),
       sender: miAnonimo._id,
