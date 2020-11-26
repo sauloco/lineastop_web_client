@@ -405,8 +405,7 @@ async function renderReceivedMessage(mensaje) {
 }
 
 async function setSeen(mensaje) {
-  debugger
-  const seenMessage = await fetchData({
+  await fetchData({
     endpoint: api.mensajes.update,
     params: { _id: mensaje._id, seen_at: normalizeDate(new Date()) }
   });
