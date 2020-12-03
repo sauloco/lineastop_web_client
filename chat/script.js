@@ -2,6 +2,26 @@ document.querySelector("#button-enviar").addEventListener("click", enviar);
 document.querySelector("#textarea1").addEventListener("keyup", onEnter);
 document.addEventListener("DOMContentLoaded", getAllAnonimos);
 document.addEventListener("DOMContentLoaded", initModal);
+document.querySelector(".autocomplete").addEventListener("change", onSearch);
+
+let ANONIMOS = {};
+
+function onSearch(e) {
+  const { target } = e;
+  const { value } = target;
+  if (ANONIMOS[value]) {
+    const to = ANONIMOS[value];
+    let selector = `#${to}`;
+    if (
+      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(
+        to[0]
+      )
+    ) {
+      selector = `#\\3${to.split("")[0]} ${to.substring(1, to.length)}`;
+    }
+    cargarHistorial(document.querySelector(selector));
+  }
+}
 
 
 function initModal() {
@@ -56,7 +76,7 @@ async function enviar() {
 
   document.querySelector("#textarea1").value = "";
   M.textareaAutoResize($("#textarea1"));
-  const sentMessageHtml = await renderSentMessage({
+  const sentMessageHtml = renderSentMessage({
     created_at: fecha,
     body,
     _id: `m_${fecha.getTime()}`,
@@ -162,7 +182,9 @@ async function getAllAnonimos() {
     tempHtml += createNewAnonItem(anonimo);
   }
   document.querySelector(".collection").innerHTML = tempHtml;
-
+  $('input.autocomplete').autocomplete({
+    data: autocompleteData
+  });
 
   const url = new URL(location.href);
   const to = url.searchParams.get("to");
@@ -180,17 +202,25 @@ async function getAllAnonimos() {
     cargarHistorial(document.querySelector(selector));
   }
   anonimosLoaded = true;
+  
   document.querySelector(".message-wrapper").innerHTML = '';
 }
+let autocompleteData = {};
 function createNewAnonItem(anonimo) {
   const fullname = getNombreDeAnonimo(anonimo).split('zz_').join('');
   const imagen = anonimo.imagen
-    ? `<img src="data:image/png;charset=utf-8;base64,${decodeURIComponent(anonimo.imagen)}" alt="${fullname}" title="${fullname}" onClick = "clickImage(this)" class="circle" width="50px" height = "50px"></img>`
+    ? `<img src="data:image/png;charset=utf-8;base64,${decodeURIComponent(anonimo.imagen)}" alt="${fullname}" title="${fullname}" onClick = "clickImage(this)" class="circle" height = "50px"></img>`
+    : '';
+  const correo = anonimo.email
+    ? `<br><span><a href = "mailto:${anonimo.email}">${anonimo.email}</a></span>`
     : '';
   const anonimohtml = `<li id = "${anonimo._id}" class="collection-item avatar" onclick="cargarHistorial(this)">
       ${imagen}
       <span class="title">${fullname}</span>
+      ${correo}
     </li>`;
+  autocompleteData[fullname] = null;
+  ANONIMOS[fullname] = anonimo._id;
   return anonimohtml;
 }
 
@@ -256,6 +286,7 @@ async function cargarHistorial(elemento) {
       anonimo: elemento.id
     }
   });
+  alreadyResponses = respuestas.map(v => v._id);
   const receivedItems = mensajesEnviados.concat(mensajesRecibidos).concat(respuestas);
   receivedItems.sort(function(a, b) {
     const fechaA = a.created_at || a.createdAt;
@@ -273,9 +304,9 @@ async function cargarHistorial(elemento) {
     document.querySelector(".message-wrapper").innerHTML = ``;
     for (const item of receivedItems) {
       if (item.target && item.target._id === elemento.id) {
-        tempHtml += await renderSentMessage(item);
+        tempHtml += renderSentMessage(item);
       } else {
-        tempHtml += await renderReceivedItem(item);
+        tempHtml += renderReceivedItem(item);
       }
     }
     document.querySelector(".message-wrapper").innerHTML = tempHtml;
@@ -302,7 +333,7 @@ function showLoader() {
   document.querySelector(".message-wrapper").innerHTML = loader;
 }
 
-async function renderSentMessage(mensaje, startSeenListener = true) {
+function renderSentMessage(mensaje, startSeenListener = true) {
   const noMessage = document.querySelector(".no-message");
   if (noMessage) {
     noMessage.style.display = "none";
@@ -360,7 +391,7 @@ async function renderSentMessage(mensaje, startSeenListener = true) {
   
 }
 
-async function renderReceivedItem(item) {
+function renderReceivedItem(item) {
   if (item.responses_csv) {
     return renderReceivedRespuesta(item);
   } else {
@@ -372,7 +403,7 @@ function capitalize(s) {
   return s[0].toUpperCase() + s.slice(1);
 }
 
-async function renderReceivedRespuesta(respuesta) {
+function renderReceivedRespuesta(respuesta) {
 
   const {
     _id,
@@ -412,7 +443,7 @@ async function renderReceivedRespuesta(respuesta) {
   return mensajehtml;
 }
 
-async function renderReceivedMessage(mensaje) {
+function renderReceivedMessage(mensaje) {
   const {
     created_at,
     body,

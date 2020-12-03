@@ -20,11 +20,33 @@ body{
     padding: 15px !important;
     font-weight: 700;
 }
+
+.collection .collection-item.active {
+    background-color: #0D47A1;
+    color: #eafaf9;
+}
+
+.collection .collection-item.active a {
+    color: #eafaf9;
+}
+
+
+
+.titulo img {
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    vertical-align: middle;
+    float: left;
+}
+.titulo span {
+    padding-left: 10px;
+}
 .no-margin{
     margin: 0;
 }
 .message-wrapper{
-    height: calc(100vh - 180px);
+    height: calc(100vh - 200px);
     overflow: auto;
     padding-bottom: 20px;
 }
