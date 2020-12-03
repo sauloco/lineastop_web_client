@@ -56,12 +56,16 @@ async function enviar() {
 
   document.querySelector("#textarea1").value = "";
   M.textareaAutoResize($("#textarea1"));
-  await renderSentMessage({
+  const sentMessageHtml = await renderSentMessage({
     created_at: fecha,
     body,
     _id: `m_${fecha.getTime()}`,
     sender: miAnonimo
   }, false);
+
+  document.querySelector(".message-wrapper").innerHTML += sentMessageHtml;
+  document.querySelector('.message-wrapper').scrollTop = document.querySelector('.message-wrapper').scrollHeight;
+  
   const mensaje = await fetchData({
     endpoint: api.mensajes.create,
     params: {
@@ -153,10 +157,12 @@ async function getAllAnonimos() {
     }
     return 0;
   });
-  
+  let tempHtml = '';
   for (const anonimo of anonimos) {
-    createNewAnonItem(anonimo);
+    tempHtml += createNewAnonItem(anonimo);
   }
+  document.querySelector(".collection").innerHTML = tempHtml;
+
 
   const url = new URL(location.href);
   const to = url.searchParams.get("to");
@@ -185,7 +191,7 @@ function createNewAnonItem(anonimo) {
       ${imagen}
       <span class="title">${fullname}</span>
     </li>`;
-  document.querySelector(".collection").innerHTML += anonimohtml;
+  return anonimohtml;
 }
 
 function clickImage(target) {
@@ -243,10 +249,17 @@ async function cargarHistorial(elemento) {
       sender: elemento.id, // string, id usuario seleccionado en la barra lateral
     }
   });
-  const mensajes = mensajesEnviados.concat(mensajesRecibidos);
-  mensajes.sort(function(a, b) {
-    const fechaA = a.created_at;
-    const fechaB = b.created_at;
+
+  const respuestas = await fetchData({
+    endpoint: api.respuestas.findBy,
+    params: {
+      anonimo: elemento.id
+    }
+  });
+  const receivedItems = mensajesEnviados.concat(mensajesRecibidos).concat(respuestas);
+  receivedItems.sort(function(a, b) {
+    const fechaA = a.created_at || a.createdAt;
+    const fechaB = b.created_at || b.createdAt;
     if (fechaA > fechaB) {
       return 1;
     }
@@ -255,16 +268,18 @@ async function cargarHistorial(elemento) {
     }
     return 0;
   });
-
-  if (mensajes.length) {
+  let tempHtml = '';
+  if (receivedItems.length) {
     document.querySelector(".message-wrapper").innerHTML = ``;
-    for (const mensaje of mensajes) {
-      if (mensaje.target && mensaje.target._id === elemento.id) {
-        await renderSentMessage(mensaje);
+    for (const item of receivedItems) {
+      if (item.target && item.target._id === elemento.id) {
+        tempHtml += await renderSentMessage(item);
       } else {
-        await renderReceivedMessage(mensaje);
+        tempHtml += await renderReceivedItem(item);
       }
     }
+    document.querySelector(".message-wrapper").innerHTML = tempHtml;
+    document.querySelector('.message-wrapper').scrollTop = document.querySelector('.message-wrapper').scrollHeight;
   } else {
     document.querySelector(
       ".message-wrapper"
@@ -341,9 +356,60 @@ async function renderSentMessage(mensaje, startSeenListener = true) {
                   </div>
                 </div>
               </div>`;
-  document.querySelector(".message-wrapper").innerHTML += mensajehtml;
-  document.querySelector('.message-wrapper').scrollTop = document.querySelector('.message-wrapper').scrollHeight;
+  return mensajehtml;
   
+}
+
+async function renderReceivedItem(item) {
+  if (item.responses_csv) {
+    return renderReceivedRespuesta(item);
+  } else {
+    return renderReceivedMessage(item);
+  }
+}
+
+function capitalize(s) {
+  return s[0].toUpperCase() + s.slice(1);
+}
+
+async function renderReceivedRespuesta(respuesta) {
+
+  const {
+    _id,
+    createdAt,
+    display_name,
+    responses_csv
+  } = respuesta;
+
+  let fecha = moment(createdAt).toISOString();
+  let readableDate = moment(createdAt).fromNow();
+  document.querySelector("#textarea1").value = "";
+  
+  let body = '';
+  for (const [key, value] of Object.entries(JSON.parse(responses_csv))) {
+    if (key === 'index') continue;
+    if (display_name === "Fecha de abandono") {
+      body = `${moment(value).format("DD/MM/YYYY")}. ${capitalize(moment(value).fromNow())}`; 
+    } else {
+      body = `${value}`;
+    }
+  }
+
+  let mensajehtml = `<div class = "row">
+                <div class="col s10 m8 l6 offset-l1" id= "${_id}">
+                    <div class="card-panel purple lighten-4">
+                  <div class="name">Respondió a la pregunta <b>${display_name}</b></div>
+                    <div class="card-content">
+                      
+                      <div class="mensaje">${body}</div>
+                      <div class= "estatus">
+                        <time datetime = "${fecha}" title="${displayDateTime(fecha)}">${readableDate}</time>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>`;
+  return mensajehtml;
 }
 
 async function renderReceivedMessage(mensaje) {
@@ -400,8 +466,7 @@ async function renderReceivedMessage(mensaje) {
                   </div>
                 </div>
               </div>`;
-  document.querySelector(".message-wrapper").innerHTML += mensajehtml;
-  document.querySelector('.message-wrapper').scrollTop = document.querySelector('.message-wrapper').scrollHeight;
+  return mensajehtml;
 }
 
 async function setSeen(mensaje) {

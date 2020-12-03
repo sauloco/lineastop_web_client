@@ -340,6 +340,21 @@ const api = {
       location: 'mensajes',
     }
   },
+  respuestas: {
+    all: {
+      location: 'respuestas/',
+    },
+    count: {
+      location: 'respuestas/count',
+    },
+    get: {
+      location: 'respuestas',
+      url_params: [':_id']
+    },
+    findBy: {
+      location: 'respuestas',
+    }
+  },
   consultas: {
     all: {
       location: 'consultas/'
