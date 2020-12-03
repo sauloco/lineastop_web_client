@@ -72,15 +72,15 @@ async function startMessagesListener() {
     }
   }
   
-  messagesListener = setInterval(manageInterval, 5 * 1000);
+  messagesListener = setInterval(intervalHandler, 5 * 1000);
 }
 
-async function manageInterval() {
+async function intervalHandler() {
   if (messagesListener) {
     clearInterval(messagesListener);
   }
   await getNewMessages();
-  messagesListener = setInterval(manageInterval, 5 * 1000);
+  messagesListener = setInterval(intervalHandler, 5 * 1000);
 }
 
 function sortItemByFechaCreacion(a, b) {
