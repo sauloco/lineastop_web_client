@@ -60,6 +60,7 @@ let miAnonimo;
 document.addEventListener("DOMContentLoaded", startMessagesListener);
 let alreadyNotified = [];
 let alreadyResponses = [];
+let historyReady = false;
 
 let messagesListener;
 async function startMessagesListener() {
@@ -126,7 +127,7 @@ async function getNewMessages() {
     }
   });
   const currentId = new URL(location.href).searchParams.get("to");
-  if (location.href.indexOf("chat") >= 0 && currentId) {
+  if (location.href.indexOf("chat") >= 0 && currentId && historyReady) {
     const newResponses = await fetchData({
       endpoint: api.respuestas.findBy,
       params: {

@@ -229,7 +229,9 @@ function clickImage(target) {
 }
 
 async function cargarHistorial(elemento) {
+  historyReady = false;
   if (Array.from(elemento.classList).includes("active")) {
+    historyReady = true;
     return;
   }
   const item = document.querySelector(".collection-item.active");
@@ -323,7 +325,7 @@ async function cargarHistorial(elemento) {
   if (!timeUpdater) {
     startTimeUpdater();
   }
-  
+  historyReady = true;
 }
 
 function showLoader() {
