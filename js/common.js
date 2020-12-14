@@ -117,6 +117,10 @@ async function getNewMessages() {
     miAnonimo = misAnonimos[0];
   }
 
+  if (!miAnonimo) {
+    return;
+  }
+
   const newMessages = await fetchData({
     endpoint: api.mensajes.findBy,
     params: {
