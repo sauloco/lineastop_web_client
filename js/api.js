@@ -16,6 +16,7 @@ let permanent_notification = `
 
 const BASE_URI = API_staging;
 
+
 if (BASE_URI === API_production) {
   let sentryScript = document.createElement('script');
   sentryScript.setAttribute('src',"https://browser.sentry-cdn.com/4.4.2/bundle.min.js");
