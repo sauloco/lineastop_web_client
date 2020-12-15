@@ -122,8 +122,15 @@ const hideExport = () => {
 const loadObject = async (location, data) => {
   if (!data) {
     endpoint = api[location]['all'];
+    let sort = "";
+    if (validExports[location]['sortedBy']) {
+      sort = validExports[location]['sortedBy'];
+    }
     data = await fetchData({
-      endpoint
+      endpoint,
+      params: {
+        _sort: sort
+      }
     });
     if (data.error) {
       api.common.errorHandler({endpoint, data});
@@ -403,8 +410,10 @@ const validExports = {
   },
   "users": {
     "displayName": "Usuarios",
+    "sortedBy": "username:asc",
     "searches": [
       { "field": "username", "caption": "Nombre", "type": "text" },
+      { "field": "alias", "caption": "Nombre", "type": "text" },
       { "field": "email", "caption": "Correo electrónico", "type": "text" },
       { "field": "confirmed", "caption": "Confirmado", "type": "enum", "options": {"items": ["true", "false"]}},
       { "field": "blocked", "caption": "Desactivado", "type": "enum", "options": {"items": ["true", "false"]}},
@@ -416,6 +425,7 @@ const validExports = {
           return `<a href = "/usuarios/?id=${record._id}">${record.username}</a>`;
         }
       },
+      { "field": "alias", "caption": "Alias", "size": "30%", "sortable": true},
       { "field": "role.name", "caption": "Rol", "size": "30%", "sortable": true},
       { "field": "email", "caption": "Correo electrónico", "size": "30%", "sortable": true},
       { "field": "confirmed", "caption": "Confirmado", "size": "40%", "render": "toggle", "sortable": true},
@@ -424,6 +434,7 @@ const validExports = {
   },
   "consultas": {
     "displayName": "Consultas",
+    "sortedBy": "fecha:asc",
     "preloader": preloaderConsultas,
     "searches": [
       { "field": "persona_apellido", "caption": "Apellido", "type": "text"},

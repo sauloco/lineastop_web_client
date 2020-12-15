@@ -57,20 +57,58 @@ const emptyCookies = () => {
 
 let yo;
 let miAnonimo;
-// document.addEventListener("DOMContentLoaded", startMessagesListener);
+document.addEventListener("DOMContentLoaded", startMessagesListener);
 let alreadyNotified = [];
+let alreadyResponses = [];
+let historyReady = false;
 
 let messagesListener;
-function startMessagesListener() {
-  messagesListener = setInterval(getNewMessages, 5 * 1000);
-}
-
-async function getNewMessages(cb) {
+async function startMessagesListener() {
   if (!yo) {
     yo = await fetchData({
       endpoint: api.users.me
     });
+    if (!yo || yo.error) {
+      return false;
+    }
   }
+  
+  messagesListener = setInterval(intervalHandler, 5 * 1000);
+}
+
+async function intervalHandler() {
+  if (messagesListener) {
+    clearInterval(messagesListener);
+  }
+  const keepAlive = await getNewMessages();
+  if (keepAlive) {
+    messagesListener = setInterval(intervalHandler, 5 * 1000);  
+  }
+}
+
+function sortItemByFechaCreacion(a, b) {
+  const fechaA = a.created_at || a.createdAt;
+  const fechaB = b.created_at || b.createdAt;
+  if (fechaA > fechaB) {
+    return 1;
+  }
+  if (fechaA < fechaB) {
+    return -1;
+  }
+  return 0;
+}
+
+async function getNewMessages() {
+  
+  if (!yo) {
+    yo = await fetchData({
+      endpoint: api.users.me
+    });
+    if (yo.statusCode !== 200) {
+      return false;
+    }
+  }
+
   if (!miAnonimo) {
     const misAnonimos = await fetchData({
       endpoint: api.anonimos.findBy,
@@ -79,6 +117,11 @@ async function getNewMessages(cb) {
       }
     });
     miAnonimo = misAnonimos[0];
+  }
+
+  if (!miAnonimo) {
+    M.toast({html: `No se encontró un usuario de la app Linea Stop. No se seguirá ejecutando el servicio de chat a tiempo real.`, displayLength: 4000});
+    return false;
   }
 
   const newMessages = await fetchData({
@@ -90,33 +133,53 @@ async function getNewMessages(cb) {
       _id_nin: alreadyNotified,
     }
   });
+  const currentId = new URL(location.href).searchParams.get("to");
+  if (location.href.indexOf("chat") >= 0 && currentId && historyReady) {
+    const newResponses = await fetchData({
+      endpoint: api.respuestas.findBy,
+      params: {
+        anonimo: currentId,
+        _id_nin: alreadyResponses || []
+      }
+    });
+    newResponses.sort(sortItemByFechaCreacion);
+    for (const response of newResponses) {
+      const tempHtml = renderReceivedItem(response);
+      document.querySelector(".message-wrapper").innerHTML += tempHtml;
+      document.querySelector('.message-wrapper').scrollTop = document.querySelector('.message-wrapper').scrollHeight;
+      alreadyResponses.push(response._id);
+    }
+  }
+
   const notifyMessages = newMessages.filter(m => !m.seen_at && m.sender !== null);
   if (notifyMessages.length) {
     if (location.href.indexOf("chat") >= 0) {
       if (!anonimosLoaded) {
-        return;
+        return true;
       }
-      const currentId = new URL(location.href).searchParams.get("to");
-      notifyMessages.sort(function(a, b) {
-        const fechaA = a.created_at;
-        const fechaB = b.created_at;
-        if (fechaA > fechaB) {
-          return 1;
-        }
-        if (fechaA < fechaB) {
-          return -1;
-        }
-        return 0;
-      });
+      notifyMessages.sort(sortItemByFechaCreacion);
       for (const message of notifyMessages) {
         if (message.sender) {
           if (currentId && currentId === message.sender._id) {
-            renderReceivedMessage(message);
+            const tempHtml = renderReceivedMessage(message);
+            document.querySelector(".message-wrapper").innerHTML += tempHtml;
+            document.querySelector('.message-wrapper').scrollTop = document.querySelector('.message-wrapper').scrollHeight;
           } else {
+            let selector = message.sender._id;
             if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(message.sender._id.split("")[0])) {
               selector = `#\\3${message.sender._id.split("")[0]} ${message.sender._id.substring(1, message.sender._id.length)}`;
             }
-            document.querySelector(selector).classList.add('hasMessages');
+            let anonItem = document.querySelector(selector);
+            if (!anonItem) {
+              createNewAnonItem(message.sender);  
+              anonItem = document.querySelector(selector);
+            }
+            const anonWrapper = anonItem.parentNode;
+            anonItem.classList.add('hasMessages');
+            if (anonWrapper.children.length) { 
+              anonWrapper.insertBefore(anonItem, anonWrapper.children[0]);
+            }
+            
             alreadyNotified.push(message._id);
           }
         }
@@ -172,12 +235,13 @@ async function getNewMessages(cb) {
       if (Notification.permission === "granted") {
         sendNotification(title, options);
       } else {
-        Notification.requestPermission().then(function(permission) {
+        Notification.requestPermission().then(function() {
           sendNotification(title, options);
         });
       }
     }
   }
+  return true;
 }
 
 function sendNotification(mensaje, options) {

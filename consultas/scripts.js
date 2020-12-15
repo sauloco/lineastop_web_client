@@ -611,7 +611,8 @@ const navigatorCreator = async () => {
   CONSULTAS = await fetchData({
     endpoint: api.consultas.findBy,
     params: {
-      persona: PERSONAS[Consulta.ingreseParaBuscar]
+      persona: PERSONAS[Consulta.ingreseParaBuscar],
+      _sort: 'fecha:asc'
     }
   });
   CONSULTAS = CONSULTAS.map(v => {

@@ -3,7 +3,8 @@ $(document).ready(() => {
   const url = new URL(location.href);
   const _id = url.searchParams.get('id');
   tablesCreator({
-    persona: _id
+    persona: _id,
+    _sort: "fecha:asc"
   });
   moment.locale('es');
 })

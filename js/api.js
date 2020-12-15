@@ -4,7 +4,18 @@ const API_production = 'https://hcdigital.herokuapp.com';
 const API_staging = 'https://stag-lineastop.herokuapp.com';
 const API_development = 'http://localhost:1337';
 
+let server_online = true;
+
+let permanent_notification = `
+<span id ="permanent_notification_503" style = "position: fixed; bottom: 0; left: 0; padding: 5px; background-color: red; border-radius: 0 5px 0 0;"> 
+  <b>⚠ El servidor se encuentra temporalmente fuera de linea.</b><br>Seguiremos reintentando y te notificaremos cuando volvamos a estar en línea...
+</span>
+`;
+
+
+
 const BASE_URI = API_production;
+
 
 if (BASE_URI === API_production) {
   let sentryScript = document.createElement('script');
@@ -70,8 +81,18 @@ const apiDefaultErrorController = ({endpoint, error}) => {
   if (typeof error === 'string') {
     showMessage = error;
   }
-  M.toast({html: `${showMessage}`, displayLength: 4000});
-  console.error('Error: ', error, 'At: ', endpoint, 'Displayed As: ', showMessage);
+  if (error.statusCode === 503) {
+    if (server_online) {
+      document.body.innerHTML += permanent_notification;
+      M.toast({html: `${showMessage}`, displayLength: 4000});
+      console.error('Error: ', error, 'At: ', endpoint, 'Displayed As: ', showMessage);
+      server_online = false;
+    }
+  } else {
+    M.toast({html: `${showMessage}`, displayLength: 4000});
+    console.error('Error: ', error, 'At: ', endpoint, 'Displayed As: ', showMessage);
+  }
+  
   return error;
 }
 
@@ -194,7 +215,14 @@ const fetchData = async ({endpoint, params, token, controlError}) => {
   let response = {};
   try {
     response = await getPromise({endpoint, params, token});
+    if (!server_online && response.status !== 503 ) {
+      M.toast({html: 'El servidor se encuentra en linea nuevamente.'});
+      server_online = true;
+      const elem = document.querySelector("#permanent_notification_503");
+      elem.parentNode.removeChild(elem);
+    }
     if ((response.status >= 200 && response.status < 300) || !controlError)  {
+      
       response = await response.json();
       return response;
     }
@@ -311,6 +339,21 @@ const api = {
     },
     findBy: {
       location: 'mensajes',
+    }
+  },
+  respuestas: {
+    all: {
+      location: 'respuestas/',
+    },
+    count: {
+      location: 'respuestas/count',
+    },
+    get: {
+      location: 'respuestas',
+      url_params: [':_id']
+    },
+    findBy: {
+      location: 'respuestas',
     }
   },
   consultas: {

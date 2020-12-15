@@ -1,23 +1,15 @@
 $(document).ready(function () {
 
-    $('#password').blur(activaIniciar)
+    $('#password').keypress(activaIniciar)
     $('#iniciar').click(iniciarSesion)
-    $('#registrar').click(registrarUsuario)
     $('#olvidar').click(olvideContrasena)
 
 });
 
-const activaIniciar = () => {
-
-    let password = $('#password').val();
-
-    if (!password) {
-        M.toast({
-            html: "La contraseña es obligatoria."
-        });
-        return
+const activaIniciar = (e) => {
+    if (e.keyCode === 13) {
+        return iniciarSesion();
     }
-    $('#iniciar').attr('disabled', false);
 }
 
 const iniciarSesion = async () => {
@@ -25,6 +17,16 @@ const iniciarSesion = async () => {
     const params = {
         identifier: $('#email').val(),
         password: $('#password').val()
+    }
+
+    if (!params.identifier && !params.password) {
+        return M.toast({html: 'El correo electrónico y la contraseña son obligatorios.'});
+    }
+    if (!params.identifier) {
+        return M.toast({html: 'El correo electrónico es obligatorio.'});
+    }
+    if (!params.identifier) {
+        return M.toast({html: 'La contraseña es obligatoria.'})
     }
 
     const data = await fetchData({
@@ -65,11 +67,6 @@ const iniciarSesion = async () => {
     validarToken();
 };
 
-const registrarUsuario = () => {
-
-    location.href = "/usuario/nuevo/";
-
-};
 const olvideContrasena = () => {
 
     const email = $('#email').val();
@@ -82,7 +79,7 @@ const olvideContrasena = () => {
     const params = {
         email
     }
-    const data = fetchData({
+    fetchData({
         endpoint: api.auth.forgotPassword,
         params
     });

@@ -1,5 +1,6 @@
 body{
     height: 100vh;
+    overflow: hidden;
 }
 .wrapper{
     height: calc(100vh - 64px);
@@ -19,11 +20,33 @@ body{
     padding: 15px !important;
     font-weight: 700;
 }
+
+.collection .collection-item.active {
+    background-color: #0D47A1;
+    color: #eafaf9;
+}
+
+.collection .collection-item.active a {
+    color: #eafaf9;
+}
+
+
+
+.titulo img {
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    vertical-align: middle;
+    float: left;
+}
+.titulo span {
+    padding-left: 10px;
+}
 .no-margin{
     margin: 0;
 }
 .message-wrapper{
-    height: calc(100% - 140px);
+    height: calc(100vh - 200px);
     overflow: auto;
     padding-bottom: 20px;
 }
@@ -59,4 +82,23 @@ body{
 }
 .hasMessages {
     font-weight: 700 !important;
+}
+.imageChat {
+    max-height: 300px;
+    object-fit: contain;
+
+}
+.card-image {
+    text-align: center;
+    background-color: black;
+    cursor: pointer;
+}
+
+.fullscreenImage {
+    height: 58vh;
+    background-color: black;
+
+}
+.modal-content {
+    text-align: center;
 }

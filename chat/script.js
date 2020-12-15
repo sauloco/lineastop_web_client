@@ -1,6 +1,33 @@
 document.querySelector("#button-enviar").addEventListener("click", enviar);
 document.querySelector("#textarea1").addEventListener("keyup", onEnter);
 document.addEventListener("DOMContentLoaded", getAllAnonimos);
+document.addEventListener("DOMContentLoaded", initModal);
+document.querySelector(".autocomplete").addEventListener("change", onSearch);
+
+let ANONIMOS = {};
+
+function onSearch(e) {
+  const { target } = e;
+  const { value } = target;
+  if (ANONIMOS[value]) {
+    const to = ANONIMOS[value];
+    let selector = `#${to}`;
+    if (
+      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(
+        to[0]
+      )
+    ) {
+      selector = `#\\3${to.split("")[0]} ${to.substring(1, to.length)}`;
+    }
+    cargarHistorial(document.querySelector(selector));
+  }
+}
+
+
+function initModal() {
+  const elems = document.querySelectorAll('.modal');
+  const instances = M.Modal.init(elems, {});
+}
 
 let currentTargetAnonimo;
 
@@ -13,6 +40,16 @@ function onEnter(event) {
     event.preventDefault();
     enviar();
   }
+}
+
+function openModal(target) {
+  const modalEl = document.querySelector('#imageVisor');
+  const imageEl = modalEl.querySelector('img');
+  const originEl = target.tagName === 'IMG' ? target : target.querySelector('img');
+  imageEl.src = originEl.src;
+
+  const modal = M.Modal.getInstance(modalEl);
+  modal.open();
 }
 
 async function enviar() {
@@ -39,19 +76,23 @@ async function enviar() {
 
   document.querySelector("#textarea1").value = "";
   M.textareaAutoResize($("#textarea1"));
-  await renderSentMessage({
+  const sentMessageHtml = renderSentMessage({
     created_at: fecha,
     body,
     _id: `m_${fecha.getTime()}`,
     sender: miAnonimo
   }, false);
+
+  document.querySelector(".message-wrapper").innerHTML += sentMessageHtml;
+  document.querySelector('.message-wrapper').scrollTop = document.querySelector('.message-wrapper').scrollHeight;
+  
   const mensaje = await fetchData({
     endpoint: api.mensajes.create,
     params: {
       temp_id: fecha.getTime(),
       body,
       created_at: normalizeDateTime(fechaTexto),
-      sender_default_name: yo.username,
+      sender_default_name: miAnonimo.pseudonimo || yo.username,
       target_default_name: document.querySelector(".titulo").innerHTML, //nombre recibe
       sent_at: normalizeDateTime(fechaTexto),
       sender: miAnonimo._id,
@@ -81,10 +122,11 @@ function getNombreDeAnonimo(anonimo) {
     ? `${anonimo.persona.apellido} ${anonimo.persona.nombre}`
     : anonimo.user
     ? anonimo.user.username
-    : (anonimo.pseudonimo || anonimo.id);
+    : (anonimo.pseudonimo || `zz_${ anonimo.id }`);
 }
 
 async function getAllAnonimos() {
+  showLoader();
   let length = await fetchData({
     endpoint: api.anonimos.count
   });
@@ -118,6 +160,7 @@ async function getAllAnonimos() {
       endpoint: api.anonimos.all,
       anonimos
     });
+    document.querySelector(".message-wrapper").innerHTML = '';
     return;
   }
 
@@ -134,11 +177,14 @@ async function getAllAnonimos() {
     }
     return 0;
   });
+  let tempHtml = '';
   for (const anonimo of anonimos) {
-    const fullname = getNombreDeAnonimo(anonimo);
-    let anonimohtml = `<a id="${anonimo._id}" href="#!" class="collection-item" onclick="cargarHistorial(this)" >${fullname}</a>`;
-    document.querySelector(".collection").innerHTML += anonimohtml;
+    tempHtml += createNewAnonItem(anonimo);
   }
+  document.querySelector(".collection").innerHTML = tempHtml;
+  $('input.autocomplete').autocomplete({
+    data: autocompleteData
+  });
 
   const url = new URL(location.href);
   const to = url.searchParams.get("to");
@@ -156,10 +202,36 @@ async function getAllAnonimos() {
     cargarHistorial(document.querySelector(selector));
   }
   anonimosLoaded = true;
+  
+  document.querySelector(".message-wrapper").innerHTML = '';
+}
+let autocompleteData = {};
+function createNewAnonItem(anonimo) {
+  const fullname = getNombreDeAnonimo(anonimo).split('zz_').join('');
+  const imagen = anonimo.imagen
+    ? `<img src="data:image/png;charset=utf-8;base64,${decodeURIComponent(anonimo.imagen)}" alt="${fullname}" title="${fullname}" onClick = "clickImage(this)" class="circle" height = "50px"></img>`
+    : '';
+  const correo = anonimo.email
+    ? `<br><span><a href = "mailto:${anonimo.email}">${anonimo.email}</a></span>`
+    : '';
+  const anonimohtml = `<li id = "${anonimo._id}" class="collection-item avatar" onclick="cargarHistorial(this)">
+      ${imagen}
+      <span class="title">${fullname}</span>
+      ${correo}
+    </li>`;
+  autocompleteData[fullname] = null;
+  ANONIMOS[fullname] = anonimo._id;
+  return anonimohtml;
+}
+
+function clickImage(target) {
+  openModal(target);
 }
 
 async function cargarHistorial(elemento) {
+  historyReady = false;
   if (Array.from(elemento.classList).includes("active")) {
+    historyReady = true;
     return;
   }
   const item = document.querySelector(".collection-item.active");
@@ -170,10 +242,7 @@ async function cargarHistorial(elemento) {
   elemento.classList.remove('hasMessages');
   document.querySelector("#textarea1").setAttribute("disabled", "disabled");
   document.querySelector("#button-enviar").classList.add("disabled");
-  const loader = `  <div class="progress">
-                          <div class="indeterminate"></div>
-                      </div>`;
-  document.querySelector(".message-wrapper").innerHTML = loader;
+  showLoader();
 
   document.querySelector(
     ".titulo"
@@ -212,10 +281,18 @@ async function cargarHistorial(elemento) {
       sender: elemento.id, // string, id usuario seleccionado en la barra lateral
     }
   });
-  const mensajes = mensajesEnviados.concat(mensajesRecibidos);
-  mensajes.sort(function(a, b) {
-    const fechaA = a.created_at;
-    const fechaB = b.created_at;
+
+  const respuestas = await fetchData({
+    endpoint: api.respuestas.findBy,
+    params: {
+      anonimo: elemento.id
+    }
+  });
+  alreadyResponses = respuestas.map(v => v._id);
+  const receivedItems = mensajesEnviados.concat(mensajesRecibidos).concat(respuestas);
+  receivedItems.sort(function(a, b) {
+    const fechaA = a.created_at || a.createdAt;
+    const fechaB = b.created_at || b.createdAt;
     if (fechaA > fechaB) {
       return 1;
     }
@@ -224,16 +301,18 @@ async function cargarHistorial(elemento) {
     }
     return 0;
   });
-
-  if (mensajes.length) {
+  let tempHtml = '';
+  if (receivedItems.length) {
     document.querySelector(".message-wrapper").innerHTML = ``;
-    for (const mensaje of mensajes) {
-      if (mensaje.target && mensaje.target._id === elemento.id) {
-        await renderSentMessage(mensaje);
+    for (const item of receivedItems) {
+      if (item.target && item.target._id === elemento.id) {
+        tempHtml += renderSentMessage(item);
       } else {
-        await renderReceivedMessage(mensaje);
+        tempHtml += renderReceivedItem(item);
       }
     }
+    document.querySelector(".message-wrapper").innerHTML = tempHtml;
+    document.querySelector('.message-wrapper').scrollTop = document.querySelector('.message-wrapper').scrollHeight;
   } else {
     document.querySelector(
       ".message-wrapper"
@@ -246,9 +325,17 @@ async function cargarHistorial(elemento) {
   if (!timeUpdater) {
     startTimeUpdater();
   }
+  historyReady = true;
 }
 
-async function renderSentMessage(mensaje, startSeenListener = true) {
+function showLoader() {
+  const loader = `  <div class="progress">
+                          <div class="indeterminate"></div>
+                      </div>`;
+  document.querySelector(".message-wrapper").innerHTML = loader;
+}
+
+function renderSentMessage(mensaje, startSeenListener = true) {
   const noMessage = document.querySelector(".no-message");
   if (noMessage) {
     noMessage.style.display = "none";
@@ -264,7 +351,8 @@ async function renderSentMessage(mensaje, startSeenListener = true) {
     sender,
     target,
     response,
-    attachments
+    attachments,
+    image
   } = mensaje;
   let fecha = moment(created_at).toISOString();
   let readableDate = moment(created_at).fromNow();
@@ -275,7 +363,7 @@ async function renderSentMessage(mensaje, startSeenListener = true) {
     readableDate = moment(sent_at).fromNow();
     icon = "done";
   }
-  clase = "";
+  let clase = "";
   if (seen_at) {
     clase = "blue-text";
     icon = "done_all";
@@ -284,24 +372,80 @@ async function renderSentMessage(mensaje, startSeenListener = true) {
       addSeenListener(_id);
     }
   }
+  const imageHTML = `<div class="card-image" onClick = "openModal(this)">
+                      <img class="imageChat" src = "data:image/png;charset=utf-8;base64,${image}"/>
+                    </div>`;
 
-  let mensajehtml = `<div class="col s10 offset-s2" id= "${_id}">
+  let mensajehtml = `<div class = "row">
+                <div class="col s10 m8 l6 offset-s2 offset-m4 offset-l5" id= "${_id}">
+                  <div class="name">${sender._id === miAnonimo._id ? 'Tú' : (sender_default_name || sender.pseudonimo)}</div>                
+                  ${!!image ? imageHTML : ''}
                   <div class="card-panel light-blue lighten-4">
-                    <div class="name">${sender._id === miAnonimo._id ? 'Tú' : (sender_default_name || sender.pseudonimo)}</div>
                     <div class="mensaje">${body}</div>
                     <div class= "estatus">
-                      <time datetime = "${fecha}" title="${displayDateTime(
-    fecha
-  )}">${readableDate}</time>
+                      <time datetime = "${fecha}" title="${displayDateTime(fecha)}">${readableDate}</time>
                       <i class="material-icons tiny ${clase}">${icon}</i>
                     </div>
                   </div>
+                </div>
               </div>`;
-  document.querySelector(".message-wrapper").innerHTML += mensajehtml;
-  document.querySelector('.message-wrapper').scrollTop = document.querySelector('.message-wrapper').scrollHeight;
+  return mensajehtml;
+  
 }
 
-async function renderReceivedMessage(mensaje) {
+function renderReceivedItem(item) {
+  if (item.responses_csv) {
+    return renderReceivedRespuesta(item);
+  } else {
+    return renderReceivedMessage(item);
+  }
+}
+
+function capitalize(s) {
+  return s[0].toUpperCase() + s.slice(1);
+}
+
+function renderReceivedRespuesta(respuesta) {
+
+  const {
+    _id,
+    createdAt,
+    display_name,
+    responses_csv
+  } = respuesta;
+
+  let fecha = moment(createdAt).toISOString();
+  let readableDate = moment(createdAt).fromNow();
+  document.querySelector("#textarea1").value = "";
+  
+  let body = '';
+  for (const [key, value] of Object.entries(JSON.parse(responses_csv))) {
+    if (key === 'index') continue;
+    if (display_name === "Fecha de abandono") {
+      body = `${moment(value).format("DD/MM/YYYY")}. ${capitalize(moment(value).fromNow())}`; 
+    } else {
+      body = `${value}`;
+    }
+  }
+
+  let mensajehtml = `<div class = "row">
+                <div class="col s10 m8 l6 offset-l1" id= "${_id}">
+                    <div class="card-panel purple lighten-4">
+                  <div class="name">Respondió a la pregunta <b>${display_name}</b></div>
+                    <div class="card-content">
+                      
+                      <div class="mensaje">${body}</div>
+                      <div class= "estatus">
+                        <time datetime = "${fecha}" title="${displayDateTime(fecha)}">${readableDate}</time>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>`;
+  return mensajehtml;
+}
+
+function renderReceivedMessage(mensaje) {
   const {
     created_at,
     body,
@@ -313,7 +457,8 @@ async function renderReceivedMessage(mensaje) {
     sender,
     target,
     response,
-    attachments
+    attachments,
+    image
   } = mensaje;
   let fecha = moment(created_at).toISOString();
   let readableDate = moment(created_at).fromNow();
@@ -335,24 +480,30 @@ async function renderReceivedMessage(mensaje) {
       name = `${currentTargetAnonimo.persona.apellido} ${currentTargetAnonimo.persona.nombre}`;
     }
   }
+  const imageHTML = `<div class="card-image"  onClick = "openModal(this)">
+                      <img class="imageChat" src = "data:image/png;charset=utf-8;base64,${image}"/>
+                    </div>`;
 
-  let mensajehtml = `<div class="col s10" id= "${_id}">
-                  <div class="card-panel white">
-                    <div class="name">${name}</div>
-                    <div class="mensaje">${body}</div>
-                    <div class= "estatus">
-                      <time datetime = "${fecha}" title="${displayDateTime(
-    fecha
-  )}">${readableDate}</time>
+  let mensajehtml = `<div class = "row">
+                <div class="col s10 m8 l6 offset-l1" id= "${_id}">
+                    <div class="card-panel white">
+                  <div class="name">${name}</div>
+                    ${!!image ? imageHTML : ''}
+                    <div class="card-content">
+                      
+                      <div class="mensaje">${body}</div>
+                      <div class= "estatus">
+                        <time datetime = "${fecha}" title="${displayDateTime(fecha)}">${readableDate}</time>
+                      </div>
                     </div>
                   </div>
+                </div>
               </div>`;
-  document.querySelector(".message-wrapper").innerHTML += mensajehtml;
-  document.querySelector('.message-wrapper').scrollTop = document.querySelector('.message-wrapper').scrollHeight;
+  return mensajehtml;
 }
 
 async function setSeen(mensaje) {
-  const seenMessage = await fetchData({
+  await fetchData({
     endpoint: api.mensajes.update,
     params: { _id: mensaje._id, seen_at: normalizeDate(new Date()) }
   });
