@@ -80,8 +80,10 @@ async function intervalHandler() {
   if (messagesListener) {
     clearInterval(messagesListener);
   }
-  await getNewMessages();
-  messagesListener = setInterval(intervalHandler, 5 * 1000);
+  const keepAlive = await getNewMessages();
+  if (keepAlive) {
+    messagesListener = setInterval(intervalHandler, 5 * 1000);  
+  }
 }
 
 function sortItemByFechaCreacion(a, b) {
@@ -118,7 +120,8 @@ async function getNewMessages() {
   }
 
   if (!miAnonimo) {
-    return;
+    M.toast({html: `No se encontró un usuario de la app Linea Stop. No se seguirá ejecutando el servicio de chat a tiempo real.`, displayLength: 4000});
+    return false;
   }
 
   const newMessages = await fetchData({
@@ -152,7 +155,7 @@ async function getNewMessages() {
   if (notifyMessages.length) {
     if (location.href.indexOf("chat") >= 0) {
       if (!anonimosLoaded) {
-        return;
+        return true;
       }
       notifyMessages.sort(sortItemByFechaCreacion);
       for (const message of notifyMessages) {
@@ -238,6 +241,7 @@ async function getNewMessages() {
       }
     }
   }
+  return true;
 }
 
 function sendNotification(mensaje, options) {
