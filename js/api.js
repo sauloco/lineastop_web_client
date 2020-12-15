@@ -14,7 +14,7 @@ let permanent_notification = `
 
 
 
-const BASE_URI = API_staging;
+const BASE_URI = API_production;
 
 
 if (BASE_URI === API_production) {
@@ -49,30 +49,29 @@ const addUpdatingUser = ({params}) => {
  */
 const apiDefaultErrorController = ({endpoint, error}) => {
   let showMessage = '';
-  if (endpoint.errors) {
-    if (endpoint.errors[error.statusCode]) {
-      if (typeof endpoint.errors[error.statusCode] === 'function') {
-        showMessage = endpoint.errors[error.statusCode](error);
-      } else {
-        showMessage = endpoint.errors[error.statusCode];
-      }
-    } else {
-      showMessage = endpoint.errors.default;
-    }
-  } else {
-    if (api.common.errors[error.statusCode]) {
-      if (typeof api.common.errors[error.statusCode] === 'function') {
-        showMessage = api.common.errors[error.statusCode](error);
-      } else {
-        showMessage = api.common.errors[error.statusCode];
-      }
-    } else {
-      showMessage = api.common.errors.default;
-    }
-  }
-  
   
   if (typeof error === 'object') {
+    if (endpoint.errors) {
+      if (error.statusCode && endpoint.errors[error.statusCode]) {
+        if (typeof endpoint.errors[error.statusCode] === 'function') {
+          showMessage = endpoint.errors[error.statusCode](error);
+        } else {
+          showMessage = endpoint.errors[error.statusCode];
+        }
+      } else {
+        showMessage = endpoint.errors.default;
+      }
+    } else {
+      if (error.statusCode && api.common.errors[error.statusCode]) {
+        if (typeof api.common.errors[error.statusCode] === 'function') {
+          showMessage = api.common.errors[error.statusCode](error);
+        } else {
+          showMessage = api.common.errors[error.statusCode];
+        }
+      } else {
+        showMessage = api.common.errors.default;
+      }
+    }
     if (error.message && typeof error.message === 'string') {
       // showMessage = error.message;
       // DoNothing
@@ -84,12 +83,16 @@ const apiDefaultErrorController = ({endpoint, error}) => {
   if (error.statusCode === 503) {
     if (server_online) {
       document.body.innerHTML += permanent_notification;
-      M.toast({html: `${showMessage}`, displayLength: 4000});
+      if (M) {
+        M.toast({html: `${showMessage}`, displayLength: 4000});
+      }
       console.error('Error: ', error, 'At: ', endpoint, 'Displayed As: ', showMessage);
       server_online = false;
     }
   } else {
-    M.toast({html: `${showMessage}`, displayLength: 4000});
+    if (M) {
+      M.toast({html: `${showMessage}`, displayLength: 4000});
+    }
     console.error('Error: ', error, 'At: ', endpoint, 'Displayed As: ', showMessage);
   }
   
@@ -216,7 +219,9 @@ const fetchData = async ({endpoint, params, token, controlError}) => {
   try {
     response = await getPromise({endpoint, params, token});
     if (!server_online && response.status !== 503 ) {
-      M.toast({html: 'El servidor se encuentra en linea nuevamente.'});
+      if (M) {
+        M.toast({html: 'El servidor se encuentra en linea nuevamente.'});
+      }
       server_online = true;
       const elem = document.querySelector("#permanent_notification_503");
       elem.parentNode.removeChild(elem);
