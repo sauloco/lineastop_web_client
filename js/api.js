@@ -14,7 +14,7 @@ let permanent_notification = `
 
 
 
-const BASE_URI = API_production;
+const BASE_URI = API_staging;
 
 
 if (BASE_URI === API_production) {
