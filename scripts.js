@@ -22,14 +22,15 @@ const getConsultas = async () => {
   }
   CONSULTAS = consultas;
   let safeDate, safeDateTime;
-  const timeServerURI =
-    location.protocol + "//worldtimeapi.org/api/timezone/America/Argentina/Buenos_Aires";
+  const timeServerURI = BASE_URI + "/" + api.users.me.location;
   try {
-    const response = await fetch(timeServerURI);
-    safeDate = await response.json();
+    const response = await fetchData({ endpoint: api.consultas.now });
+    const { unixtime } = response;
+    safeDate = unixtime;
     safeDateTime = moment(safeDate.datetime);
   } catch (e) {
     safeDateTime = moment();
+    console.error("Error", e.message);
     console.warn(
       `Response not found from ${timeServerURI}, unsafe date got from the client.`,
       e.message
@@ -333,9 +334,9 @@ const loadAbandon = (consultas, date) => {
     (v) =>
       v.fechaAbandonoEfectiva &&
       moment(v.fechaAbandonoEfectiva).month() ===
-        moment(date).subtract(2, "months").month()
-      && moment(v.fechaAbandonoEfectiva).year() ===
-      moment(date).subtract(2, "months").year()
+        moment(date).subtract(2, "months").month() &&
+      moment(v.fechaAbandonoEfectiva).year() ===
+        moment(date).subtract(2, "months").year()
   );
   consultas = consultas.filter(
     (v) =>
@@ -391,8 +392,8 @@ const loadCommitted = (consultas, date) => {
   consultas = consultas.filter(
     (v) =>
       v.fechaAbandonoCompromiso &&
-      moment(v.fechaAbandonoCompromiso).month() === moment(date).month()
-      && moment(v.fechaAbandonoCompromiso).year() === moment(date).year()
+      moment(v.fechaAbandonoCompromiso).month() === moment(date).month() &&
+      moment(v.fechaAbandonoCompromiso).year() === moment(date).year()
   );
   const difference = consultas.length - preConsultas.length;
   let icon = `trending_flat`;

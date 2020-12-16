@@ -198,7 +198,7 @@ const getPromise = ({endpoint, params, token}) => {
  * @returns {object} La información obtenida de la API (sea la data o el error)
  */
 
-const fetchData = async ({endpoint, params, token, controlError}) => {
+const fetchData = async ({endpoint, params, token, controlError, getHeaders}) => {
   const {middlewareActions, overrideDefaultAction} = endpoint;
 
   if (overrideDefaultAction && typeof overrideDefaultAction === 'function') {
@@ -227,9 +227,11 @@ const fetchData = async ({endpoint, params, token, controlError}) => {
       elem.parentNode.removeChild(elem);
     }
     if ((response.status >= 200 && response.status < 300) || !controlError)  {
-      
-      response = await response.json();
-      return response;
+      if (getHeaders) {
+        return response.getHeaders();
+      } else {
+        return await response.json();
+      }
     }
     if (response.status === 500) {
       console.error({response});
@@ -369,6 +371,9 @@ const api = {
       location: 'consultas',
       url_params: [':_id'],
     },
+    now: {
+      location: 'consultas/now'
+    },
     create: {
       method: 'POST',
       location: 'consultas/',
@@ -460,6 +465,9 @@ const api = {
       errors: {
         default: 'Ocurrió un error al solicitar el reinicio de la contraseña, por favor, reintenta'
       }
+    },
+    me: {
+      location: 'auth/local/me'
     },
     local: {
       login: {
