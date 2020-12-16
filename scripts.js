@@ -22,7 +22,6 @@ const getConsultas = async () => {
   }
   CONSULTAS = consultas;
   let safeDate, safeDateTime;
-  const timeServerURI = BASE_URI + "/" + api.users.me.location;
   try {
     const response = await fetchData({ endpoint: api.consultas.now });
     const { unixtime } = response;
@@ -30,9 +29,8 @@ const getConsultas = async () => {
     safeDateTime = moment(safeDate.datetime);
   } catch (e) {
     safeDateTime = moment();
-    console.error("Error", e.message);
     console.warn(
-      `Response not found from ${timeServerURI}, unsafe date got from the client.`,
+      `Response not found from ${api.consultas.now.location}, unsafe date got from the client.`,
       e.message
     );
     M.toast({
