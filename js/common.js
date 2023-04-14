@@ -151,6 +151,10 @@ async function getNewMessages() {
     }
   }
 
+  if (!Array.isArray(newMessages)) {
+    return false;
+  }
+
   const notifyMessages = newMessages.filter(m => !m.seen_at && m.sender !== null);
   if (notifyMessages.length) {
     if (location.href.indexOf("chat") >= 0) {
