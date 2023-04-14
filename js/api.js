@@ -392,6 +392,9 @@ const api = {
       method: 'DELETE',
       location: 'consultas',
       url_params: [':_id']
+    },
+    dashboard: {
+      location: 'consultas/dashboard',
     }
   },
   plantillaMensaje: {

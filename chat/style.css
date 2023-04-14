@@ -16,7 +16,7 @@ body{
     height: 100%;
     border-left: 2px solid #e0e0e0;
 }
-.titulo{
+.titulo, .titulo-lg {
     padding: 15px !important;
     font-weight: 700;
 }
@@ -32,14 +32,14 @@ body{
 
 
 
-.titulo img {
+.titulo img, .titulo-lg img {
     width: 42px;
     height: 42px;
     overflow: hidden;
     vertical-align: middle;
     float: left;
 }
-.titulo span {
+.titulo span, .titulo-lg img {
     padding-left: 10px;
 }
 .no-margin{

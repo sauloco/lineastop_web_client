@@ -2,7 +2,13 @@ document.querySelector("#button-enviar").addEventListener("click", enviar);
 document.querySelector("#textarea1").addEventListener("keyup", onEnter);
 document.addEventListener("DOMContentLoaded", getAllAnonimos);
 document.addEventListener("DOMContentLoaded", initModal);
+document.addEventListener("DOMContentLoaded", init);
 document.querySelector(".autocomplete").addEventListener("change", onSearch);
+
+function init() {
+  document.querySelector(".users-btn").addEventListener("click", onToggleUsers);
+  document.querySelector(".close-users-list").addEventListener("click", onToggleUsers);
+}
 
 let ANONIMOS = {};
 
@@ -19,10 +25,18 @@ function onSearch(e) {
     ) {
       selector = `#\\3${to.split("")[0]} ${to.substring(1, to.length)}`;
     }
-    cargarHistorial(document.querySelector(selector));
+    onItemClick(document.querySelector(selector));
   }
 }
 
+function onToggleUsers() {
+  const izquierda = document.querySelector('.panel-izquierda');
+  const derecha = document.querySelector('.panel-derecha');
+
+  izquierda.classList.toggle('s12');
+  izquierda.classList.toggle('hide-on-small-only')
+  derecha.classList.toggle('hide-on-small-only');
+}
 
 function initModal() {
   const elems = document.querySelectorAll('.modal');
@@ -214,7 +228,7 @@ function createNewAnonItem(anonimo) {
   const correo = anonimo.email
     ? `<br><span><a href = "mailto:${anonimo.email}">${anonimo.email}</a></span>`
     : '';
-  const anonimohtml = `<li id = "${anonimo._id}" class="collection-item avatar" onclick="cargarHistorial(this)">
+  const anonimohtml = `<li id = "${anonimo._id}" class="collection-item avatar" onclick="onItemClick(this)">
       ${imagen}
       <span class="title">${fullname}</span>
       ${correo}
@@ -226,6 +240,11 @@ function createNewAnonItem(anonimo) {
 
 function clickImage(target) {
   openModal(target);
+}
+
+function onItemClick(elemento) {
+  cargarHistorial(elemento); 
+  onToggleUsers();
 }
 
 async function cargarHistorial(elemento) {
@@ -247,7 +266,13 @@ async function cargarHistorial(elemento) {
   document.querySelector(
     ".titulo"
   ).innerHTML = `Cargando conversación con ${elemento.innerHTML}`;
+  
+  document.querySelector(
+    ".titulo-lg"
+  ).innerHTML = `Cargando conversación con ${elemento.innerHTML}`;
+
   document.querySelector(".titulo").setAttribute("persona_id", elemento.id);
+  document.querySelector(".titulo-lg").setAttribute("persona_id", elemento.id);
   if (!yo) {
     yo = await fetchData({
       endpoint: api.users.me
@@ -316,9 +341,11 @@ async function cargarHistorial(elemento) {
   } else {
     document.querySelector(
       ".message-wrapper"
-    ).innerHTML = `<div class = "no-message col s4 offset-s4"><div class = "card-panel grey lighten-3">Aún no has conversado con esta persona</div></div>`;
+    ).innerHTML = `<div class = "no-message col s10 m4 offset-s1 offset-m4"><div class = "card-panel grey lighten-3">Aún no has conversado con esta persona</div></div>`;
   }
   document.querySelector(".titulo").innerHTML = elemento.innerHTML;
+  document.querySelector(".titulo-lg").innerHTML = elemento.innerHTML;
+
   document.querySelector("#textarea1").removeAttribute("disabled");
   document.querySelector("#button-enviar").classList.remove("disabled");
   updateURL(elemento.id);

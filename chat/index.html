@@ -61,21 +61,29 @@
 		<li class="active"><a href="/chat"><i class="material-icons">chat</i>Chat</a></li>
 	</ul>
 	<div class="row wrapper">
-		<div class="col s3 panel-izquierda">
-			<div class="row">
-				<div class="input-field col s12">
+		<div class="col hide-on-small-only m3 l3 panel-izquierda">
+			<div class="row valign-wrapper">
+				<div class="input-field col s10 m12">
 					<i class="material-icons prefix">search</i>
 					<input type="text" id="ingreseParaBuscar" class="autocomplete" autocomplete="off" autofill="false">
 					<label for="ingreseParaBuscar">Busque persona</label>
+				</div>
+				<div class="col s2 close-users-list hide-on-med-and-up">
+					<i class="material-icons prefix">close</i>
 				</div>
 			</div>
 			<ul class="collection">
 				
 			</ul>
 		</div>
-		<div class="col s9 panel-derecha">
-			<div class="row no-margin">
-				<div class="col s12 titulo grey lighten-2">Selecciona una persona para iniciar o continuar una charla</div>
+		<div class="col s12 m9 l9 panel-derecha">
+			<div class="row no-margin grey lighten-2 valign-wrapper">
+				<div class="col s2 users-btn hide-on-med-and-up">
+					<a href="#" class="black-text"><i
+						class="material-icons">group</i></a>
+				</div>
+				<div class="col s10 titulo hide-on-med-and-up">Toca aqui para seleccionar una persona</div>
+				<div class="col s12 titulo-lg hide-on-small-only">Selecciona una persona para iniciar o continuar una charla</div>
 			</div>
 			<div class="row no-margin">
 				<div class="col s12 message-wrapper">
@@ -103,6 +111,8 @@
   </div>
 	<script src="/js/jquery-3.3.1.min.js"></script>
 	<script src="/js/cookies.js"></script>
+	<link rel="stylesheet" href="/js/materialize/materialize.min.css">
+	<script src="/js/materialize/materialize.min.js"></script>
 	<script src="/js/api.js"></script>
 	<script src="/js/common.js"></script>
 	<script src="script.js"></script>
@@ -111,8 +121,6 @@
 	<script src="/js/moment-with-locales.js"></script>
 	<script src="/js/date_helpers/date_utils.js"></script>
 	<script src="/js/marked.min.js"></script>
-	<link rel="stylesheet" href="/js/materialize/materialize.min.css">
-	<script src="/js/materialize/materialize.min.js"></script>
 	<script src="/export/finderService.js"></script>
 	<script src="/js/w2ui/w2ui-1.5.rc1.js"></script>
 	<link rel="stylesheet" type="text/css" media="screen" href="/js/w2ui/w2ui-1.5.rc1.css" />
