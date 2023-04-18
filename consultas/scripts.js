@@ -5,6 +5,8 @@ let Persona = {};
 let galleryLoaded = false;
 let historicoLoaded = false;
 
+const DEFAULT_HORA_PROXIMA_CONSULTA = "00:00";
+
 let Consulta = {
   _id: '',
   ingreseParaBuscar: '',
@@ -51,7 +53,7 @@ let Consulta = {
   fechaAbandonoCompromiso: '',
   fechaAbandonoEfectiva: '',
   fechaProximaConsulta: '',
-  horaProximaConsulta: '',
+  horaProximaConsulta: DEFAULT_HORA_PROXIMA_CONSULTA,
   observacion: '',
   persona: ''
 };
@@ -245,7 +247,7 @@ $(document).ready(async () => {
         } else {
           R.mutate('Consulta', {
             'fechaProximaConsulta': '',
-            'horaProximaConsulta': ''
+            'horaProximaConsulta': DEFAULT_HORA_PROXIMA_CONSULTA
           });
         }
 
@@ -411,6 +413,9 @@ const loadConsultaById = async _id => {
       if (data.fechaProximaConsulta) {
         data.fechaProximaConsulta = displayDate(data.fechaProximaConsulta);
       }
+      if (!data.horaProximaConsulta) {
+        data.horaProximaConsulta = DEFAULT_HORA_PROXIMA_CONSULTA
+      }
       R.mutate('Consulta', data);
       return;
     }
@@ -451,6 +456,9 @@ const saveConsulta = async (silent) => {
   }
   if (params.fechaProximaConsulta) {
     params.fechaProximaConsulta = normalizeDate(params.fechaProximaConsulta);
+  }
+  if (!params.horaProximaConsulta) {
+    params.horaProximaConsulta = DEFAULT_HORA_PROXIMA_CONSULTA
   }
   let result = false;
   if (!Consulta._id) {
@@ -626,6 +634,9 @@ const navigatorCreator = async () => {
     if (v.fechaProximaConsulta) {
       v.fechaProximaConsulta = displayDate(v.fechaProximaConsulta);
     }
+    if (!v.horaProximaConsulta) {
+      v.horaProximaConsulta = DEFAULT_HORA_PROXIMA_CONSULTA
+    }
     return v;
   });
 
@@ -670,6 +681,7 @@ const goToNew = () => {
     newConsulta.derivadoMedico = defaultConsulta.derivadoMedico;
     newConsulta.derivadoNotificacion = defaultConsulta.derivadoNotificacion;
     newConsulta.fechaProximaConsulta = defaultConsulta.fechaProximaConsulta;
+    newConsulta.horaProximaConsulta = defaultConsulta.horaProximaConsulta;
     newConsulta.observacion = defaultConsulta.observacion;
     newConsulta._id = defaultConsulta._id;
     if (newConsulta.createdAt) {

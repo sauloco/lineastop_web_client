@@ -16,8 +16,10 @@ let permanent_notification = `
 
 const BASE_URI = API_production;
 
-
-if (BASE_URI === API_production) {
+if (
+    !['0.0.0.0','localhost','127.0.0.1'].includes(window.location.hostname) 
+    && BASE_URI === API_production
+  ) {
   let sentryScript = document.createElement('script');
   sentryScript.setAttribute('src',"https://browser.sentry-cdn.com/4.4.2/bundle.min.js");
   sentryScript.setAttribute('crossorigin', 'anonymous');
