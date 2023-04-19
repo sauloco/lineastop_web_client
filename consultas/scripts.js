@@ -9,6 +9,7 @@ const DEFAULT_HORA_PROXIMA_CONSULTA = "00:00";
 
 let Consulta = {
   _id: '',
+  id: '',
   ingreseParaBuscar: '',
   fecha: '',
   tos: false,
@@ -360,7 +361,8 @@ $(document).ready(async () => {
 
   if (_id) {
     R.mutate('Consulta', {
-      _id
+      _id,
+      id: _id,
     });
   }
 
@@ -388,7 +390,8 @@ const loadConsultaById = async _id => {
       html: 'No se encontró ninguna consulta con la información proporcionada.'
     });
     R.mutate('Consulta', {
-      _id: ''
+      _id: '',
+      id: '',
     });
     return;
   }
@@ -463,6 +466,7 @@ const saveConsulta = async (silent) => {
   let result = false;
   if (!Consulta._id) {
     delete params['_id'];
+    delete params['id'];
     result = await createConsulta(params);
   } else {
     result = await updateConsulta(params);
@@ -684,6 +688,7 @@ const goToNew = () => {
     newConsulta.horaProximaConsulta = defaultConsulta.horaProximaConsulta;
     newConsulta.observacion = defaultConsulta.observacion;
     newConsulta._id = defaultConsulta._id;
+    newConsulta.id = defaultConsulta.id;
     if (newConsulta.createdAt) {
       delete newConsulta['createdAt'];
     }
